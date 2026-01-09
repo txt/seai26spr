@@ -5,13 +5,20 @@
   <a href="https://moodle-courses2527.wolfware.ncsu.edu/course/view.php?id=8118&bp=s"><img src="https://img.shields.io/badge/Moodle-%23dc143c?style=flat-square&logo=moodle&logoColor=white" /></a>
   <a href="https://discord.gg/vCCXMfzQ"><img src="https://img.shields.io/badge/Chat-%23008080?style=flat-square&logo=discord&logoColor=white" /></a>
   <a href="/LICENSE.md"><img src="https://img.shields.io/badge/©%20timm%202026-%234b4b4b?style=flat-square&logoColor=white" /></a></p>
-<h1 align="center">:cyclone: CSC49/591: Software Engineering and AI <br>NC State, Fall '25</h1>
-<img src="docs/lect/banner.png"> 
+<h1 align="center">:cyclone: CSC491/591: Software Engineering and AI <br>NC State, Fall '25</h1>
+<img src="/docs/lect/banner.png"> 
 
 AI presents unique challenges and opportunities when applied to software engineering. Unlike other domains, SE involves evolving requirements, human-in-the-loop decisions, and complex socio-technical ecosystems, making the integration of AI both powerful and precarious. This course will explore AI methods for SE, such as explainable AI, classification and clustering, multi-objective optimization, semi-supervised learning (useful when labeled data is scarce), theorem proving and logical reasoning, and generative methods enable code suggestion, test generation, and documentation support.
-  
- <div align=center>
+ 
+- 491/591 students:
+  - Students will apply sound research methods/tools to problems in “AI to SE” and “SE to AI” and describe the methods/tools effectively
+  - Students will analyze/interpret research data
+  - Students will communicate their research clearly and professionally in both written and oral forms appropriate to “AI to SE” and “SE to AI”
+- 591 students:
+  - State a research problem in such a way that it clearly fits within the context of the literature in “AI to SE” and “SE to AI”
+  - Demonstrate the value of a research solution to the research problem in advancing knowledge within that area
 
+ <div align=center>
 
 | 📅 Week of... | 🎓 Lecture | 🛠️ Submission <br>(due at noon) | 📝 Review |
 |:-------------:|:----------:|:---------------------------:|:---------:|
