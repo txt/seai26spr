@@ -35,7 +35,7 @@ AI presents unique challenges and opportunities when applied to software enginee
 
  <div align=center>
 
-| 📅 Week of... | 🎓 Lecture | 🛠️ Submission <br>(due Monday noon) | 📝 Review |
+| 📅 Week of... | 🎓 Lecture | 🛠️ Submission <br>(due start of class) | 📝 Review |
 |:-------------:|:----------:|:---------------------------:|:---------:|
 | Jan 12 | | | |
 | Jan 19 | Mon: MLK Day (no class) | | |

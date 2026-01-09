@@ -89,10 +89,10 @@ Lectures will be recorded.
 
 ## Assessment
  
-- Ugrds: teams of three: 6 homeworks 
-- Grads: teams of two: 4  homeworks (solo) and a two part assignment (team)
+- Ugrad students: teams of three: 6 homeworks 
+- Grad students: teams of two: 4  homeworks and a two part assignment 
 - Homeworks: submit something one week, review someone else's next week.
-- Weekly in-class quizes (2 marks each). If you miss any queizes then for the first two misses, you get the mean
+- Weekly in-class quizes (2 marks each). If you miss any quizzes then for the first two misses, you get the mean
   mark scored by the rest of the class. After that, you score zero.
 - Classes are in person. To ensure that, all submissions are in-person, by the whole group.
   Anyone missing gets a cross. First two crosses cost nothing. After that, each cross is -1 mark.
