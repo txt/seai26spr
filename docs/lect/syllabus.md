@@ -100,14 +100,23 @@ Lectures will be recorded.
 
 ## Grades
 
+Homeworks projects are printed submissions. 
+
+
+Quizzes are on-line.
+
+
 - In class quiz: 2 marks each (11 of those)
 - Grad students: 4 homeworks and 1 project (13 marks for hw, 26 marks for hw)
 - Ugrad students: 6 homewworks, 13 marks each
 - Total: 100 marks
 
-Homeworks projects are printed submissions. 
+Monday May 4 there will be a optional exam for students who want to make up lost marks:
 
-Quizzes are on-line.
+- Students can idennfty one submission of 11 marks and one submission of  13 marks that they would like to replace. 
+- The Exam will be out 24 marks.
+- The students' grades for the 11 and 13 will be replaced with the exam result **even if the exam grade is lower**.
+
 
 With the final grades, the following grade scale will be used: 
 
@@ -117,7 +126,6 @@ With the final grades, the following grade scale will be used:
      C+ (77-79),   C (73-77),   C-(70-72)
      D+ (67-69),   D (63-67),   D-(60-62)
      F (below 60).
-
 
 ### Late Marks
 

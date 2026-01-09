@@ -52,6 +52,8 @@ AI presents unique challenges and opportunities when applied to software enginee
 | Apr 06 | | 5b  | |
 | Apr 13 | | 6a | |
 | Apr 20 | | 6b | |
+| Apr 27 | |    | |
+| May 4 |  exam |    | |
 
 </div>
 
