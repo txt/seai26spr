@@ -16,7 +16,7 @@
 csc491/591 013 
 Mo 4:30PM - 7:15PM    
 room 02211 [Textiles Complex](https://maps.ncsu.edu/#/buildings/700)    
-Consult hours: Tuesday 2:45 to 4:45: (Booking required)(https://calendar.app.google/2bPJr5kecX4QYSm56)   
+Consult hours: Tuesday 2:45 to 4:45: [Booking required](https://calendar.app.google/2bPJr5kecX4QYSm56)   
 
 Disord server: [https://discord.gg/Rbb6HhRekM](https://discord.gg/Rbb6HhRekM)   a
 Lecturer: [Prof Tim Menzies](http://timm.fyi),  <timm@ieee.org>, "Tim Menzes" at our discord server.   
