@@ -1,4 +1,3 @@
-
 <p align="center">
   <a href="https://github.com/txt/seai26spr/blob/main/README.md"><img src="https://img.shields.io/badge/Home-%23ff5733?style=flat-square&logo=home&logoColor=white" /></a>
   <a href="/docs/lect/syllabus.md#top"><img src="https://img.shields.io/badge/Syllabus-%230055ff?style=flat-square&logo=openai&logoColor=white" /></a>
@@ -6,10 +5,8 @@
   <a href="https://moodle-courses2527.wolfware.ncsu.edu/course/view.php?id=8118&bp=s"><img src="https://img.shields.io/badge/Moodle-%23dc143c?style=flat-square&logo=moodle&logoColor=white" /></a>
   <a href="https://discord.gg/vCCXMfzQ"><img src="https://img.shields.io/badge/Chat-%23008080?style=flat-square&logo=discord&logoColor=white" /></a>
   <a href="/LICENSE.md"><img src="https://img.shields.io/badge/©%20timm%202026-%234b4b4b?style=flat-square&logoColor=white" /></a></p>
-<h1 align="center">:cyclone: CSC49/591: Software Engineering and AI <br>NC State, Fall '25</h1>
+<h1 align="center">:cyclone: CSC491/591: Software Engineering and AI <br>NC State, Spring '26</h1>
 <img src="/docs/lect/banner.png"> 
-
-
 
 # Syllabus
 
