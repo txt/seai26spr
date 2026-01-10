@@ -12,4 +12,4 @@ push: ## save to cloud
 	@read -p "Reason? " msg; git commit -am "$$msg"; git push; git status
 
 mds: ## save all to Github
-	$(GIT_ROOT)/sh/headers $(GIT_ROOT)
+	@$(GIT_ROOT)/sh/headers $(GIT_ROOT)
