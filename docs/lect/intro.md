@@ -241,13 +241,26 @@ research.
 
 > People systematically overlook subtractive changes.
 
-**The Lego experiment:**
+**The  experiment:**
 
-- Task: Design a logo (make symmetrical)
-- Task: Keep a block height "I" above ground
+- Task: Design a logo (make symmetrical). Could be done by
+   -  adding green to other corners.
+   -  subtracting green from top left
+
+<img width="425" height="421" alt="image" src="https://github.com/user-attachments/assets/25fbb7d7-3608-427d-ad4d-5b95a23b6109" />
+  
+- Task: Keep a block height "I" above ground. Could be done by
+  - adding 3 copies of the existing tower, then  building a table with 4 legs (one leg per tower)
+  - subtracting that tiny decorative collat underneath the top train.
+
+<img width="473" height="442" alt="image" src="https://github.com/user-attachments/assets/8fbc8528-26e2-41e0-94e6-6f6fbcf224a5" />
+
 - Result: **1155 additive ideas and only 297 subtractive**
 
 **We're cognitively biased toward adding, not simplifying.**
+
+<img width="1200" height="630" alt="image" src="https://github.com/user-attachments/assets/eaddd164-5358-4a0f-b13a-f2a47d0e75f6" />
+
 
 This matters because engineering is about finding elegant
 solutions, not just functional ones.
