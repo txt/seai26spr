@@ -20,9 +20,9 @@
 ## Act 1: The Challenge
 ### 1.1 Your Lecturer's Insane Claim
 
-**"Your lecturer is insane. He thinks LLMs might not be the greatest
+> **Your lecturer is insane. He thinks LLMs might not be the greatest
 thing since sliced toast Let's check his actual
-claim."**
+claim.**
 
 He says: 
 
@@ -66,8 +66,7 @@ Copilot)
 **Your lecturer's claim:** "Maybe simpler is better than
 bigger, more complex AI."
 
-**But is he just a cranky old professor who doesn't get modern
-AI?**
+> **But is he just a cranky old professor who doesn't get modern AI?**
 
 ### 1.3 Course Framing
 
@@ -81,7 +80,7 @@ choices, including:
 - The fancy modern stuff
 - Everything in between
 
-**By semester's end, YOU decide what works.**
+> **By semester's end, YOU decide what works.**
 
 ---
 
@@ -125,7 +124,7 @@ optimization faces major obstacles:
 **1. Exponential Explosion**
 
 Configuration spaces explode exponentially. In 7z: 14
-parameters = one million possible configurations.
+parameters with one million possible configurations.
 
 **2. Rugged Landscapes**
 
@@ -151,10 +150,12 @@ explore. For example, MySQL's 460 binary options generate
 
 ### 2.4 Understanding MOOT Data Format
 
-**"Before we see if simplicity works, you need to understand
-the data you'll work with all semester."**
+> **Before we see if simplicity works, you need to understand
+the data you'll work with all semester.**
 
 #### What is MOOT?
+
+[http://tiny.cc/moot](http://tiny.cc/moot)
 
 To the best of our knowledge, MOOT is the largest and most
 varied collection of real multi-objective optimization tasks
@@ -174,21 +175,17 @@ MOOT's datasets come from:
 **First, the raw data structure:**
 
 ```
-PREC, FLEX, RESL, TEAM, PMAT, rely, ..., PCAP, ... |
-Effort-, Months-, Defects-, Risks-
-3.72, 4.05, 4.38, 3.29, 4.68, 3.52, ..., 4.18, ... |
-1287.3,  32.4,    143,     2.8
-2.48, 3.52, 5.48, 4.05, 3.18, 4.96, ..., 3.29, ... |
-892.1,   28.9,    98,      1.9
-4.24, 5.07, 3.84, 2.76, 5.32, 2.95, ..., 5.43, ... |
-2103.6,  38.7,    287,     4.2
+PREC, FLEX, RESL, TEAM, PMAT, rely, ..., PCAP, ... | Effort-, Months-, Defects-, Risks-
+3.72, 4.05, 4.38, 3.29, 4.68, 3.52, ..., 4.18, ... | 1287.3,  32.4,    143,     2.8
+2.48, 3.52, 5.48, 4.05, 3.18, 4.96, ..., 3.29, ... | 892.1,   28.9,    98,      1.9
+4.24, 5.07, 3.84, 2.76, 5.32, 2.95, ..., 5.43, ... | 2103.6,  38.7,    287,     4.2
 ...  (9,997 more rows)
 ```
 
 **Key properties:**
 
-- **24 input variables** (x): PREC, FLEX, RESL, TEAM, PMAT,
-  rely, data, cplx, time, stor, virt, turn, acap, aexp, PCAP,
+- **24 input variables** (x): PREC (precedentness: experience with silimar projects), FLEX, RESL, TEAM, PMAT (process maturity),
+  rely (required reliability), data, cplx, time, stor, virt, turn, acap, aexp, PCAP (prograppmer capability),
   vexp, lexp, modp, tool, sced, site, FLEx, RUSE, PVOL
 - **4 goal variables** (y): Effort-, Months-, Defects-, Risks-
 - **10,000 scenarios** of flight software development
@@ -218,8 +215,8 @@ As seen in that figure:
 6. **Columns with uppercase "X"** at the end of their names
    are to be ignored by the inference.
 
-**"This format is intentionally simple - you can read it,
-process it, and reason about it without complex tooling."**
+> **This format is intentionally simple - you can read it,
+process it, and reason about it without complex tooling.**
 
 #### MOOT Dataset Characteristics
 
@@ -242,7 +239,7 @@ research.
 
 **From Nature journal (2021):**
 
-"People systematically overlook subtractive changes"
+> People systematically overlook subtractive changes.
 
 **The Lego experiment:**
 
@@ -286,9 +283,8 @@ A timeline of simplification techniques:
 - **1960s, Narrows**: guide search via a few key variables
 - **1974, Prototypes**: speed up k-NN by reducing rows to a
   few exemplars
-- **1984, JL lemma**: random projection to <tt>k = O(&epsilon;
-  <sup>-2</sup> log n)</tt> dimensions can preserve pairwise
-  distances to within some error <tt>(1 &plusmn; &epsilon;)
+- **1984, JL lemma**: random projection to <tt>k = O(&epsilon; <sup>-2</sup> log n)</tt> dimensions can preserve pairwise
+  distances to within some error <tt>(&plusmn; &epsilon;)
   </tt>
 
 **The 1980s-1990s:**
@@ -315,7 +311,7 @@ A timeline of simplification techniques:
 - **2020s, Distillation**: compress large LLM models with
   little performance loss
 
-**The pattern:** For over a century, researchers have found
+> **The pattern:** For over a century, researchers have found
 that complex problems often have simple structure hiding
 inside them.
 
@@ -394,8 +390,8 @@ we achieve **84% of the optimal score** (`:win 84`).
 
 ### 4.2 Example 2: Drastic Data Reduction
 
-**"Here's the other big win: you don't need much labeled
-data."**
+> **Here's the other big win: you don't need much labeled
+data.**
 
 #### The Labeling Problem
 
@@ -510,9 +506,9 @@ insight for resource-limited processes such as:
 
 ### 5.1 The Optimization Algorithm Timeline
 
-**"Here's what we'll study, chronologically. Each represents a
+> **Here's what we'll study, chronologically. Each represents a
 different philosophy about how to explore the space of
-choices."**
+choices.**
 
 #### The Foundations (1950s-1970s)
 
@@ -601,14 +597,14 @@ eigenvalue analysis to find structure.
 
 ### 5.2 Course Structure
 
-**"Each week, we'll:"**
+**Each week, we'll:**
 
 1. Srudy the above algorithmS
 2. Run some of them on the MOOT data
 3. Compare it to baselines and prior methods
 4. Build intuition for when each approach works
 
-**"By semester's end:"**
+**By semester's end:**
 
 - You'll have run experience on 120+ real problems
 - You'll understand the trade-offs between simple and complex
@@ -893,7 +889,7 @@ Software engineering has always been about making informed
 choices under uncertainty. Now you have 120+ real problems and
 20+ algorithms to explore those choices.
 
-**Welcome to the laboratory. Let's find out what actually
+> **Welcome to the laboratory. Let's find out what actually
 works.**
 
 ---

@@ -46,7 +46,7 @@ code suggestion, test generation, and documentation support.
 - So how to make decisions about SE projects? Decades before LLMs there was simulated annealling, genetic algorithms, etc etc.
 - And how  how to explain those decisions? What does "explaantion mean"?
 - Ugrds: teams of three: 6 homeworks 
-- Grads: teams of two: 4  homeworks (solo) and a two part assignment (team)
+- Grads: teams of two: 4  homeworks and a two part assignment (team)
 - Homeworks: submit something one week, review someone else's next week.
 - No exams (weekly in-class quiz).
 - Classes are in person. To ensure that, all submissions are in-person, by the whole group.
