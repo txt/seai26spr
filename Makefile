@@ -18,7 +18,8 @@ TWOPLUS=cat $@ | gawk 'BEGIN {FS="\n";RS=""} NR==1 { print("\n\n"); next} {print
 
 all: ## save all to Github
 	cd $(GIT_ROOT); $(MAKE) -B ../LICENSE.md ;
-	cd $(GIT_ROOT)/dpcs; $(MAKE) -B *.md ;
+	$(MAKE) -B $(GIT_ROOT)/docs/lect/*.md ;
+	$(MAKE) -B $(GIT_ROOT)/docs/submit/*.md ;
 	$(MAKE) push
 
 ../LICENSE.md: $(GIT_ROOT)/README.md ## update license
