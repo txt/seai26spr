@@ -1,4 +1,9 @@
 .
+
+start: hstory of science
+
+end: list of algorothms. starting at random sarch and hillclimbing
+
 Here is the complete **TinyTutorial** merged into a single Github Flavored Markdown document.
 
 # TinyTutorial: Data Mining & Optimization with `xai.py`
