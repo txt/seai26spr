@@ -17,12 +17,14 @@
 # Software Engineering as Choice: A Multi-Objective Perspective
 
 
+
 ## Act 1: The Challenge
 ### 1.1 Your Lecturer's Insane Claim
 
+<img align=right width="400" height="300" alt="image" src="https://github.com/user-attachments/assets/a5211fef-c05c-442d-be99-98a8d87b04dd" />
+
 > **Your lecturer is insane. He thinks LLMs might not be the greatest
-thing since sliced toast Let's check his actual
-claim.**
+thing since sliced toast. Such madness!**
 
 He says: 
 
@@ -513,108 +515,18 @@ eigenvalue analysis to find structure.
 - **You decide: does your lecturer's "simplicity" claim hold
   water?**
 
+ 
 ---
 
-## Act 6: The LLM Connection
+## Act 6: Research Directions from MOOT
 
-**"Why does all this matter for LLMs? Four key connections:"**
+### 6.1 Six Research Categories
 
-### 6.1 Distillation: Finding Small Models Inside Large Ones
+Table 2 from [this paper](https://arxiv.org/pdf/2511.16882) presents a roadmap for future work using
+MOOT data. Here are the six major categories.
 
-**The parallel:**
-
-- xomo_flight: 24 variables &rarr; 4 keys (83% reduction, 84%
-  performance)
-- LLM distillation: 175B parameters &rarr; 7B parameters
-  (similar performance)
-
-**The technique:**
-
-- Like finding 4/24 variables that matter
-- Like achieving 84% optimal with tiny models
-- **Like getting good results with 40 labels, not 160+**
-
-**Why it matters:**
-
-- Smaller models = cheaper inference
-- Edge deployment becomes possible
-- Energy costs drop dramatically
-
-### 6.2 Configuration as Optimization
-
-**The insight:** LLM prompts ARE configuration problems.
-
-**Multi-objective trade-offs:**
-
-- Maximize accuracy
-- Minimize cost (tokens)
-- Minimize latency
-- Maximize safety
-
-**Direct application:**
-
-- Every algorithm we study applies to prompt engineering
-- Temperature, top-k, top-p, max tokens = configuration
-  variables
-- MOOT techniques directly transfer
-
-### 6.3 Surrogates & Active Learning
-
-**The problem:** LLMs are expensive to query.
-
-**The solution:** Smart sampling strategies.
-
-**Our BASELINE example:**
-
-- Use cheap approximations (clustering + distance)
-- **40 strategic labels > 160 random labels**
-- 4× cost reduction
-
-**Connections to our algorithm timeline:**
-
-- TPE (2011): Models <tt>p(x|y)</tt> to choose next sample
-- SMBO (2011): Builds surrogates to guide search
-- Active learning (2009): Select most informative examples
-
-**Industrial impact:**
-
-- Reduce API costs
-- Speed up hyperparameter tuning
-- Enable human-in-the-loop without fatigue
-
-### 6.4 Natural Language Constraints & Meta-Learning
-
-**Natural Language Constraints:**
-
-- Practitioners specify goals in English: "I want fast, cheap,
-  and accurate"
-- LLMs translate to formal optimization: max(accuracy) + min(
-  cost) + min(latency)
-- From human intent &rarr; machine objective function
-
-**Meta-Learning:**
-
-- Which optimizer for which problem?
-- Can LLMs predict: "Use FLASH for this, NSGA-II for that"?
-- Based on problem characteristics (from MOOT)
-
-**The bottom line:**
-
-"All semester, we're learning techniques that directly apply
-to making LLMs:
-
-- Cheaper (distillation, smart sampling)
-- Faster (surrogates, configuration)
-- More practical (meta-learning, constraints)"
-
----
-
-## Act 7: Research Directions from MOOT
-
-### 7.1 Six Research Categories
-
-Table 2 from [49] presents a roadmap for future work using
-MOOT data. Here are the six major categories:
+All of you are invited to reflect on all of these. Grad students ahve a month at end of semester, with no other homework, to
+work on any of these (or anything else they want, if they clear it with the professor first).
 
 #### A. Core Optimization Strategies & Performance
 
@@ -714,7 +626,7 @@ Exploring new domains and advanced concepts.
   trade off goals, transfer knowledge to new domains—when does
   this become AGI?
 
-### 7.2 Your Opportunities
+### 6.2 Your Opportunities
 
 **What MOOT enables:**
 
