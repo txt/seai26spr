@@ -45,11 +45,11 @@ Hand in a research paper on the topics and methods of this class.
 
 Get your stuff going, jumping off the work of others.
 
-- IN your related work, look for "reproduction prackages". Get them running.
-  - Warning only a third will run 
-  - And of those that run, only half will run fast enough to allow you tog et conclusions in a one semester project
+- In the papers you found, look for "reproduction prackages". Get them running.
+  - Warning:
+    - only a third will run 
+    - And of those that run, only half will run fast enough to allow you tog et conclusions in a one semester project
 - Show baseline results from the reproduction pages
-Paper must have the following headings. Paper will be handed in twice (once apr20 , half done, once apr27 fully done)
 
 ## Due Apr20 (6a)
 
