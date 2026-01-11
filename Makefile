@@ -11,7 +11,7 @@ sh: ## run my shell
 push: ## save to cloud
 	@read -p "Reason? " msg; git commit -am "$$msg"; git push; git status
 
-mds: ## save all to Github
+mds: ## add all the headers to markdown files
 	@$(GIT_ROOT)/sh/headers $(GIT_ROOT)
 
 make enableRebase:
