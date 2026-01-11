@@ -14,6 +14,11 @@
 <h1 align="center">:cyclone: CSC491/591: Software Engineering and AI <br>NC State, Spring '26</h1>
 <img src="/docs/lect/banner.png"> 
 
+> **Welcome to the laboratory. Let's find out what actually
+works.**
+
+
+
 AI presents unique challenges and opportunities when applied to
 software engineering. Unlike other domains, SE involves evolving
 requirements, human-in-the-loop decisions, and complex socio-technical

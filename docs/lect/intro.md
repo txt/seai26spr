@@ -14,22 +14,22 @@
 <h1 align="center">:cyclone: CSC491/591: Software Engineering and AI <br>NC State, Spring '26</h1>
 <img src="/docs/lect/banner.png"> 
 
+
 # Software Engineering as Choice: A Multi-Objective Perspective
-
-
-
 ## Act 1: The Challenge
 ### 1.1 Your Lecturer's Insane Claim
 
 <img align=right width="400" height="300" alt="image" src="https://github.com/user-attachments/assets/a5211fef-c05c-442d-be99-98a8d87b04dd" />
 
-> **Your lecturer is insane. He thinks LLMs might not be the greatest
-thing since sliced toast. Such madness!**
+> **Has your lecturer lost it?  He thinks LLMs might not be the greatest
+thing since sliced toast. **
 
 He says: 
 
 - **LLMS have some interesting application areas"
-- but industrially, **LLMs are economically failing and we need simpler approaches.**
+- but industrially, **LLMs are economically failing (see below) and we need simpler approaches.**
+ - not for generative tasks
+ - but for everything else we want to do with AI (e.g. see below:  multi-objective choice)
 
 #### The Evidence: "Cause we need a better AI"
 
