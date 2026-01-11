@@ -17,6 +17,9 @@
 
 #  Homework 1: From Random to Hill-Climbing
 
+
+<img align=right width="275" height="183" alt="image" src="https://github.com/user-attachments/assets/8b1959b4-1fe9-4812-adad-a63097f03869" />
+
 > Now here this:
 do not stress on this homework.
 This is just a calibration
