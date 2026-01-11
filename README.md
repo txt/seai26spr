@@ -72,7 +72,7 @@ code suggestion, test generation, and documentation support.
 | Mar 09 | |4a | |
 | Mar 16 | Spring Break (no class) | | |
 | Mar 23 | |4b | |
-| Mar 30 | |5a | |
+| Mar 30 | |5a <br> [Grad 6.0](docs/submit/project.md) | |
 | Apr 06 | | 5b  | |
 | Apr 13 | | | |
 | Apr 20 | | 6a | |
