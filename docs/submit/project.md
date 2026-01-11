@@ -22,7 +22,7 @@ Hand in a research paper on the topics and methods of this class.
 
 ### Find a question or make up your own. 
 
-- Start [hre](https://arxiv.org/pdf/2511.16882), Table2
+- Start [here](https://arxiv.org/pdf/2511.16882), Table2
 - Poke around Google scholar
   - Focus mostly on these venues: [Top SE venues](https://scholar.google.com/citations?view_op=top_venues&hl=en&vq=eng_softwaresystems)
   - Focus mostly on papers since 2015
