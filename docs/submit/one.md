@@ -23,20 +23,20 @@
 > Now here this:
 do not stress on this homework.
 This is just a calibration
-evercise, to warm us up after a cold Decemer
+exercise, to warm us up after a cold December
 Everyone who hands
-in anything at all (working or not) will get full marks on this hoemwork. 
+in anything at all (working or not) will get full marks on this homework. 
 
 ## What to hand-in
 
 One piece of paper per group with: 
 
 - your group names and student numbers at the top.
-- screne shot showing a command line running hc1.py and rand.py (defined below).
+- screen shot showing a command line running hc1.py and rand.py (defined below).
 - On the back of the paper, show your code (or in the front if it fits).
   - Feel free to use 7 point to make it fie
 
-Bye the way, my hillclimber is about 50 lines of code.
+Bye the way, my hill climber is about 50 lines of code.
 
 ## 1. Installing Python 3.14
 
@@ -95,7 +95,7 @@ with scores, row counts, and goal values.
 
 ## 3. Understanding xai.py Internals
 
-For this homework you'll be using xai.py's internal fucntions.
+For this homework you'll be using xai.py's internal functions.
 So you need  to know a little how its organized. Note that xai.py is about 400 lines and for this homework
 you'll only need to understand the first 100-ish lines (everything before the heading _Cutting_).
 
@@ -116,8 +116,8 @@ you'll only need to understand the first 100-ish lines (everything before the he
 
 Data is some csv file whose first row names the column names and the optimization goals. 
 For example, in this file, the goal is to  minimize Error and maximize salary.  
-"Name" is amrked with and trailing "X" which means "ignore this column".
-Column names beginnng with upper case (e.g. "Age") become **NUM**s and
+"Name" is marked with and trailing "X" which means "ignore this column".
+Column names beginning with upper case (e.g. "Age") become **NUM**s and
 everyone else becomes a **SYM**.
 
 
@@ -287,7 +287,7 @@ print(f"Good: {Y(ok):.2f}, Bad: {Y(no):.2f}")
 **Expected Output**: Two different scores, "Good" < "Bad"
 
 - Why is "Good" less than "Bad"?
-- Becuase we are measure distance to heaven and the smaller the disty, the closwer we are to heaven.
+- Because we are measure distance to heaven and the smaller the disty, the closer we are to heaven.
 
 ---
 
@@ -355,7 +355,7 @@ print(f"Before prune - median: {sorted(before)[20]:.2f}")
 print(f"After prune  - median: {sorted(after)[10]:.2f}")
 ```
 
-**Expected**: After-median of rows' _ydsist_ should be lower (better)
+**Expected**: After-median of rows' _disty_ should be lower (better)
 than before-median.
 
 

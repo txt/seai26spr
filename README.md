@@ -48,8 +48,8 @@ code suggestion, test generation, and documentation support.
 - LLMs, sure but...
 - SE for AI more than LLM
 - SE coding (low level) has far less impact that SE planning (high level)
-- So how to make decisions about SE projects? Decades before LLMs there was simulated annealling, genetic algorithms, etc etc.
-- And how  how to explain those decisions? What does "explaantion mean"?
+- So how to make decisions about SE projects? Decades before LLMs there was simulated annealing, genetic algorithms, etc etc.
+- And how  how to explain those decisions? What does "explanation mean"?
 - Ugrds: teams of three: 6 homeworks 
 - Grads: teams of two: 4  homeworks and a two part assignment (team)
 - Homeworks: submit something one week, review someone else's next week.

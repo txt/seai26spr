@@ -33,6 +33,7 @@ vim.opt.laststatus = 2
 
 -- keymaps -----------------------------------------------------------
 vim.keymap.set("n", "Q", ":quitall<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "\\s", ":set spell!<CR>", { silent = true, desc = "Toggle spell check" })
 
 -- colors ------------------------------------------------------------
 vim.cmd.colorscheme("sorbet")
