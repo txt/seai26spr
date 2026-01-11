@@ -13,3 +13,7 @@ push: ## save to cloud
 
 mds: ## save all to Github
 	@$(GIT_ROOT)/sh/headers $(GIT_ROOT)
+
+make enableRebase:
+	git config pull.rebase false
+
