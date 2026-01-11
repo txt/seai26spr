@@ -17,6 +17,13 @@
 
 #  Homework 1: From Random to Hill-Climbing
 
+> Now here this:
+do not stress on this homework.
+This is just a calibration
+evercise, to warm us up after a cold Decemer
+Everyone who hands
+in anything at all (working or not) will get full marks on this hoemwork. 
+
 ## What to hand-in
 
 One piece of paper per group with: 
