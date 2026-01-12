@@ -32,11 +32,11 @@ in anything at all (working or not) will get full marks on this homework.
 One piece of paper per group with: 
 
 - your group names and student numbers at the top.
-- screen shot showing a command line running hc1.py and rand.py (defined below).
+- screen shot showing a command line running my_hc.py and rand.py (defined below).
 - On the back of the paper, show your code (or in the front if it fits).
-  - Feel free to use 7 point to make it fie
+  - Feel free to use 7 point font size to make it fit
 
-Bye the way, my hill climber is about 50 lines of code.
+By the way, my hill climber is about 50 lines of code.
 
 ## 1. Installing Python 3.14
 
@@ -54,7 +54,14 @@ sudo apt install python3.14 python3.14-venv
 
 Verify installation:
 ```bash
-python3 --version  # Should show 3.14.x
+python3.14 --version  # Should show 3.14.x
+```
+
+Create and activate a virtual environment:
+```bash
+python3.14 -m venv .venv
+source .venv/bin/activate
+python3 --version
 ```
 
 ## 2. Installing xai.py and MOOT
@@ -77,6 +84,16 @@ git clone http://github.com/timm/moot $HOME/gits/moot
 # Test installation
 ./xai.py -h
 ```
+
+> **WSL note**  
+> If `./xai.py` does not run in WSL, edit the first line of `xai.py` and replace:
+> ```bash
+> #!/usr/bin/env python3 -B
+> ```
+> with:
+> ```bash
+> #!/usr/bin/env -S python3 -B
+> ```
 
 ### Verify Everything Works
 ```bash

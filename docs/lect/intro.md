@@ -33,6 +33,8 @@ He says:
 
 #### The Evidence: "Cause we need a better AI"
 
+[Dells CES 2026 chat was the most pleasingly un-AI briefing I've had in maybe 5 years](https://www.pcgamer.com/hardware/dells-ces-2026-chat-was-the-most-pleasingly-un-ai-briefing-ive-had-in-maybe-5-years).
+
 **Bubble bursting in "big data" AI?**
 
 - Unlike standard software, **exponential costs per new user**
