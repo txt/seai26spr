@@ -46,7 +46,8 @@ code suggestion, test generation, and documentation support.
 
 - Much more intricate than csc510
 - LLMs, sure but...
-- SE for AI more than LLM
+- [SE for AI more than LLM](https://docs.google.com/presentation/d/1mR4jzEWzN5IQdtfSIovU2-YbEcvCZoaPAp5vDBFejqI/edit?slide=id.g3824839c8bf_4_29#slide=id.g3824839c8bf_4_29)
+  - [And AI has Problems](https://www.reddit.com/media?url=https%3A%2F%2Fpreview.redd.it%2Fhere-is-how-the-ai-bubble-is-being-created-per-bloomberg-v0-jxnlqgt8l4uf1.jpeg%3Fauto%3Dwebp%26s%3D9ae2e645c5fa513f5cc146a4de936ae667ca3c6c)
 - SE coding (low level) has far less impact that SE planning (high level)
 - So how to make decisions about SE projects? Decades before LLMs there was simulated annealing, genetic algorithms, etc etc.
 - And how  how to explain those decisions? What does "explanation mean"?
