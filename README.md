@@ -17,6 +17,10 @@
 > **Welcome to the laboratory. Let's find out what actually
 works.**
 
+Maybe everything should or could be  solved by "throwing an LLM at it"
+[[1](https://www.youtube.com/watch?v=tbDDYKRFjhk)]; [[2](https://docs.google.com/presentation/d/1mR4jzEWzN5IQdtfSIovU2-YbEcvCZoaPAp5vDBFejqI/edit?slide=id.g3824839c8bf_4_29#slide=id.g3824839c8bf_4_29)]; [[3](https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fjxnlqgt8l4uf1.jpeg)].
+
+
 
 
 AI presents unique challenges and opportunities when applied to
