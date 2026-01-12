@@ -16,21 +16,20 @@
 
 # Syllabus
 
-csc491/591 013 
-Mo 4:30PM - 7:15PM    
-room 02211 [Textiles Complex](https://maps.ncsu.edu/#/buildings/700)    
-Consult hours: Tuesday 2:45 to 4:45: [Booking required](https://calendar.app.google/2bPJr5kecX4QYSm56)   
-
-Disord server: [https://discord.gg/Rbb6HhRekM](https://discord.gg/Rbb6HhRekM)   
-Lecturer: [Prof Tim Menzies](http://timm.fyi),  <timm@ieee.org>, "Tim Menzes" at our discord server.   
-Tutor: Mr Srinath Srinivasan,  <ssrini27@ncsu.edu>, "Srinath" at our discord
+|About | Notes |
+|-----:|-------|
+|What | csc491/591 - 013 | 
+| When |Mo 4:30PM - 7:15PM |   
+|Where | room 02211 [Textiles Complex](https://maps.ncsu.edu/#/buildings/700)    |
+ |Consult hours| Tuesday 2:45 to 4:45: [Booking required](https://calendar.app.google/2bPJr5kecX4QYSm56)   |
+| Disord server| [https://discord.gg/EynJcMEa](https://discord.gg/EynJcMEa)     
+| Who | Lecturer: [Prof Tim Menzies](http://timm.fyi),  <timm@ieee.org>, "Tim Menzes" at our discord server.       <br> Tutor1: Mr Kishan Ganguly,  <kgangul@ncsu.edu>, "Kishan Kumar Ganguly"  at our discord      <br>utor2: Mr Amirali  Ganguly,  <arayega@ncsu.edu>, "Amirali Rayegan"  at our discord  |
 
 
 **Preferred method of communication and Response Times:**
 
-
 - For private queries, use the above  emails
-- But or most queries, use our [discord](https://discord.gg/Rbb6HhRekM) server.
+- But or most queries, use our [discord](https://discord.gg/EynJcMEa) server.
 - IMPORTANT: If you receive a subject-related message outside of   office hours (e.g. 2am Saturday morning), do
   not feel required to answer this till the next working day (e.g. Monday morning). Exception: just before deadlines.
 
@@ -39,7 +38,7 @@ Tutor: Mr Srinath Srinivasan,  <ssrini27@ncsu.edu>, "Srinath" at our discord
 
 
 - It is each student's responsibility to join the class Discord group "seai26spr".
-  - Join [here](https://discord.gg/Rbb6HhRekM) server.
+  - Join [here](https://discord.gg/EynJcMEa)
 - Use the Discord server
 - All class communication from staff to students will be via this Discord group.
 - Students are strongly encouraged to contribute their questions and answers to that shared resource. 
@@ -74,7 +73,28 @@ Lectures will be recorded.
 |Technical requirements | A laptop computer is required in each lecture for students taking this course.  NC State’s Online and Distance Education provides technology requirements and recommendations for computer hardware, and NC State’s Office of Information Technology provides recommendations for your computer . |
 
 
- 
+Topics: Applciations in SE to the following:
+
+- Random Search (1950s) – baseline sanity check; surprisingly strong in high dimensions
+- Hill Climbing (1950s) – local improvement; easily trapped in local optima
+- Genetic Algorithms / GA (1975) – evolutionary search using selection, crossover, mutation
+- Simulated Annealing / SA (1983) – probabilistic escape from local optima via temperature
+- Tabu Search (1986) – memory-based search to avoid cycling
+- Genetic Programming / GP (1992) – evolves programs or parse trees
+- Ant Colony Optimization / ACO (1992) – pheromone-based path exploration
+- Particle Swarm Optimization / PSO (1995) – flocking-based continuous optimization
+- MaxWalkSat (1996) – greedy + random walk SAT solver
+- Differential Evolution / DE (1997) – vector-based evolutionary optimization
+- SPEA2 (2001) – strength-based multi-objective optimization
+- NSGA-II (2002) – non-dominated sorting with crowding distance
+- IBEA (2004) – indicator-based multi-objective optimization
+- MOEA/D (2007) – decomposes MOO into scalar subproblems
+- Gaussian Process Models / GPM (2010s) – probabilistic surrogates for expensive functions
+- TPE (2011) – Bayesian optimization 
+- SMBO (2011) – sequential surrogate-based optimization
+- FLASH (2017) – CART-based SMBO for SE configuration
+
+
 
 
  
@@ -111,6 +131,8 @@ Quizzes are on-line.
 
 - In class quiz: 2 marks each (11 of those)
 - Grad students: 4 homeworks and 1 project (13 marks for hw, 26 marks for hw)
+  - 10 marks for an initial submission
+  - 3 marks to review another group's submission
 - Ugrad students: 6 homewworks, 13 marks each
 - Total: 100 marks
 
