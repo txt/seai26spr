@@ -23,7 +23,7 @@
 |Where | room 02211 [Textiles Complex](https://maps.ncsu.edu/#/buildings/700)    |
  |Consult hours| Tuesday 2:45 to 4:45: [Booking required](https://calendar.app.google/2bPJr5kecX4QYSm56)   |
 | Disord server| [https://discord.gg/EynJcMEa](https://discord.gg/EynJcMEa)     
-| Who | Lecturer: [Prof Tim Menzies](http://timm.fyi),  <timm@ieee.org>, "Tim Menzes" at our discord server.       <br> Tutor1: Mr Kishan Ganguly,  <kgangul@ncsu.edu>, "Kishan Kumar Ganguly"  at our discord      <br>utor2: Mr Amirali  Rayegan,  <arayega@ncsu.edu>, "Amirali Rayegan"  at our discord  |
+| Who | Lecturer: [Prof Tim Menzies](http://timm.fyi),  <timm@ieee.org>, "Tim Menzes" at our discord server.       <br> Tutor1: Mr Kishan Ganguly,  <kgangul@ncsu.edu>, "Kishan Kumar Ganguly"  at our discord      <br>Tutor2: Mr Amirali  Rayegan,  <arayega@ncsu.edu>, "Amirali Rayegan"  at our discord  |
 
 
 **Preferred method of communication and Response Times:**
