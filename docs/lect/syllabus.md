@@ -138,9 +138,9 @@ Quizzes are on-line.
 
 Monday May 4 there will be a optional exam for students who want to make up lost marks:
 
-- Students can idennfty one submission of 11 marks and one submission of  13 marks that they would like to replace. 
+- Students can identify prior submissions worth 24 marks   that they would like to replace. 
 - The Exam will be out 24 marks.
-- The students' grades for the 11 and 13 will be replaced with the exam result **even if the exam grade is lower**.
+- The students' grades for the prior submissions will be replaced with the exam result **even if the exam grade is lower**.
 
 
 With the final grades, the following grade scale will be used: 
