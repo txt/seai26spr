@@ -66,9 +66,9 @@ python3 --version
 
 ## 2. Installing xai.py and MOOT
 
-Find the code on line at https://github.com/timm/xai/blob/main/xai.py
+Find support code on line at https://github.com/timm/xai/blob/main/xai.py
 
-- And the raw code is at https://raw.githubusercontent.com/timm/xai/refs/heads/main/xai.py
+- See also the the raw  support code is at https://raw.githubusercontent.com/timm/xai/refs/heads/main/xai.py
 
 Download xai.py to a new directory.
 

@@ -23,7 +23,7 @@
 |Where | room 02211 [Textiles Complex](https://maps.ncsu.edu/#/buildings/700)    |
  |Consult hours| Tuesday 2:45 to 4:45: [Booking required](https://calendar.app.google/2bPJr5kecX4QYSm56)   |
 | Disord server| [https://discord.gg/EynJcMEa](https://discord.gg/EynJcMEa)     
-| Who | Lecturer: [Prof Tim Menzies](http://timm.fyi),  <timm@ieee.org>, "Tim Menzes" at our discord server.       <br> Tutor1: Mr Kishan Ganguly,  <kgangul@ncsu.edu>, "Kishan Kumar Ganguly"  at our discord      <br>utor2: Mr Amirali  Ganguly,  <arayega@ncsu.edu>, "Amirali Rayegan"  at our discord  |
+| Who | Lecturer: [Prof Tim Menzies](http://timm.fyi),  <timm@ieee.org>, "Tim Menzes" at our discord server.       <br> Tutor1: Mr Kishan Ganguly,  <kgangul@ncsu.edu>, "Kishan Kumar Ganguly"  at our discord      <br>Tutor2: Mr Amirali  Rayegan,  <arayega@ncsu.edu>, "Amirali Rayegan"  at our discord  |
 
 
 **Preferred method of communication and Response Times:**
@@ -138,9 +138,9 @@ Quizzes are on-line.
 
 Monday May 4 there will be a optional exam for students who want to make up lost marks:
 
-- Students can idennfty one submission of 11 marks and one submission of  13 marks that they would like to replace. 
+- Students can identify prior submissions worth 24 marks   that they would like to replace. 
 - The Exam will be out 24 marks.
-- The students' grades for the 11 and 13 will be replaced with the exam result **even if the exam grade is lower**.
+- The students' grades for the prior submissions will be replaced with the exam result **even if the exam grade is lower**.
 
 
 With the final grades, the following grade scale will be used: 
