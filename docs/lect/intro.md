@@ -11,7 +11,7 @@
       src="https://img.shields.io/badge/Chat-%23008080?style=flat-square&logo=discord&logoColor=white" /></a>
   <a href="https://github.com/txt/seai26spr/blob/main/LICENSE.md"><img 
       src="https://img.shields.io/badge/©%20timm%202026-%234b4b4b?style=flat-square&logoColor=white" /></a></p>
-<h1 align="center">:cyclone: CSC491/591: Software Engineering and AI <br>NC State, Spring '26</h1>
+<h1 align="center">:cyclone: CSC491/591 (013): Software Engineering and AI <br>NC State, Spring '26</h1>
 <img src="https://raw.githubusercontent.com/txt/seai26spr/main/docs/lect/banner.png"> 
 
 

@@ -62,7 +62,7 @@ code suggestion, test generation, and documentation support.
 
 | 📅 Week of... | 🎓 Lecture | 🛠️ Submission <br>(due start of class) | 📝 Review |
 |:-------------:|:----------:|:---------------------------:|:---------:|
-| Jan 12 | [Intro](docs/lect/intro.md) | | |
+| Jan 12 | [Intro](docs/lect/intro.md) | |[one](docs/review/one.md) |
 | Jan 19 | Mon: MLK Day (no class) | | |
 | Jan 26 | |[1a](docs/submit/one.md) | |
 | Feb 02 | |1b | |
