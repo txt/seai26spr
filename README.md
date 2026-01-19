@@ -64,7 +64,7 @@ code suggestion, test generation, and documentation support.
 |:-------------:|:----------:|:---------------------------:|:---------:|
 | Jan 12 | [Intro](docs/lect/intro.md) | |[one](docs/review/one.md) |
 | Jan 19 | Mon: MLK Day (no class) | | |
-| Jan 26 | |[1a](docs/submit/one.md) | |
+| Jan 26 | [sbse](docs/lect/w3sbse.md)  |[1a](docs/submit/one.md) | |
 | Feb 02 | |1b | |
 | Feb 09 | |2a | |
 | Feb 16 | |2b | |
