@@ -16,7 +16,7 @@
 
 # Search-Based Software Engineering: From Theory to Cloud
 
-In this lecture we motivate the value of this subject's algorithms for software engienering.
+In this lecture we motivate the value of this subject's algorithms for software engineering.
 
 
 ## 1. Motivation and Theory
