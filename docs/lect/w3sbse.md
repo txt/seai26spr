@@ -44,26 +44,29 @@ graph with two objectives:
 * **X-axis:** Cost (Lower is better)
 * **Y-axis:** Performance (Higher is better)
 
-Let's see what this looks like with a simple example:
+Let's see what this looks like with a simple example. 
 
-```
-Performance
-    ^        G  H
-    |        *  *
-    |     * D
-    |   * C
-    | * B              * E
-    |* A         * F
-    |________________> Cost
-```
+<img width="346" height="271" alt="image" src="https://github.com/user-attachments/assets/d64d338d-3b10-438f-9070-440da66d7abc" />
 
-Points A, B, C, D,G,Hm are **non-dominated** solutions (the Pareto
-frontier). Point E is **dominated** by C (C has lower cost AND
-higher performance). Point F is dominated by B.
+
+
+Points A, B, ...H  are **non-dominated** solutions (the Pareto
+frontier). Point N and K are  **dominated**.
 
 **The Dominance Rule:** Solution X dominates solution Y if X
 is better than Y in *all* objectives, or better in some and
 equal in others.
+
+The following examle is not from SE, buts its sooooo cool
+
+> Schmidt, Michael, and Hod Lipson. "Distilling free-form natural laws from experimental data." science 324, no. 5923 (2009): 81-85.
+
+<img width="974" height="390" alt="image" src="https://github.com/user-attachments/assets/1722f4d0-a280-4bbf-9458-5d9a9a96a5b6" />
+
+
+<img   height="300" alt="image" src="https://github.com/user-attachments/assets/5843b446-8ab2-46d9-bf01-0ece4e613694" /><img 
+  height="400" alt="image" src="https://github.com/user-attachments/assets/900d5a39-264c-4822-86d6-20554fcd1abc" />
+
 
 **The Inference Rule:**
 1.  **Forget everything not on the frontier.** If a solution
@@ -160,7 +163,7 @@ If we can move this to cloud, we get many advantages:
 - Scalability (if we refactor the code into loosely coupled parts that can run on different microservices on different cloud nodes)
 - Maintainability (easier to update something with small parts than one big monolith(
 
-But anual refactoring takes *months* of expert time. We need
+But manual refactoring takes *months* of expert time. We need
 automation.
 
 ### The Competing Goals
@@ -178,11 +181,14 @@ conflicting objectives."
         services to reduce latency and cost.
     * *Metric:* Inter-Partition Call Percentage (ICP).
 
-**The Conflict:** To minimize coupling (ICP), you might lump
-[cite_start]everything into one giant service (the "God Class"
-or "Boulder" [cite: 2326]). But this destroys cohesion (BCS).
-To maximize cohesion, you might split every class into its
-[cite_start]own service (the "Dust" anti-pattern [cite: 2327]),
+<img width="300" height="297" alt="image" src="https://github.com/user-attachments/assets/55774335-0a9c-42e5-b4ad-408634b008b4" />
+
+**The Conflict:** 
+- To minimize coupling, you might lump
+ everything into one giant service (the "God Class"
+or "Boulder" ). But this destroys cohesion.
+-  To maximize cohesion, you might split every class into its
+ own service (the "Dust" anti-pattern ),
 causing network traffic to explode.
 
 ### The Search Space
@@ -227,8 +233,7 @@ Think of evolution:
 
 After 10,000 iterations: We have a Pareto frontier of ~100
 candidate architectures.
-
-![](2106.06652v2.fig4)
+ 
 
 ---
 
@@ -255,6 +260,14 @@ with different hyperparameter settings:
 * Population size: 30 vs 100 vs 200?
 * Mutation rate: 10% vs 50%?
 * These choices *dramatically* affect results
+
+<img height="400" alt="image" src="https://github.com/user-attachments/assets/dd36c116-80e1-4d52-adf7-4a80626c1af1" />
+
+
+<img  height="500" alt="image" src="https://github.com/user-attachments/assets/e822c548-1336-42a2-86c4-af62a45413e6" />
+
+<img   height="500" alt="image" src="https://github.com/user-attachments/assets/4df53cce-e95e-458d-9fb2-bd666dd5ab41" />
+
 
 **Implication:** There is **no silver bullet**. The "best"
 approach depends on:
@@ -288,6 +301,8 @@ but on **granularity preferences**.
 * Valued: Lower network overhead, fewer services
 * Worried about: Services becoming mini-monoliths
 
+<img width="1159" height="791" alt="image" src="https://github.com/user-attachments/assets/a1b3b250-e4ee-44e8-9580-de908e1eb8ec" />
+
 **Same optimal solution, opposite reactions.**
 
 One maintainer rated a microservice as "clearly adoptable"
@@ -299,7 +314,7 @@ you ask. This is not a bug—it's fundamental. Different teams
 have different operational constraints, different expertise,
 different risk tolerances.
 
-Fig2
+ 
 
 ---
 
@@ -321,14 +336,17 @@ The key insight: **Don't cluster by objective values** (e.g.,
 decisions** (e.g., "these all group authentication classes
 together").
 
-The algorithm:
+Algorithm"
 
 1.  **Generate** the full Pareto frontier (10,000 solutions)
 2.  **Cluster** solutions based on *which decisions they make*
-    [cite_start]rather than just objective values[cite: 520]
+     rather than just objective values 
     * For ambulances: "Where are stations placed?"
     * For cloud: "Which classes are grouped?"
 3.  **Select** one representative solution from each cluster
+
+
+<img width="500" height="408" alt="image" src="https://github.com/user-attachments/assets/7525d744-0989-4f00-b2ec-dc80d1b92f38" />
 
 ### The Result
 
@@ -347,8 +365,7 @@ strategic choices**:
 * **Cluster 2:** "Balanced Middleware" (5 medium services)
 * **Cluster 3:** "Monolith-ish" (3 coarse services, low
   latency but harder to maintain)
-
-![](Understanding_clusters_of_optimal_solutions_in_multi-objective_decision_problems.fig11)
+ 
 
 **Why This Works:**
 
@@ -375,7 +392,8 @@ When maintainers were shown clustered solutions:
 architectures are a good starting point."*
 - But maintainers would not adopt
 the solution generated by the search-based approach without
-modifications. Regarding the methods in each microservice,
+modifications.
+- Regarding the methods in each microservice,
 both groups made limited modifications, predominantly merging pairs of microservices
 
 
