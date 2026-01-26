@@ -27,7 +27,7 @@
 You will implement a simulated annealing optimizer, run experiments to understand its behavior, and write a brief analysis of your results.
 
 **Files provided:**
-- [../lect/w3sa.md](tutorial) — Background theory
+- [sa](../lect/w3sa.md) — Background theory
 - [ezr.py](ezr.py) — Data mining library (do not modify)
 - [sa0.py](sa0.py) — Skeleton code with TODOs (rename to `sa.py`)
 - [auto93.csv](auto93.csv) — Test dataset (automobile specifications)
