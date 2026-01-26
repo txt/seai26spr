@@ -42,18 +42,18 @@ You will implement a simulated annealing optimizer, run experiments to understan
 
 ---
 
-## Part 1: Implementation (40 points)
+## Part 1: Implementation 
 
 Complete the three TODO sections in `sa0.py`:
 
-### TODO 1: `mutate(c, v)` (15 points)
+### TODO 1: `mutate(c, v)` 
 
 Mutate a single value `v` from column `c`. Handle both column types:
 
 - **Symbolic columns** (`"has" in c`): Use `pick(c.has, c.n)` to sample from observed distribution
 - **Numeric columns**: Apply Gaussian mutation centered at `v` with standard deviation `sd(c)`. Use modulo to wrap within bounds `[LO[c.at], HI[c.at]]`
 
-### TODO 2: `score(row)` (10 points)
+### TODO 2: `score(row)`
 
 Estimate a row's quality using nearest-neighbor surrogate:
 
@@ -61,7 +61,7 @@ Estimate a row's quality using nearest-neighbor surrogate:
 2. Copy the neighbor's y-values to `row`
 3. Return `disty(data, row)`
 
-### TODO 3: Acceptance criterion (15 points)
+### TODO 3: Acceptance criterion 
 
 Replace the `if False:` condition with the Metropolis-Hastings criterion:
 
@@ -90,9 +90,9 @@ Example output:
 
 ---
 
-## Part 2: Experiments (30 points)
+## Part 2: Experiments 
 
-### Experiment A: Baseline Performance (15 points)
+### Experiment A: Baseline Performance 
 
 Run SA with 10 different random seeds:
 
@@ -108,7 +108,7 @@ Record the **final score** from each run. Report:
 - Standard deviation
 - Best and worst scores
 
-### Experiment B: Mutation Rate Study (15 points)
+### Experiment B: Mutation Rate Study 
 
 Modify `sa.py` to accept mutation rate as a command-line argument (or hardcode different values for separate runs).
 
@@ -118,11 +118,11 @@ For each mutation rate, run 5 seeds and report mean final score.
 
 ---
 
-## Part 3: Analysis (30 points)
+## Part 3: Analysis 
 
 Write `results.md` (roughly one page) addressing:
 
-### 3.1 Results Table (10 points)
+### 3.1 Results Table 
 
 Present your experimental results clearly. Example format:
 
@@ -143,13 +143,13 @@ Mean: X.XXX, Std: X.XXX
 | ...    | ...              |
 ```
 
-### 3.2 Why Accept Worse Solutions? (10 points)
+### 3.2 Why Accept Worse Solutions? 
 
 In 1–2 paragraphs, explain:
 - Why does SA sometimes accept solutions that are *worse* than the current one?
 - Give a concrete example (you may sketch or describe a simple landscape) where always-greedy search would get stuck but SA could escape.
 
-### 3.3 Mutation Rate Analysis (10 points)
+### 3.3 Mutation Rate Analysis 
 
 Based on your Experiment B results:
 - Which mutation rate performed best?
@@ -158,7 +158,7 @@ Based on your Experiment B results:
 
 ---
 
-## Part 4: Advanced Analysis (Graduate Students Only, +30 points)
+## Part 4: Advanced Analysis 
 
 Complete **one** of the following. Reference the "Advanced Topics" sections in `tutorial.md`.
 
