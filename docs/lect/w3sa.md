@@ -412,8 +412,8 @@ For your implementation, these functions are available:
 ## References
 
 - Welford, B.P. (1962). ["Note on a method for calculating corrected sums of squares and products."](https://www.scribd.com/document/972081339/Welford-1962-Note-on-a-Method-for-Calculating-Corrected-Sums-of-Squares-and-Products) *Technometrics*,
-  4(3), 419–420. https://doi.org/10.1080/00401706.1962.10490022
-- Shannon, C.E. (1948). "A Mathematical Theory of Communication." *Bell System Technical Journal*.
+  4(3), 419–420. 
+- Shannon, C.E. (1948). ["A Mathematical Theory of Communication."](https://monoskop.org/images/b/be/Shannon_Claude_E_Weaver_Warren_The_Mathematical_Theory_of_Communication_1963.pdf) *Bell System Technical Journal*.
   Vol. 27, pp. 379–423, 623–656, July, October, 1948.
 - Kirkpatrick, S., Gelatt, C.D., Vecchi, M.P. (1983). ["Optimization by Simulated Annealing."](https://www2.stat.duke.edu/~scs/Courses/Stat376/Papers/TemperAnneal/KirkpatrickAnnealScience1983.pdf).
   Science, 13 May 1983, Vol 220, Issue 4598, pp. 671-680, DOI: 10.1126/science.220.4598.671
