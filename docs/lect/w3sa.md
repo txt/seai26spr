@@ -270,6 +270,8 @@ SA explores a solution space by:
 4. Sometimes accepting worse solutions (to escape local optima)
 5. Gradually reducing the probability of accepting worse solutions
 
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Hill_Climbing_with_Simulated_Annealing.gif">
+
 ### The Metropolis-Hastings Criterion
 
 The key insight is the acceptance probability for worse solutions:
