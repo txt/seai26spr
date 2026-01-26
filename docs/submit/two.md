@@ -18,7 +18,15 @@
 
 **Due:** One week from assignment  
 **Deliverables:** `sa.py` (completed), `results.md` (writeup). 
-- print out, 2 sided paper
+
+Submit page(s), stapled together. Page1 has group number and student names and IDs (last 4 digits).
+Pages have:
+
+1. `sa.py` — a listing
+2. `results.md` — Your writeup with tables and analysis
+
+Do **not** submit `ezr.py` or `auto93.csv`.
+
 
 ---
 
@@ -150,29 +158,43 @@ Based on your Experiment B results:
 
 ---
 
-## Submission
+## Part 4: Advanced Analysis (Graduate Students Only, +30 points)
 
-Submit a zip file containing:
-1. `sa.py` — Your completed implementation
-2. `results.md` — Your writeup with tables and analysis
+Complete **one** of the following. Reference the "Advanced Topics" sections in `tutorial.md`.
 
-Do **not** submit `ezr.py` or `auto93.csv`.
+### Option A: Cooling Schedule Comparison
 
----
+Implement geometric cooling: `T = T₀ · αᵏ` with α ∈ {0.99, 0.95, 0.9}.
 
-## Grading Rubric
+Compare to linear cooling over 10 seeds. Report:
+- Mean final score for each schedule
+- Convergence speed (iteration where score first drops below 0.15)
+- Which schedule would you recommend and why?
 
-| Component | Points |
-|-----------|--------|
-| `mutate()` correct | 15 |
-| `score()` correct | 10 |
-| Acceptance criterion correct | 15 |
-| Experiment A results | 15 |
-| Experiment B results | 15 |
-| Results presentation | 10 |
-| "Why accept worse" explanation | 10 |
-| Mutation rate analysis | 10 |
-| **Total** | **100** |
+### Option B: Ablation Study
+
+Remove the Metropolis criterion entirely—only accept improvements (greedy hill climbing).
+
+Run both versions (SA vs greedy) with 20 seeds. Report:
+- Mean and standard deviation for each
+- How many runs got "stuck" (final score > 0.2)?
+- Relate your findings to the theory in Section A1.
+
+### Option C: Surrogate Analysis
+
+Replace nearest-neighbor surrogate with k-NN (k=3 or k=5), averaging the neighbors' y-values.
+
+Compare 1-NN vs k-NN over 10 seeds. Report:
+- Mean final score
+- Variance of final scores
+- Discuss bias-variance tradeoff (Section A5) in your results.
+
+### Graduate Writeup
+
+Add a section to `results.md` (roughly one additional page):
+- Describe your experimental setup
+- Present results with appropriate tables/statistics
+- Connect findings to theoretical concepts from the Advanced Topics
 
 ---
 
@@ -183,9 +205,3 @@ Do **not** submit `ezr.py` or `auto93.csv`.
 - For numeric mutation: `LO + (gauss(v, sd(c)) - LO) % (HI - LO + 1E-32)`
 - `1E-32` prevents division by zero when HI equals LO
 - If your scores aren't decreasing, check your acceptance criterion—the temperature formula matters!
-
----
-
-## Academic Integrity
-
-You may discuss concepts with classmates but must write your own code and analysis. Do not share code or copy from online sources. Cite any external resources consulted.
