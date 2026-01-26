@@ -66,7 +66,7 @@ code suggestion, test generation, and documentation support.
 | Jan 19 | Mon: MLK Day (no class) | | |
 | Jan 26 | [sbse](docs/lect/w3sbse.md)<br>[sa](docs/lect/w3sa.md)|[1a](docs/submit/one.md) | |
 | Feb 02 | |1b | |
-| Feb 09 | |2a | [2a](dpcs/submit/two.md) |
+| Feb 09 | |2a | [2a](docs/submit/two.md) |
 | Feb 16 | |2b | |
 | Feb 23 | |3a | |
 | Mar 02 | |3b | |
