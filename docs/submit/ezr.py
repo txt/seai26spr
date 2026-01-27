@@ -59,11 +59,11 @@ def Cols(row):
              y=[c for c in all if     re.search(r"[+\-!]$",  c.txt)])
 
 def Data(src=None):
-  i = Obj(n=0, rows=[], cols=None)
-  if src: [add(i, r) for r in src]
-  return i
+  data = Obj(n=0, rows=[], cols=None)
+  if src: [add(data, r) for r in src]
+  return data
 
-def clone(i, rows=None): return Data([i.cols.names] + (rows or []))
+def clone(data, rows=None): return Data([data.cols.names] + (rows or []))
 
 def add(i, v):
   if "rows" in i:  # Data
@@ -75,46 +75,51 @@ def add(i, v):
     else: i.has[v] = 1 + i.has.get(v, 0)
   return v
 
-def adds(src, i=None):
-  i = i or Num()
-  for v in src: add(i, v)
-  return i
+def adds(items=[], obj=None):
+  obj = obj or Num()
+  for item in items: add(obj, item)
+  return obj
 
-# --- query ----------------------------------------------------------
-def mid(i):    return i.mu if "mu" in i else max(i.has, key=i.has.get)
-def mids(i):   return [mid(c) for c in i.cols.all]
-def spread(i): return sd(i)  if "mu" in i else ent(i)
-def sd(i):     return 0 if i.n < 2 else sqrt(i.m2 / (i.n - 1))
-def ent(i):    
- return -sum(p*log(p,2) for n in i.has.values() if (p:= n/i.n) > 0)
+# --- query ----------------------------------------------------------
+def mids(data): return [mid(c) for c in data.cols.all]
+def mid(col):   
+  return col.mu if "mu" in col else max(col.has, key=col.has.get)
 
-def z(i, v):  return (v - i.mu) / (sd(i) + 1 / BIG)
+def spread(col): return sd(col)  if "mu" in col else ent(col)
+def sd(num):     return 0 if num.n < 2 else sqrt(num.m2 / (num.n - 1))
+def ent(sym):    
+ return -sum(p*log(p,2) for n in sym.has.values() if (p:= n/sym.n) > 0)
+
+def z(num, v):  return (v - num.mu) / (sd(num) + 1 / BIG)
 def norm(z): return 1 / (1 + exp(-1.7 * max(-3, min(3, z))))
 
 # --- distance -------------------------------------------------------
-def minkowski(src):
+def minkowski(items):
   n, d = 0, 0
-  for v in src: n, d = n + 1, d + v ** the.p
+  for item in items: 
+    n += 1
+    d += item ** the.p
   return 0 if n == 0 else (d / n) ** (1 / the.p)
 
-def disty(i, row):
-  return minkowski(norm(z(c, row[c.at])) - c.goal for c in i.cols.y)
+def disty(data, row):
+  return minkowski(norm(z(c, row[c.at])) - c.goal for c in data.cols.y)
 
-def distx(i, row1, row2):
-  return minkowski(aha(c, row1[c.at], row2[c.at]) for c in i.cols.x)
+def distx(data, row1, row2):
+  return minkowski(aha(c, row1[c.at], row2[c.at]) for c in data.cols.x)
 
-def aha(i, u, v):
+def aha(col, u, v):
   if u == v == "?": return 1
-  if "has" in i: return u != v
-  u = "?" if u == "?" else norm(z(i, u))
-  v = "?" if v == "?" else norm(z(i, v))
+  if "has" in col: return u != v
+  u = "?" if u == "?" else norm(z(col, u))
+  v = "?" if v == "?" else norm(z(col, v))
   u = u if u != "?" else (0 if v > 0.5 else 1)
   v = v if v != "?" else (0 if u > 0.5 else 1)
   return abs(u - v)
 
-def furthest(i, row, rows):  return nearest(i, row, rows, max)
-def nearest(i, row, rows, fn=min):  
-  return fn(rows, key=lambda r: distx(i, row, r))
+def furthest(data, row, rows):  return nearest(data, row, rows, max)
+
+def nearest(data, row, rows, fn=min):  
+  return fn(rows, key=lambda r: distx(data, row, r))
 
 # --- cli ------------------------------------------------------------
 def eg_h(_):    print(__doc__)
@@ -122,49 +127,50 @@ def eg__the(_): print(o(the))
 def eg_s(n):    the.seed = n; random.seed(n)
 
 def eg__sym(_):
-  i = adds("aaaabbc", Sym())
-  x = ent(i)
-  print(o(x))
-  assert abs(1.379 - x) < 0.05, "ent failed"
+  sym = adds("aaaabbc", Sym())
+  e = ent(sym)
+  print(o(e))
+  assert abs(1.379 - e) < 0.05, "ent failed"
 
 def eg__num(_):
-  i = adds(gauss(10, 1) for _ in range(1000))
-  print(Obj(mu=i.mu, sd=sd(i)))
-  assert abs(10 - i.mu) < 0.05 and abs(1 - sd(i)) < 0.05, "num failed"
+  num = adds(gauss(10, 1) for _ in range(1000))
+  print(Obj(mu=num.mu, sd=sd(num)))
+  assert abs(10 - num.mu) < 0.05 and abs(1 - sd(num)) < 0.05, "num failed"
 
 def eg__csv(f): [print(row) for row in list(csv(f))[::40]]
 
 def eg__data(f):
-  i = Data(csv(f))
-  print(*i.cols.names)
-  print(o(mids(i)))
-  print(f"x: {[c.txt for c in i.cols.x]}")
-  print(f"y: {[c.txt for c in i.cols.y]}")
+  data = Data(csv(f))
+  print(*data.cols.names)
+  print(o(mids(data)))
+  print(f"x: {[c.txt for c in data.cols.x]}")
+  print(f"y: {[c.txt for c in data.cols.y]}")
 
 def eg__clone(f):
-  i = Data(csv(f))
-  j = clone(i, i.rows[:10])
-  print("original:", len(i.rows), "clone:", len(j.rows))
-  print("cols match:", i.cols.names == j.cols.names)
+  data1 = Data(csv(f))
+  data2 = clone(data1, data1.rows[:10])
+  print("original:", len(data1.rows), "clone:", len(data2.rows))
+  print("cols match:", data1.cols.names == data2.cols.names)
 
 def eg__spread(f):
-  i = Data(csv(f))
-  for c in i.cols.all:
+  data = Data(csv(f))
+  for c in data.cols.all:
     print(f"{c.txt:15} spread={o(spread(c)):8} mid={o(mid(c))}")
 
 def eg__dist(f):
-  i = Data(csv(f))
-  r = i.rows[0]
+  data = Data(csv(f))
+  row = data.rows[0]
   print("row0:", r)
-  near = nearest(i, r, i.rows[1:])
-  far = furthest(i, r, i.rows[1:])
-  print("near:", near, "dist:", round(distx(i, r, near), 3))
-  print("far: ", far, "dist:", round(distx(i, r, far), 3))
+  near = nearest(data, row, data.rows[1:])
+  far = furthest(data, row, data.rows[1:])
+  print("near:", near, "dist:", round(distx(data, row, near), 3))
+  print("far: ", far, "dist:", round(distx(data, row, far), 3))
 
 def eg__disty(f):
-  i = Data(csv(f))
-  for row in sorted(i.rows, key=lambda r: disty(i, r))[:5]:
-    print(round(disty(i, row), 3), row)
+  data = Data(csv(f))
+  print("disty",*data.cols.names,sep=",")
+  for row in sorted(data.rows, key=lambda r: disty(data, r))[::25]:
+    print(round(disty(data, row), 3), *row,sep=",")
 
 # --- main -----------------------------------------------------------
 the=Obj(**{k:cast(v) for k, v in re.findall(r"(\w+)=(\S+)", __doc__)})
