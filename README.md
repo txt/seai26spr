@@ -64,7 +64,7 @@ code suggestion, test generation, and documentation support.
 |:-------------:|:----------:|:---------------------------:|:---------:|
 | Jan 12 | [Intro](docs/lect/intro.md) | |[one](docs/review/one.md) |
 | Jan 19 | Mon: MLK Day (no class) | | |
-| Jan 26 | [sbse](docs/lect/w3sbse.md)<br>[sa](docs/lect/w3sa.md)<br>[📀 Video](https://ncsu.zoom.us/rec/share/gn528t9NTd8AtQeH1zySUBvWEuScUkpUmr-3vL2k40y4f9nPEdSl06AYQqBWwsGv.nP3XZhB4WOxpQNTq)|[1a](docs/submit/one.md) | |
+| Jan 26 | [sbse](docs/lect/w3sbse.md)<br>[sa](docs/lect/w3sa.md)<br>[📀 Video](https://ncsu.zoom.us/rec/share/wFw9V14wbR518UZe4iGFnFDwRwNPLcVYmayRKdACMM59se3fEGzrfv3RpscxMWMJ.4CyJigvgzYiLcyER)|[1a](docs/submit/one.md) | |
 | Feb 02 | |1b | |
 | Feb 09 | |[2a](docs/submit/two.md) | |
 | Feb 16 | |2b | |
