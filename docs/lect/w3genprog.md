@@ -269,7 +269,7 @@ If you write a paper on APR in 2026:
 
 [^3]: Le Goues, C., et al. (2012). **A systematic study of automated program repair: Fixing 55 out of 105 bugs for $8 each.** ICSE '12. [PDF URL](https://clairelegoues.com/assets/papers/legoues12icse.slides.pdf)
 
-[^4]: Qi, Y., et al. (2014). **The strength of random search on automated program repair.** ICSE '14. [PDF URL](https://www.cs.ucdavis.edu/~filkov/papers/random_repair.pdf)
+[^4]: Qi, Y., et al. (2014). **The strength of random search on automated program repair.** ICSE '14. [PDF URL](https://scispace.com/pdf/the-strength-of-random-search-on-automated-program-repair-29yxr9h46x.pdf)
 
 [^5]: Smith, E., et al. (2015). **Is the cure worse than the disease? Overfitting in automated program repair.** FSE '15. [PDF URL](https://people.cs.umass.edu/~brun/pubs/pubs/Smith15fse.pdf)
 
