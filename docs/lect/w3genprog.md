@@ -30,7 +30,7 @@
 Software is broken. It is always broken.
 
 * Debugging consumes ~50% of developer time.
-* Global cost: estimated at $312 billion annually[^1].
+* Global cost: estimated at two  trillion dollars annually (just in the US)[^1].
 * We cannot hire enough humans to fix all the bugs.
 
 **The Dream: `git autorepair**`
@@ -69,13 +69,23 @@ Weimer et al. proposed **GenProg**[^2].
 * **Operators:** * *Delete* a statement.
 * *Insert* a statement (copied from elsewhere in the same file).
 * *Replace* a statement.
-
-
 * **Fitness:** Number of passing tests.
+
+Why does this work? Cause the space of bad code and good code is very local. In the following, 
+- failing tests add RED to
+the code on the branch to the fail
+- passing tests add GREEN to
+the code on the branch to the pass
+- YELLOW shows the overlapping RED/GREEN examples
+- Note the extreme locality of green/red
+  - so the space of "good" code from which we draw patches is very small
+  - and the space of "bad" code from where we try to patch is very small. 
+
+<img width="252" height="200" alt="image" src="https://github.com/user-attachments/assets/f82bbb4b-c208-421c-9aa4-6bd0efd01ef8" />
 
 **The Claim**
 GenProg fixed 55 of 105 defects in substantial open-source programs (PHP, Wireshark,
-Gzip)[^3]. The community cheered.
+Gzip)[^3]. It swept the field.
 
 **The Reality Check: The "Null Pointer" Example**
 Let's look at code.
@@ -234,7 +244,7 @@ How do we grade these tools?
 
 
 
-**The "Menzies" Baseline Check**
+**The   Baseline Check**
 If you write a paper on APR in 2026:
 
 1. Do not just report "% of tests passed."
@@ -247,29 +257,28 @@ If you write a paper on APR in 2026:
 * **Kali** taught us to always check the Null Hypothesis.
 * **LLMs** teach us that "Big Data" (Priors) can solve "Overfitting."
 
-**Class Dismissed.**
 
 ---
 
 ## References
 
 [^1]:
-Brittain, K. (2013). **Cambridge University Study States Software Bugs Cost Economy $312 Billion Per Year.** [URL](https://www.google.com/search?q=https://www.prweb.com/releases/2013/1/prweb10298185.htm)
+Krasner, Herb. *The Cost of Poor Software Quality in the US: A 2020 Report*. Consortium for Information & Software Quality (CISQ), 1 Jan. 2021, [www.it-cisq.org/cisq-files/pdf/CPSQ-2020-report.pdf](https://www.it-cisq.org/cisq-files/pdf/CPSQ-2020-report.pdf).
 
 [^2]:
 Weimer, W., et al. (2009). **Automatically finding patches using genetic programming.** ICSE '09.
 
-[PDF URL](https://www.google.com/search?q=https://www.cs.virginia.edu/~weimer/p/weimer-icse2009-genprog.pdf)
+[PDF URL](https://www.cs.virginia.edu/~weimer/p/weimer-icse2009-genprog.pdf)
 
 [^3]:
-Le Goues, C., et al. (2012). **A systematic study of automated program repair: Fixing 55 out of 105 bugs.** ICSE '12.
+Le Goues, C., et al. (2012). **A systematic study of automated program repair: Fixing 55 out of 105 bugs for $8 each.** ICSE '12.
 
-[PDF URL](https://www.google.com/search?q=https://www.cs.cmu.edu/~clegoues/docs/legoues-icse12.pdf)
+[PDF URL](https://www.cs.cmu.edu/~clegoues/docs/legoues-icse12.pdf](https://clairelegoues.com/assets/papers/legoues12icse.slides.pdf)
 
 [^4]:
 Qi, Y., et al. (2014). **The strength of random search on automated program repair.** ICSE '14.
 
-[PDF URL](https://www.google.com/search?q=https://www.cs.ucdavis.edu/~filkov/papers/random_repair.pdf)
+[PDF URL](https://www.cs.ucdavis.edu/~filkov/papers/random_repair.pdf)
 
 [^5]:
 Smith, E., et al. (2015). **Is the cure worse than the disease? Overfitting in automated program repair.** FSE '15.
@@ -279,10 +288,10 @@ Smith, E., et al. (2015). **Is the cure worse than the disease? Overfitting in a
 [^6]:
 Nguyen, H., et al. (2013). **SemFix: Program repair via semantic analysis.** ICSE '13.
 
-[PDF URL](https://www.google.com/search?q=https://www.comp.nus.edu.sg/~abhik/pdf/ICSE13-Semfix.pdf)
+[PDF URL](https://www.google.com/search?q=https://www.comp.nus.edu.sg/~abhik/pdf/ICSE13-Semfix.pdf) 
 
 [^7]:
 Xia, C. S., et al. (2023). **Automated Program Repair in the Era of Large Language Models.** [PDF URL](https://www.google.com/search?q=https://arxiv.org/pdf/2210.14179.pdf)
 
 [^8]:
-Nashid, N., et al. (2023). **Retrieval-Augmented Generation for Code Summarization via Hybrid GNN.** [PDF URL](https://www.google.com/search?q=https://arxiv.org/pdf/2306.00947.pdf)
+Nashid, N., et al. (2023). **Retrieval-Augmented Generation for Code Summarization via Hybrid GNN.** [PDF URL][https://arxiv.org/abs/2006.05405)
