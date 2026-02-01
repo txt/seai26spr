@@ -263,10 +263,9 @@ If you write a paper on APR in 2026:
 
 ## References
 
-[^1]:
-Krasner, Herb. *The Cost of Poor Software Quality in the US: A 2020 Report*. Consortium for Information & Software Quality (CISQ), 1 Jan. 2021, [www.it-cisq.org/cisq-files/pdf/CPSQ-2020-report.pdf](https://www.it-cisq.org/cisq-files/pdf/CPSQ-2020-report.pdf).
+[^1]: Krasner, Herb. *The Cost of Poor Software Quality in the US: A 2020 Report*. Consortium for Information & Software Quality (CISQ), 1 Jan. 2021, [www.it-cisq.org/cisq-files/pdf/CPSQ-2020-report.pdf](https://www.it-cisq.org/cisq-files/pdf/CPSQ-2020-report.pdf).
 
-[^2]: Weimer, W., et al. (2009). **Automatically finding patches using genetic programming.** ICSE '09. [PDF URL](https://www.cs.virginia.edu/~weimer/p/weimer-icse2009-genprog.pdf)
+[^2]: Weimer, W., et al. (2009). **Automatically finding patches using genetic programming.** ICSE '09. [PDF URL](https://profsforrest.github.io/homepage/data/publications/2009-icse-genprog.pdf)
 
 [^3]: Le Goues, C., et al. (2012). **A systematic study of automated program repair: Fixing 55 out of 105 bugs for $8 each.** ICSE '12. [PDF URL](https://www.cs.cmu.edu/~clegoues/docs/legoues-icse12.pdf](https://clairelegoues.com/assets/papers/legoues12icse.slides.pdf)
 
