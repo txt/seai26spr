@@ -266,33 +266,16 @@ If you write a paper on APR in 2026:
 [^1]:
 Krasner, Herb. *The Cost of Poor Software Quality in the US: A 2020 Report*. Consortium for Information & Software Quality (CISQ), 1 Jan. 2021, [www.it-cisq.org/cisq-files/pdf/CPSQ-2020-report.pdf](https://www.it-cisq.org/cisq-files/pdf/CPSQ-2020-report.pdf).
 
-[^2]:
-Weimer, W., et al. (2009). **Automatically finding patches using genetic programming.** ICSE '09.
+[^2]: Weimer, W., et al. (2009). **Automatically finding patches using genetic programming.** ICSE '09. [PDF URL](https://www.cs.virginia.edu/~weimer/p/weimer-icse2009-genprog.pdf)
 
-[PDF URL](https://www.cs.virginia.edu/~weimer/p/weimer-icse2009-genprog.pdf)
+[^3]: Le Goues, C., et al. (2012). **A systematic study of automated program repair: Fixing 55 out of 105 bugs for $8 each.** ICSE '12. [PDF URL](https://www.cs.cmu.edu/~clegoues/docs/legoues-icse12.pdf](https://clairelegoues.com/assets/papers/legoues12icse.slides.pdf)
 
-[^3]:
-Le Goues, C., et al. (2012). **A systematic study of automated program repair: Fixing 55 out of 105 bugs for $8 each.** ICSE '12.
+[^4]: Qi, Y., et al. (2014). **The strength of random search on automated program repair.** ICSE '14. [PDF URL](https://www.cs.ucdavis.edu/~filkov/papers/random_repair.pdf)
 
-[PDF URL](https://www.cs.cmu.edu/~clegoues/docs/legoues-icse12.pdf](https://clairelegoues.com/assets/papers/legoues12icse.slides.pdf)
+[^5]: Smith, E., et al. (2015). **Is the cure worse than the disease? Overfitting in automated program repair.** FSE '15. [PDF URL](https://people.cs.umass.edu/~brun/pubs/pubs/Smith15fse.pdf)
 
-[^4]:
-Qi, Y., et al. (2014). **The strength of random search on automated program repair.** ICSE '14.
+[^6]: Nguyen, H., et al. (2013). **SemFix: Program repair via semantic analysis.** ICSE '13. [PDF URL](https://www.google.com/search?q=https://www.comp.nus.edu.sg/~abhik/pdf/ICSE13-Semfix.pdf) 
 
-[PDF URL](https://www.cs.ucdavis.edu/~filkov/papers/random_repair.pdf)
+[^7]: Xia, C. S., et al. (2023). **Automated Program Repair in the Era of Large Language Models.** [PDF URL](https://www.google.com/search?q=https://arxiv.org/pdf/2210.14179.pdf)
 
-[^5]:
-Smith, E., et al. (2015). **Is the cure worse than the disease? Overfitting in automated program repair.** FSE '15.
-
-[PDF URL](https://people.cs.umass.edu/~brun/pubs/pubs/Smith15fse.pdf)
-
-[^6]:
-Nguyen, H., et al. (2013). **SemFix: Program repair via semantic analysis.** ICSE '13.
-
-[PDF URL](https://www.google.com/search?q=https://www.comp.nus.edu.sg/~abhik/pdf/ICSE13-Semfix.pdf) 
-
-[^7]:
-Xia, C. S., et al. (2023). **Automated Program Repair in the Era of Large Language Models.** [PDF URL](https://www.google.com/search?q=https://arxiv.org/pdf/2210.14179.pdf)
-
-[^8]:
-Nashid, N., et al. (2023). **Retrieval-Augmented Generation for Code Summarization via Hybrid GNN.** [PDF URL][https://arxiv.org/abs/2006.05405)
+[^8]: Nashid, N., et al. (2023). **Retrieval-Augmented Generation for Code Summarization via Hybrid GNN.** [PDF URL][https://arxiv.org/abs/2006.05405)
