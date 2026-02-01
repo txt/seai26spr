@@ -81,7 +81,8 @@ the code on the branch to the pass
   - so the space of "good" code from which we draw patches is very small
   - and the space of "bad" code from where we try to patch is very small. 
 
-<img  alt="image" src="https://github.com/user-attachments/assets/f82bbb4b-c208-421c-9aa4-6bd0efd01ef8" />
+<img width="737" height="599" alt="image" src="https://github.com/user-attachments/assets/9ef65ba1-ed53-4427-ab5d-0a0db143f321" />
+
 
 **The Claim**
 GenProg fixed 55 of 105 defects in substantial open-source programs (PHP, Wireshark,
