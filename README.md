@@ -66,18 +66,18 @@ code suggestion, test generation, and documentation support.
 | Jan 19 | Mon: MLK Day (no class) | | |
 | Jan 26 | [sbse](docs/lect/w3sbse.md)<br>[sa](docs/lect/w3sa.md)<br>[📀 Video](https://ncsu.zoom.us/rec/share/wFw9V14wbR518UZe4iGFnFDwRwNPLcVYmayRKdACMM59se3fEGzrfv3RpscxMWMJ.4CyJigvgzYiLcyER)|[1a](docs/submit/one.md) | [week3](docs/review/w3.md) |
 | Feb 02 | |1b | |
-| Feb 09 | |[2a](docs/submit/two.md) | |
-| Feb 16 | |2b | |
-| Feb 23 | |3a | |
-| Mar 02 | |3b | |
-| Mar 09 | |4a | |
+| Feb 09 | || |
+| Feb 16 | || |
+| Feb 23 | |[2a](docs/submit/two.md) | |
+| Mar 02 | |2b | |
+| Mar 09 | |3a | |
 | Mar 16 | Spring Break (no class) | | |
-| Mar 23 | |4b | |
-| Mar 30 | |5a <br> [Grad 6.0](docs/submit/project.md) | |
-| Apr 06 | | 5b  | |
+| Mar 23 | |3b | |
+| Mar 30 | |4a <br> [Grad 6.0](docs/submit/project.md) | |
+| Apr 06 | | 4b  | |
 | Apr 13 | | | |
-| Apr 20 | | 6a | |
-| Apr 27 | | 6b   | |
+| Apr 20 | | 5a | |
+| Apr 27 | | 5b   | |
 | May 4 |  exam |    | |
 
 </div>
