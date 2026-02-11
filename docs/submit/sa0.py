@@ -23,9 +23,17 @@ def sa(data, k=4000, m_rate=0.5, loud=False):
 
   def score(row):
     """TODO 2: Estimate row's quality using nearest neighbor surrogate.
-    - Find nearest neighbor in data.rows using nearest(data, row, data.rows)
-    - Copy neighbor's y-values to row: for y in data.cols.y: row[y.at] = near[y.at]
-    - Return disty(data, row)
+    - Prior to running SA, take 50 rows at random and place them in a seperate space.
+      - `random.shuffle(data.rows)`
+      - `scoring = clone(data,data.rows[:50])`
+    - Reset data from rest:
+      - `data = clone(data, data.rows[:50])` # do not shuffle again
+      - Use data to control (e.g.) the mutation rates in `mutate`.
+    - To score a mutant:
+      - Find nearest neighbor in scoring.rows using `near=nearest(scoring, row, scoring.rows)`
+    - Copy neighbor's y-values to row: 
+      - `for y in data.cols.y: new[y.at] = near[y.at]`
+    - Return `disty(scoring, new)` # i.e. new's scrore comes from `scoring`.
     """
     pass  # <- Replace this
 
