@@ -169,13 +169,13 @@ One source of truth: the docstring both documents
 and initializes all settings.
 
 ```
-┌─ Reading Guide ──────────────────────────────┐
+┌─ Reading Guide ──────────────────────── ──────┐
 │ __doc__         module's docstring            │
 │ re.findall()    all regex matches in a string │
-│ (\S+)=(\S+)    capture nonwhitespace=nonws   │
-│ cast(v)         "7"→7, "2"→2 (string→number) │
+│ (\S+)=(\S+)    capture nonwhitespace=nonws    │
+│ cast(v)         "7"→7, "2"→2 (string→number)  │
 │ OBJ(**{...})    dict → object with dot access │
-└──────────────────────────────────────────────┘
+└────────────────────────────────────────────-──┘
 ```
 
 ```
@@ -995,22 +995,20 @@ def furthest(*args): return order(*args)[-1]
 `furthest` takes the end (most distant).
 
 ```
-┌─ TRY THIS ───────────────────────────────────┐
-│ python3 -c "                                 │
-│ from ez import *                             │
-│ data = DATA(csv('auto93.csv'))               │
-│ r = data.rows[0]                             │
-│ print('row:', r[:3], '...')                   │
-│ print('disty:', round(disty(data, r), 3))    │
-│ best = min(data.rows,                        │
-│            key=lambda r: disty(data, r))     │
-│ print('best:', best)                         │
-│ print('disty:', round(disty(data,best), 3))  │
-│ "                                            │
-│                                              │
-│ What makes the best row 'best'?              │
-│ Look at Lbs, Acc, Mpg — does it make sense?  │
-└──────────────────────────────────────────────┘
+┌─ TRY THIS ─────────────────────────────────--──┐
+│ from ez import *                               │
+│ data = DATA(csv('auto93.csv'))                 │
+│ r = data.rows[0]                               │
+│ print('row:', r[:3], '...')                    │
+│ print('disty:', round(disty(data, r), 3))      │
+│ best = min(data.rows,                          │
+│            key=lambda r: disty(data, r))       │
+│ print('best:', best)                           │
+│ print('disty:', round(disty(data,best), 3))    │
+│                                                │
+│ # What makes the best row 'best'?              │
+│ # Look at Lbs, Acc, Mpg — does it make sense?  │
+└────────────────────────────────--──────────────┘
 ```
 
 ---
