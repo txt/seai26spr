@@ -38,6 +38,7 @@ Before you begin down these two files into an empty directory:
 - [auto93.csv](../submit/two/auto93.csv)
 - [FFM-1000-200-0.50-SAT-1.csv](../submit/two/FFM-1000-200-0.50-SAT-1.csv)
 - [xomo_ground.csv](../submit/two/xomo_ground.csv)
+  - For an explanation of the xomo attributes, search for (e.g.) Team in [this doc](https://rose-hulman.edu/class/cs/csse372/201310/Homework/CII_modelman2000.pdf).
 
 ```
 ┌─ TRY THIS ────────────────────────────────────────────────────┐
