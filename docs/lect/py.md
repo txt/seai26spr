@@ -39,6 +39,8 @@ Before you begin down these two files into an empty directory:
 - [FFM-1000-200-0.50-SAT-1.csv](../submit/two/FFM-1000-200-0.50-SAT-1.csv)
 - [xomo_ground.csv](../submit/two/xomo_ground.csv)
   - For an explanation of the xomo attributes, search for (e.g.) Team in [this doc](https://rose-hulman.edu/class/cs/csse372/201310/Homework/CII_modelman2000.pdf).
+- [smells.csv](../submit/two/smells.csv)
+  - For an explanation of the small attributes, search for (e.g.) WOC in [this doc](https://essere.disco.unimib.it/wp-content/uploads/sites/71/2019/04/metric-definitions.pdf)
 
 ```
 ┌─ TRY THIS ────────────────────────────────────────────────────┐
@@ -46,13 +48,15 @@ Before you begin down these two files into an empty directory:
 │ 2. Then, in Python....                                        │
 │                                                               │
 │ from ez import *                                              │
-│ eg__tree("auto93.csv")                                        │
-│ eg__tree("xomo_ground.csv                                     │
-│ eg__tree("FFM-1000-200-0.50-SAT-1.csv")                       │
+│ eg__tree("auto93.csv")    #1                                  │
+│ eg__tree("xomo_ground.csv") #2                                │
+│ eg__tree("smells.csv")    #3                                  │
+│ eg__tree("FFM-1000-200-0.50-SAT-1.csv")  #4                   │
 │                                                               │
-│ # What is best volume for a car with more than 4 cylinders?   │
-│ # In small projects, does analyst capability trump experience?│
-│ # How many attributes are needed for effective optimization ? │
+│ #1 What is best volume for a car with more than 4 cylinders?   │
+│ #2 In small projects, does analyst capability trump experience?│
+│ #3 How to find ieature Envy (FE) (excess calls to other classes) │
+│ #4 How many attributes are needed for effective optimization ? │
 └───────────────────────────────────────────────────────────────┘
 ```
 
