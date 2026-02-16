@@ -36,6 +36,24 @@ Before you begin down these two files into an empty directory:
 
 - [ez.py](../submit/two/ez.py)
 - [auto93.csv](../submit/two/auto93.csv)
+- [FFM-1000-200-0.50-SAT-1.csv](../submit/two/FFM-1000-200-0.50-SAT-1.csv)
+- [xomo_ground.csv](../submit/two/xomo_ground.csv)
+
+```
+┌─ TRY THIS ────────────────────────────────────────────────────┐
+│ 1. look at first row of the .csv files                        │
+│ 2. Then, in Python....                                        │
+│                                                               │
+│ from ez import *                                              │
+│ eg__tree("auto93.csv")                                        │
+│ eg__tree("xomo_ground.csv                                     │
+│ eg__tree("FFM-1000-200-0.50-SAT-1.csv")                       │
+│                                                               │
+│ # What is best volume for a car with more than 4 cylinders?   │
+│ # How many attributes are needed for effective optimization ? │
+└───────────────────────────────────────────────────────────────┘
+```
+
 
 ---
 
