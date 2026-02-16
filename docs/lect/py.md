@@ -50,6 +50,7 @@ Before you begin down these two files into an empty directory:
 │ eg__tree("FFM-1000-200-0.50-SAT-1.csv")                       │
 │                                                               │
 │ # What is best volume for a car with more than 4 cylinders?   │
+│ # In small projects, does analyst capability trump experience?│
 │ # How many attributes are needed for effective optimization ? │
 └───────────────────────────────────────────────────────────────┘
 ```
