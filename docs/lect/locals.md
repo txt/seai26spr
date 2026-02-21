@@ -21,6 +21,12 @@
 > *"All models are wrong. Some are useful."* — Box  
 > *"All optimizers are slow. Some are cheap."* — Menzies
 
+This lecture is based on the code:
+
+- [oneplus1/ez2.py](oneplus1/ez2.py)
+- [oneplus1/locals.py](oneplus1/locals.py)
+- [oneplus1/sa.py](oneplus1/sa.py)
+
 ---
 
 ## 1. The Setup: Search as Walking a Space
