@@ -68,7 +68,7 @@ code suggestion, test generation, and documentation support.
 | Feb 02 | |1b | |
 | Feb 09 | || |
 | Feb 16 |[Python](docs/lect/py.md) || |
-| Feb 23 | |[2a](docs/submit/two.md) | |
+| Feb 23 | [Local search](docs/lect/locals.md) |[2a](docs/submit/two.md) | |
 | Mar 02 | |2b | |
 | Mar 09 | |3a | |
 | Mar 16 | Spring Break (no class) | | |
