@@ -70,6 +70,11 @@ def disty(d:Data, r:Row) -> float:
 
 Lower energy = closer to heaven. Search = minimize energy.
 
+Not for now, but there are are other measures
+
+<img width="954" height="357" alt="image" src="https://github.com/user-attachments/assets/5cb89aa2-7306-42da-b415-90e7174737d4" />
+
+
 ---
 
 ## 3. The Cheap Oracle Trick
