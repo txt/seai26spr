@@ -47,16 +47,18 @@ column's contribution to the likelihood. No imputation, no
 crash.
 
 **Surprisingly competitive.** Domingos & Pazzani (1997)
-compared NB against C4.5, PEBLS, and CN2 on 28 UCI
-datasets. NB won more often than any of them, including
+compared NB against other learners (C4.5, PEBLS, and CN2) on 28 UCI
+datasets[^dom]. NB won more often than any of them, including
 domains with strong attribute dependencies.
+
+[^dom]: Domingos, Pedro, and Michael Pazzani. "On the Optimality of the Simple Bayesian Classifier under Zero-One Loss." Machine Learning, vol. 29, no. 2-3, 1997, pp. 103-130.
 
 We will come back to *why* it works so well at the end.
 First, let us build it from scratch.
 
 ---
 
-## 2. The Core Idea: Ranking, Not Probabilities (10 min)
+## 2. The Core Idea: Ranking, Not Probabilities  
 
 Bayes' theorem:
 
@@ -99,7 +101,7 @@ will prove why in Section 14.
 
 ---
 
-## 3. The Zero Problem and Smoothing (5 min)
+## 3. The Zero Problem and Smoothing  
 
 Suppose we are computing:
 
@@ -135,7 +137,7 @@ gently toward the prior.
 
 ---
 
-## 4. Avoiding Underflow: Log Space (5 min)
+## 4. Avoiding Underflow: Log Space 
 
 With many features, we multiply many small numbers together.
 On a machine with 64-bit floats, the product quickly rounds
@@ -169,7 +171,7 @@ with the highest (least negative) value is predicted.
 
 ---
 
-## 5. The Delegation Protocol (15 min)
+## 5. The Delegation Protocol  
 
 `ez_class.py` has three classes that work together:
 `Sym`, `Num`, and `Data`. The design pattern is
@@ -314,7 +316,7 @@ negative) log-likelihoods.
 
 ---
 
-## 6. Incremental Speed: add and sub (10 min)
+## 6. Incremental Speed: add and sub  
 
 One of NB's underappreciated strengths is that you can add
 *and remove* rows without retraining from scratch. This
@@ -356,7 +358,7 @@ O(1) update guarantee in action.
 
 ---
 
-## 7. Full Example: Classifying Weather Data (20 min)
+## 7. Full Example: Classifying Weather Data  
 
 ### The data
 
@@ -438,7 +440,7 @@ else.
 
 ---
 
-## 8. The Full Classifier: bayes_class.py (10 min)
+## 8. The Full Classifier: bayes_class.py  
 
 ```python
 def nbayes(src:Iterable, warmup:int=10) -> Confuse:
@@ -519,11 +521,14 @@ That is what the next three sections explain.
 
 ---
 
-## 9. The Confusion Matrix (2-class case) (10 min)
+## 9. The Confusion Matrix (2-class case)  
 
 Given true class (want) and predicted class (got), we tally
 four cells. Using the A/B/C/D notation from Menzies et al.
-"Problems with Precision" (TSE 2007):
+"Problems with Precision" (TSE 2007)[^me07]:
+
+[^me07]: Problems with Precision: A Response to "Comments on 'Data Mining Static Code Attributes to Learn Defect Predictors'"
+Menzies, Tim; Dekhtyar, Alex; Distefano, Justin; Greenwald, Jeremy.  IEEE Transactions on Software Engineering; New York Vol. 33, Iss. 9,  (Sep 2007): 637. DOI:10.1109/TSE.2007.70721
 
 ```
               Predicted
@@ -561,7 +566,7 @@ pf=0% but pd=0%. Useful classifiers live in the middle.
 
 ---
 
-## 10. The 3-Class Case (10 min)
+## 10. The 3-Class Case  
 
 With 3 classes (A, B, C), we generate *three separate*
 binary confusion matrices using a **one-vs-rest** strategy.
@@ -611,7 +616,7 @@ before recomputing the rates — as `stats.py` does.
 
 ---
 
-## 11. How stats.py Tracks A/B/C/D Incrementally (10 min)
+## 11. How stats.py Tracks A/B/C/D Incrementally  
 
 ```python
 def confuse(cf:Confuse, want:str, got:str) -> str:
@@ -663,9 +668,9 @@ data before their predictions are scored.
 
 ---
 
-## 12. The Problem with Precision (10 min)
+## 12. The Problem with Precision 
 
-From Menzies et al. "Problems with Precision" (TSE 2007),
+From Menzies et al. "Problems with Precision" (TSE 2007)[^[me07],
 the key equation derived from the Zhangs' formula is:
 
 ```
@@ -822,7 +827,7 @@ without precision's instability — that is why it is there.
 ## 14. Why It Works: The Optimality Result (10 min)
 
 Domingos & Pazzani (1997) ask: when is NB *optimal* even
-when its independence assumption is false?
+when its independence assumption is false?[^dom]
 
 **Zero-one loss** means we only care whether the predicted
 class is correct or not. We don't care how wrong the
@@ -866,8 +871,11 @@ sizes, variance dominates bias, and NB wins.
 ## 15. When NB Struggles, and Fixes (10 min)
 
 NB's independence assumption creates two systematic biases
-that Rennie et al. (ICML 2003) identified for text
+that Rennie et al. (ICML 2003)[^ren03] identified for text
 classification. Both have simple fixes.
+
+[^ren03]: Jason D. M. Rennie, Lawrence Shih, Jaime Teevan, David R. Karger:
+Tackling the Poor Assumptions of Naive Bayes Text Classifiers. ICML 2003: 616-623
 
 ### Problem 1: Skewed training data
 
@@ -948,7 +956,185 @@ hard to beat at small to medium dataset sizes.
 
 ---
 
-## 17. Lab Exercises
+## 17. Another Advantage of Bayes: Fast Model Update in Active Learning
+
+So far we have seen that NB is fast to train, incremental,
+and surprisingly competitive. Here is one more place where
+those properties really bite: **active learning**[^sett09]
+
+[^sett09]: Settles, Burr. "Active learning literature survey." (2009).
+
+
+### The Active Learning Loop
+
+Active learning is the problem of deciding *which* unlabelled
+example to label next, given a fixed labelling budget. At
+each step you:
+
+1. Train a model on the labelled examples seen so far.
+2. Score every candidate in the unlabelled pool.
+3. Pick the best candidate, label it, add it to the labelled set.
+4. **Rebuild the model. Repeat.**
+
+Step 4 is where learner complexity kills you. Every iteration
+adds one row and requires a fresh model.
+
+### SMAC: Powerful but Expensive
+
+SMAC (Sequential Model-based Algorithm Configuration)[^hutt11] is one
+of the most widely used active-learning optimizers in software
+configuration research. Its surrogate model is a **random
+forest** of decision trees. Such trees can offer multiple gusses
+on any new example. From those guesses, we can decide to sample:
+
+[^hutt11]: Hutter, Frank, Holger H. Hoos, and Kevin Leyton-Brown. "Sequential model-based optimization for general algorithm configuration." International conference on learning and intelligent optimization. Berlin, Heidelberg: Springer Berlin Heidelberg, 2011.
+
+- Where most of the guesses say "this is good" (certainty sampling)
+- Or where the guesses most disagree (uncertainty sampling)
+- Or some adaptive strategy that first explores uncertainty, then
+  as more and more labelled data actually arrives, switches
+  to certainty sampling.
+
+When a new labelled example
+arrives, SMAC discards the old forest and rebuilds all trees
+from scratch. For N labelled examples and T trees of depth d,
+that is O(T × N log N) work per acquisition step. Over a full
+run of B budget steps, total model-rebuild cost is:
+
+```
+O(T × B × B × log B)   ← grows super-linearly with budget
+```
+
+Experimentally (Menzies & Ganguly 2025), running SMAC for 20
+seeds across the 63 MOOT tasks takes **days**.
+
+### EZR's `guess`: Two-Class Bayes as the Surrogate
+
+EZR's `guess` active  learner[^gang26] replaces the forest with a two-class Naive Bayes
+classifier over the BEST / REST split. Because NB's `add` and
+`sub` each touch one entry in O(1), the model update after
+acquiring a new row is:
+
+[^gang26]: Ganguly, Kishan Kumar, and Tim Menzies. "How Low Can You Go? The Data-Light SE Challenge." arXiv preprint arXiv:2512.13524 (2026).
+
+```
+O(features)   ← independent of how many rows you have seen
+```
+
+Here is the entire acquisition loop from `acquire_class.py`:
+
+```python
+def guess(d, rows, Any=4, Budget=None,
+          scorer=nearer, eager=True, label=lambda r:r):
+  Budget = Budget or the.Budget
+  rows   = shuffle(rows[:])
+  unseen = clone(d, rows[Any:][:the.Few])
+  seen   = clone(d, rows[:Any]).sorty()
+  n      = round(sqrt(Any))
+  best   = clone(d, seen.rows[:n])    # ← the BEST class
+  rest   = clone(d, seen.rows[n:])    # ← the REST class
+  while len(unseen.rows) > 2 and len(seen.rows) < Budget:
+    seen.add(    
+      best.add(  # add/sub can be nessed since they return the thing added. 
+        label(
+          unseen.sub(
+            acquire(seen, best, rest, unseen,
+                    scorer=scorer, eager=eager)))))
+    if len(best.rows) > sqrt(len(seen.rows)):
+      rest.add(
+        best.sub(
+          best.sorty().rows[-1]))     # ← demote worst BEST → REST
+  return seen.sorty().rows
+```
+
+There is no "rebuild" step. `best.add(row)` updates the NB
+frequency counts for the BEST class in O(features). The
+BEST/REST boundary is maintained dynamically: whenever BEST
+grows too large (more than √N members), the worst BEST row is
+demoted to REST via `best.sub` / `rest.add` — both O(1) per
+column. The entire per-step update cost is O(features),
+regardless of how many rows have been labelled so far.
+
+### The Acquisition Function: Corrected
+
+The
+actual Bayesian acquisition function in `acquire_class.py` is:
+
+```python
+def likelier(seen, best, rest, r):
+    return rest.like(r, len(seen.rows), 2) \
+         - best.like(r, len(seen.rows), 2)
+```
+
+Because `Data.like` returns log-posteriors (see Section 4),
+this computes:
+
+```
+score(r) = log P(r | REST) − log P(r | BEST)
+         = log [ P(r | REST) / P(r | BEST) ]
+```
+
+The acquisition step then picks the row that **minimises**
+this score — i.e., the candidate that looks as much like BEST
+as possible while looking as little like REST as possible. This
+is a log-likelihood ratio: a Bayes factor between the two
+classes. It needs no discretisation, no kernel, no epsilon
+guard, and no rebuilding. Each call is one pass over the
+columns of one row: O(features).
+
+### Eager vs. Lazy Acquisition
+
+`acquire_class.py` offers two modes controlled by the `eager`
+flag:
+
+```python
+def acquire(seen, best, rest, unseen,
+            scorer=nearer, eager=True):
+  if eager:
+    return min(unseen.rows,          # scan whole pool
+               key=lambda r: scorer(seen, best, rest, r))
+  for _ in range(len(unseen.rows)):  # random walk until
+    r = choice(unseen.rows)          # first promising candidate
+    if scorer(seen, best, rest, r) < 0: break
+  return r
+```
+
+**Eager** mode does a full linear scan of the unlabelled pool
+(O(pool × features)) and always picks the best candidate.
+**Lazy** mode samples at random and stops at the first row
+whose score is already negative (better than REST), saving
+work when the pool is large and many good candidates exist.
+Both modes share the same O(1) model-update overhead.
+
+### Experimental Payoff
+
+Despite replacing SMAC's ensemble with a two-class Bayes
+classifier, EZR matches or beats SMAC on all 63 MOOT tasks
+at every budget level (see Figure 1 of Menzies & Ganguly
+2026). The performance gap closes entirely by N = 32 samples.
+The computational gap does not close: the same experiment
+that finishes in **minutes** for EZR takes **days** for SMAC.
+
+This is the punchline of the "simple ain't stupid" argument.
+SMAC's forest encodes rich nonlinear interactions between
+features — but software's Sparsity of Influence means those
+interactions don't matter. Two classes, one log-likelihood
+ratio, O(1) update. That is enough.
+
+### Updated Summary Row
+
+Add this to the table from Section 16:
+
+| Property              | Why it helps                                       |
+|-----------------------|----------------------------------------------------|
+| O(1) per-step update  | active learning stays fast at any budget size      |
+| 2-class Bayes factor  | acquisition = log P(REST\|r) − log P(BEST\|r)      |
+| No forest rebuild     | minutes vs. days compared with SMAC ensembles      |
+
+
+---
+
+## 18. Lab Exercises
 
 ### A: Explore the likelihood scores
 
