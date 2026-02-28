@@ -11,8 +11,9 @@
       src="https://img.shields.io/badge/Chat-%23008080?style=flat-square&logo=discord&logoColor=white" /></a>
   <a href="https://github.com/txt/seai26spr/blob/main/LICENSE.md"><img 
       src="https://img.shields.io/badge/©%20timm%202026-%234b4b4b?style=flat-square&logoColor=white" /></a></p>
-<h1 align="center">:cyclone: CSC491/591 (013): Software Engineering and AI <br>NC State, Spring '26</h1>
-<img src="https://raw.githubusercontent.com/txt/seai26spr/main/docs/lect/banner.png"> 
+<h1 align="center">:cyclone: CSC491/591 (013): Software Engineering and AI
+<br>NC State, Spring '26</h1>
+<img src="https://raw.githubusercontent.com/txt/seai26spr/main/docs/lect/banner.png">
 
 
 # Naive Bayes: Why "Naive" is Actually Genius
@@ -22,7 +23,7 @@
 ## 1. Why Bother? (10 min)
 
 Before we look at the algorithm, let us ask why anyone would
-use it in 2024 when we have neural networks and gradient
+use it in 2026 when we have neural networks and gradient
 boosting.
 
 **Speed.** Training means reading each row once and updating
@@ -89,12 +90,12 @@ probability estimates are often badly wrong, but its
 the class:
 
 ```
-P(row | class) = P(f1 | class) × P(f2 | class) × ... 
+P(row | class) = P(f1 | class) × P(f2 | class) × ...
 ```
 
 This is almost never true. Weather features are correlated.
 Words in a document are correlated. But NB still works — we
-will prove why in Section 7.
+will prove why in Section 14.
 
 ---
 
@@ -293,9 +294,19 @@ contributes to its own likelihood calculation.
 ```python
 from ez_class import Data, csv
 d = Data(csv("weather.csv"))
-print(d.mid())            # the "average" row
 for row in d.rows:
     print(row, d.like(row, len(d.rows), 2))
+
+['sunny', 85, 85, 0, 'no'] -12.37
+['sunny', 80, 90, 1, 'no'] -9.39
+['overcast', 83, 86, 0, 'yes'] -10.99
+['rainy', 70, 96, 0, 'yes'] -7.95
+['rainy', 68, 80, 0, 'yes'] -7.56
+['rainy', 65, 70, 1, 'no'] -10.54
+['overcast', 64, 65, 1, 'yes'] -12.65
+['sunny', 72, 95, 0, 'no'] -7.65
+['sunny', 69, 70, 0, 'yes'] -8.97
+['overcast', 75, 90, 1, 'no'] -7.48
 ```
 
 Rows that are typical of the dataset get higher (less
@@ -401,7 +412,7 @@ temp=72:        Gauss(72; μ=69, σ=5.86)        = 0.060
 humidity=90:    Gauss(90; μ=80, σ=10.16)       = 0.024
 
 log(0.500) + log(0.250) + log(0.250) + log(0.060) + log(0.024)
-= -0.693  + -1.386    + -1.386    + -2.818    + -3.722
+= -0.693   + -1.386    + -1.386    + -2.818    + -3.722
 = -10.005
 ```
 
@@ -414,16 +425,16 @@ temp=72:        Gauss(72; μ=75, σ=5.08)        = 0.066
 humidity=90:    Gauss(90; μ=90, σ=3.91)        = 0.102
 
 log(0.500) + log(0.583) + log(0.583) + log(0.066) + log(0.102)
-= -0.693  + -0.539    + -0.539    + -2.717    + -2.281
+= -0.693   + -0.539    + -0.539    + -2.717    + -2.281
 = -6.769
 ```
 
 **Decision: no** (−6.769 > −10.005)
 
 The decisive features were `outlook` and `windy`: sunny
-appears 3× in no rows and only 1× in yes rows, and true
-wind follows the same pattern. Together they outweigh
-everything else.
+appears 3× in no rows vs 1× in yes rows, and true wind
+follows the same pattern. Together they outweigh everything
+else.
 
 ---
 
@@ -451,39 +462,365 @@ Walk through each line:
 
 - `d = Data([next(rows)])` — reads the header row to learn
   column names and types.
-- `every` — a `Data` that holds all rows regardless of class,
-  used for `n_all` (the total row count in the prior formula).
+- `every` — a `Data` holding all rows regardless of class,
+  used for `n_all` in the prior formula.
 - `ks` — a dict mapping each class label to its own `Data`
   holding only that class's rows.
 - `warmup` — we wait for 10 rows before predicting. With
-  fewer rows, the frequency tables are too sparse to trust.
+  fewer rows the frequency tables are too sparse to trust.
 - `max(ks, key=best)` — calls `like` on each class-specific
   `Data`, returns the class with the highest log-posterior.
 - `confuse(cf, str(k), str(...))` — records want vs got in
-  the confusion matrix.
-- `ks[k].add(every.add(r))` — the row goes into `every` and
-  into its class-specific `Data`. The model learns *after*
-  predicting, so we never cheat by training on test data.
+  the confusion matrix (see next section).
+- `ks[k].add(every.add(r))` — the row goes into `every`
+  and into its class-specific `Data`. The model learns
+  *after* predicting, so we never cheat by training on test
+  data.
 
 This is a true online learner. Every row is classified using
 only what came before it, then immediately incorporated into
 the model.
 
-**Try it yourself:**
+Running on two real datasets:
 
-```bash
-./bayes_class.py --data path/to/soybean.csv
+```
+▶ ./bayes_class.py --data ~/gits/moot/classify/diabetes.csv
+          label,   n,  pd,  pf, prec, acc
+tested_positive, 262,  74,  32,   55,  70
+tested_negative, 496,  67,  25,   83,  70
+       _OVERALL, 758,  70,  29,   70,  70
+
+▶ ./bayes_class.py --data ~/gits/moot/classify/soybean.csv
+                      label,   n,  pd, pf, prec, acc
+           herbicide-injury,   8,  75,  0,   85,  99
+      diaporthe-stem-canker,  10, 100,  0,   76,  99
+              cyst-nematode,  14,  85,  0,  100,  99
+diaporthe-pod-&-stem-blight,  15,  80,  0,  100,  99
+               2-4-d-injury,  16,  50,  0,  100,  98
+               charcoal-rot,  20,  95,  0,   79,  99
+       rhizoctonia-root-rot,  20,  95,  0,   86,  99
+             powdery-mildew,  20,  85,  0,   85,  99
+               downy-mildew,  20,  95,  0,   90,  99
+           bacterial-blight,  20,  65,  0,   68,  98
+          bacterial-pustule,  20,  80,  0,   80,  98
+          purple-seed-stain,  20,  80,  0,   94,  99
+     phyllosticta-leaf-spot,  20,  45,  0,   81,  98
+             brown-stem-rot,  44,  93,  0,   91,  98
+                anthracnose,  44,  93,  0,   89,  98
+           phytophthora-rot,  88,  96,  1,   93,  98
+        alternarialeaf-spot,  91,  87,  3,   77,  94
+         frog-eye-leaf-spot,  91,  70,  0,   95,  95
+                 brown-spot,  92,  92,  5,   73,  94
+                   _OVERALL, 673,  84,  0,   84,  98
 ```
 
-You should see a table of `pd`, `pf`, `prec`, `acc` per
-class. Soybean is one of the datasets where NB achieves
-100% accuracy (Domingos & Pazzani Table 1).
+But what do `pd`, `pf`, `prec`, `acc` actually mean?
+That is what the next three sections explain.
 
 ---
 
-## 9. Why It Works: The Optimality Result (10 min)
+## 9. The Confusion Matrix (2-class case) (10 min)
 
-Here is the surprising theory behind NB's practical success.
+Given true class (want) and predicted class (got), we tally
+four cells. Using the A/B/C/D notation from Menzies et al.
+"Problems with Precision" (TSE 2007):
+
+```
+              Predicted
+              yes      no
+Actual  yes   D=TP     B=FN
+        no    C=FP     A=TN
+```
+
+Four standard measures:
+
+```
+pd   = recall      = D / (B+D)       # of actual yes, how many caught?
+pf   = false alarm = C / (A+C)       # of actual no, how many flagged?
+prec = precision   = D / (D+C)       # of flagged, how many are real?
+acc  = accuracy    = (A+D)/(A+B+C+D)
+```
+
+### Worked example
+
+100 rows: 20 actually defective (pos), 80 not (neg).
+Classifier finds 15 TP, 5 FN, 10 FP, 70 TN:
+
+```
+A=70   B=5   C=10   D=15
+
+pd   = 15 / (5+15)    = 15/20  = 75%
+pf   = 10 / (10+70)   = 10/80  = 13%
+prec = 15 / (15+10)   = 15/25  = 60%
+acc  = (70+15) / 100  = 85/100 = 85%
+```
+
+A useful reality check: a classifier that flags *everything*
+gets pd=100% but pf=100%. One that flags *nothing* gets
+pf=0% but pd=0%. Useful classifiers live in the middle.
+
+---
+
+## 10. The 3-Class Case (10 min)
+
+With 3 classes (A, B, C), we generate *three separate*
+binary confusion matrices using a **one-vs-rest** strategy.
+
+For class X: label each row as `X` or `not-X`, compute
+A, B, C, D as before, derive pd/pf/prec/acc independently.
+
+### Example: 90 rows across 3 classes
+
+Predictions yield:
+
+```
+Class A: TP=28, FN=2,  FP=8,  TN=52
+Class B: TP=21, FN=9,  FP=4,  TN=56
+Class C: TP=18, FN=6,  FP=3,  TN=63
+```
+
+For class A:
+
+```
+pd   = 28/(2+28)   = 93%
+pf   =  8/(8+52)   = 13%
+prec = 28/(28+8)   = 78%
+acc  = (28+52)/90  = 89%
+```
+
+For class B:
+
+```
+pd   = 21/(9+21)   = 70%
+pf   =  4/(4+56)   =  7%
+prec = 21/(21+4)   = 84%
+acc  = (21+56)/90  = 86%
+```
+
+For class C:
+
+```
+pd   = 18/(6+18)   = 75%
+pf   =  3/(3+63)   =  5%
+prec = 18/(18+3)   = 86%
+acc  = (18+63)/90  = 90%
+```
+
+The `_OVERALL` row sums all TP, FP, FN, TN across classes
+before recomputing the rates — as `stats.py` does.
+
+---
+
+## 11. How stats.py Tracks A/B/C/D Incrementally (10 min)
+
+```python
+def confuse(cf:Confuse, want:str, got:str) -> str:
+    for x in (want, got):
+        if x not in cf.klasses:
+            cf.klasses[x] = o(label=x, tn=cf.total,
+                               fn=0, fp=0, tp=0)
+    for c in cf.klasses.values():
+        if c.label == want:
+            c.tp += got == want
+            c.fn += got != want
+        else:
+            c.fp += got == c.label
+            c.tn += got != c.label
+    cf.total += 1
+    return got
+```
+
+Key points:
+
+- A new class is initialized with `tn=cf.total`: all rows
+  seen so far that didn't mention this class count as true
+  negatives — one-vs-rest applied retroactively in one line.
+- Each call loops over **all known classes**, updating every
+  one. This is how one-vs-rest is done incrementally with
+  no row storage.
+- `c.fp += got == c.label` catches cases where the
+  classifier wrongly predicted *this* class for a row that
+  was not it.
+
+Then `confused()` derives the rates:
+
+```python
+c.pd, c.prec, c.pf, c.acc = (
+    p(c.tp, c.tp+c.fn),  p(c.tp, c.fp+c.tp),
+    p(c.fp, c.fp+c.tn),  p(c.tp+c.tn, c.tp+c.fp+c.fn+c.tn))
+```
+
+And `bayes_class.py` feeds it row by row:
+
+```python
+if len(every.rows) >= warmup:
+    confuse(cf, str(k), str(max(ks, key=best)))
+ks[k].add(every.add(r))
+```
+
+The `warmup` period lets the Bayes models accumulate enough
+data before their predictions are scored.
+
+---
+
+## 12. The Problem with Precision (10 min)
+
+From Menzies et al. "Problems with Precision" (TSE 2007),
+the key equation derived from the Zhangs' formula is:
+
+```
+prec = 1 / (1 + (neg/pos) × pf/recall)
+```
+
+Rearranged:
+
+```
+pf = (pos/neg) × ((1 - prec)/prec) × recall
+```
+
+**Precision is not a free parameter.** Given a fixed
+dataset — fixed neg/pos ratio — fixing recall and pf
+*determines* precision. You cannot independently tune all
+four measures. They are connected through the structure of
+the data.
+
+### Consequences for SE data
+
+SE datasets often have very large neg/pos ratios. The paper
+studied datasets with neg/pos of 1.04, 7.33, 9, 10.11,
+13.29, 15.67, and 249. At high neg/pos, achieving high
+precision requires pf to be vanishingly small — almost
+never achievable in practice.
+
+This explains why **precision is unstable** across datasets.
+At very small pf values, tiny changes in pf cause huge
+swings in prec (sudden jumps from 0 to 1). All other
+measures — pd, pf, acc — vary far more smoothly. Precision
+is a derived consequence of the data's neg/pos ratio, not
+something a learner controls.
+
+Practical advice: prefer pd and pf as evaluation measures.
+They are stable. Precision is not.
+
+### When low precision is still useful
+
+- When missing a target is very costly (safety, security):
+  aim for pd=100%, accept low precision.
+- When false alarm inspection is cheap (search-style tools):
+  users scan a few false alarms without minding.
+- When selectivity is small: only a small fraction of data
+  is returned, so even imprecise detectors surface real
+  issues.
+
+---
+
+## 13. Eight Evaluation Criteria (§5.9) (10 min)
+
+From Shrikanth & Menzies "Early Bird" (arXiv 2105.11082).
+No single measure tells the whole story, and the measures
+can contradict each other by design.
+
+### Recall (pd) — maximize
+
+```
+Recall = TP / (TP + FN)
+```
+
+Of all actual defects, how many did we find? Trivially
+maxed at 100% by flagging everything — but then PF=100%.
+
+### False Positive Rate (PF) — minimize
+
+```
+PF = FP / (FP + TN)
+```
+
+Of all clean commits, how many did we wrongly flag? Trivially
+zeroed by flagging nothing — but then Recall=0%.
+
+### AUC — maximize
+
+Area under the ROC curve (PF on x-axis, Recall on y-axis).
+Threshold-free summary: 1.0 is perfect, 0.5 is random.
+
+### D2H (Distance to Heaven) — minimize
+
+"Heaven" is Recall=1, PF=0. D2H measures how far we are:
+
+```
+D2H = sqrt( (1-Recall)^2 + (0-PF)^2 ) / sqrt(2)
+```
+
+Aggregates both goals into one number, normalized to [0,1].
+
+### G-Measure (GM) — maximize
+
+Harmonic mean of Recall and specificity (1-PF):
+
+```
+GM = 2 × Recall × (1-PF) / (Recall + (1-PF))
+```
+
+GM and D2H combine the same two quantities differently.
+Good GM does not guarantee good D2H, and vice versa.
+
+### Brier Score — minimize
+
+Mean squared error between actual outcome y ∈ {0,1} and
+predicted probability p:
+
+```
+Brier = (1/n) × Σ (y_i - p_i)²
+```
+
+Penalizes confident wrong predictions most heavily. Note
+that Brier and Recall are antithetical: minimizing loss can
+actually lower recall.
+
+### IFA (Initial False Alarms) — minimize
+
+Commits are sorted by predicted defect probability. IFA
+counts the false alarms encountered before the *first* real
+defect is found. Based on Parnin & Orso's finding that
+developers lose trust in analytics after many early false
+alarms.
+
+### MCC (Matthews Correlation Coefficient) — maximize
+
+Uses all four cells of the confusion matrix:
+
+```
+MCC = (TP×TN - FP×FN)
+      / sqrt((TP+FP)(TP+FN)(TN+FP)(TN+FN))
+```
+
+Returns [-1, +1]. Unlike accuracy, MCC is fair on heavily
+imbalanced data. The paper uses it as a substitute for
+precision/F-measure, which are unreliable on SE datasets.
+
+### Summary table
+
+| Measure | Direction | What it captures              |
+|---------|-----------|-------------------------------|
+| Recall  | maximize  | coverage of actual defects    |
+| PF      | minimize  | false alarm burden             |
+| AUC     | maximize  | threshold-free ROC summary    |
+| D2H     | minimize  | distance from ideal (0,1)     |
+| GM      | maximize  | recall + specificity balance  |
+| Brier   | minimize  | probability calibration       |
+| IFA     | minimize  | early false alarm trust       |
+| MCC     | maximize  | balanced confusion summary    |
+
+The paper deliberately **excludes precision**: "Prior work
+has shown that precision has significant issues for
+unbalanced data. We do not include that in our evaluation."
+MCC draws from all four corners of the confusion matrix
+without precision's instability — that is why it is there.
+
+---
+
+## 14. Why It Works: The Optimality Result (10 min)
+
 Domingos & Pazzani (1997) ask: when is NB *optimal* even
 when its independence assumption is false?
 
@@ -491,28 +828,27 @@ when its independence assumption is false?
 class is correct or not. We don't care how wrong the
 probability estimate is, as long as the right class wins.
 
-**Theorem 1** (Domingos & Pazzani): NB is optimal under
-zero-one loss for a given example if and only if
+**Theorem 1**: NB is optimal under zero-one loss for a
+given example if and only if
 
 ```
 (p ≥ ½  and  r ≥ s)   or   (p ≤ ½  and  r ≤ s)
 ```
 
 where `p = P(+ | example)` is the true class probability,
-`r = P(+) ∏ P(Aj | +)` is NB's discriminant for class `+`,
-and `s` is the same for class `−`.
+`r = P(+) ∏ P(Aj | +)` is NB's discriminant for `+`,
+and `s` is the same for `−`.
 
-**Corollary 1**: This condition holds over exactly *half the
-volume* of all possible (p, r, s) combinations. The
-independence assumption, by contrast, is needed only on a
-second-order infinitesimal fraction of that space. So NB's
-true region of optimality is vastly larger than the
-independence assumption suggests.
+**Corollary 1**: This condition holds over exactly *half
+the volume* of all possible (p, r, s) combinations. The
+independence assumption is needed only on a second-order
+infinitesimal fraction of that space. NB's true region of
+optimality is vastly larger than previously thought.
 
-Put plainly: NB only needs to get the *sign* right, not the
-*magnitude*. Even if its probability estimates are badly
-wrong, it will pick the correct class as long as the ranking
-is preserved.
+Put plainly: NB only needs to get the *sign* right, not
+the *magnitude*. Even if its probability estimates are
+badly wrong, it picks the correct class as long as the
+ranking is preserved.
 
 **Conjunctions and disjunctions** (Theorems 7 & 8): NB is
 provably globally optimal for learning conjunctive and
@@ -520,14 +856,14 @@ disjunctive concepts — even though these concepts
 decisively violate the independence assumption.
 
 **Small sample advantage**: Because NB has low variance
-(it stores O(features) parameters, not O(rows)), it often
-outperforms C4.5 on datasets with fewer than ~1000 rows
-even when C4.5's learning bias is more appropriate. At
-small sample sizes, variance dominates bias, and NB wins.
+(O(features) parameters, not O(rows)), it often outperforms
+C4.5 on datasets with fewer than ~1000 rows even when
+C4.5's learning bias is more appropriate. At small sample
+sizes, variance dominates bias, and NB wins.
 
 ---
 
-## 10. When NB Struggles, and Fixes (10 min)
+## 15. When NB Struggles, and Fixes (10 min)
 
 NB's independence assumption creates two systematic biases
 that Rennie et al. (ICML 2003) identified for text
@@ -537,16 +873,17 @@ classification. Both have simple fixes.
 
 If class A has 1000 training examples and class B has 10,
 NB will produce weight estimates for class B that are
-systematically too low (because the log function is concave
-and the expectation of log is less than log of expectation
-for small samples). The classifier then unfairly prefers
-class A.
+systematically too low (because log is concave and
+E[log x] < log E[x] for small samples). The classifier
+then unfairly prefers class A.
 
 **Fix: Complement Naive Bayes (CNB)**. Estimate weights for
 class C using all examples *not* in class C:
 
 ```
-θ̂_{ci_complement} = (N_{ci_complement} + α) / (N_{c_complement} + α×vocab)
+             N_{ci_complement} + α
+θ̂_complement = ──────────────────────────
+             N_{c_complement} + α × vocab
 ```
 
 Each class now uses a roughly equal amount of training data
@@ -556,48 +893,54 @@ varying dataset sizes (see Rennie et al. Figure 1).
 ### Problem 2: Word dependencies inflate magnitudes
 
 When two words always appear together ("San" and
-"Francisco"), NB double-counts their evidence. The
-magnitude of the weight vector for the dependent class
-grows artificially large, biasing predictions toward it.
+"Francisco"), NB double-counts their evidence. The weight
+vector for the dependent class grows artificially large,
+biasing predictions toward it.
 
 **Fix: Weight normalization**. Divide each weight by the
-sum of absolute weights for that class:
+L1 norm of that class's weight vector:
 
 ```
-ŵ_{ci} = log θ̂_{ci} / Σ_k |log θ̂_{ck}|
+              log P(word_i | class_c)
+w[c,i] = ─────────────────────────────────────
+          Σ_k | log P(word_k | class_c) |
 ```
 
 This keeps classes with more dependencies from dominating.
 
 ### The result
 
-Plain MNB on Industry Sector: **58%** accuracy.  
-Transformed Weight-normalized CNB (TWCNB): **92%**.  
-Support Vector Machine: **93%**.
+| Classifier | Industry Sector accuracy |
+|------------|--------------------------|
+| Plain MNB  | 58%                      |
+| TWCNB      | 92%                      |
+| SVM        | 93%                      |
 
 TWCNB approaches SVM accuracy while being far faster and
 easier to implement. For the full transform pipeline (log
 term frequency, IDF weighting, length normalization,
-complement estimation, weight normalization) see Table 4 of
-Rennie et al.
+complement estimation, weight normalization) see Table 4
+of Rennie et al.
 
 The key lesson: NB's failures are not fundamental — they
 are correctable with simple, motivated heuristics.
 
 ---
 
-## 11. Summary
+## 16. Summary
 
-| Property         | Why it helps                                    |
-|------------------|-------------------------------------------------|
-| O(1) add/sub     | streaming, expiry, cross-validation             |
-| O(features) mem  | no rows stored, model stays small               |
-| Handles "?"      | just skip that column's likelihood term         |
-| Log space        | avoids floating-point underflow                 |
-| Smoothing        | avoids zero probabilities for unseen values     |
-| Ranking only     | doesn't need good probability estimates to win  |
-| Optimal for AND/OR| works despite independence assumption failure  |
-| Low variance     | beats complex models on small datasets          |
+| Property           | Why it helps                                   |
+|--------------------|------------------------------------------------|
+| O(1) add/sub       | streaming, expiry, cross-validation            |
+| O(features) mem    | no rows stored, model stays small              |
+| Handles "?"        | just skip that column's likelihood term        |
+| Log space          | avoids floating-point underflow                |
+| Smoothing          | avoids zero probabilities for unseen values    |
+| Ranking only       | doesn't need good probability estimates to win |
+| Optimal for AND/OR | works despite independence assumption failure  |
+| Low variance       | beats complex models on small datasets         |
+| pd/pf not prec     | stable measures; precision is data-dependent   |
+| MCC over F1        | fair on imbalanced data, uses all 4 cells      |
 
 NB is not a toy. It is the right first model to try — fast
 to implement, interpretable, incremental, and surprisingly
@@ -605,7 +948,7 @@ hard to beat at small to medium dataset sizes.
 
 ---
 
-## 12. Lab Exercises
+## 17. Lab Exercises
 
 ### A: Explore the likelihood scores
 
@@ -618,7 +961,7 @@ What does that tell you about the "typical" row?
 
 ### B: Sensitivity to smoothing
 
-Edit `the.k` and `the.m` in `ez_class.py` (line 12-14).
+Edit `the.k` and `the.m` in `ez_class.py`.
 
 - Set `k=0`. What happens to `Sym.like` when it encounters
   a value it has never seen for a given class?
@@ -641,14 +984,29 @@ In `bayes_class.py`, change `warmup=10` to `warmup=1`.
 ```
 
 The assert at the end checks that midpoints after deletion
-equal midpoints after insertion. Read the code. Why does the
-order of deletion not matter? What would break if `sub`
+equal midpoints after insertion. Read the code. Why does
+the order of deletion not matter? What would break if `sub`
 decremented `seen` but did not remove the value from the
 list?
 
-### E: Try complement NB (advanced)
+### E: Precision instability
+
+On the diabetes output (Section 8), the two classes have
+neg/pos ratios of roughly 496/262 ≈ 1.9 and 262/496 ≈ 0.5.
+Using the formula from Section 12:
+
+```
+prec = 1 / (1 + (neg/pos) × pf/recall)
+```
+
+Plug in the actual pd and pf values from the table. Do you
+recover the reported precision values? What would prec
+become if pf dropped from 32% to 5% while pd held steady?
+
+### F: Try complement NB (advanced)
 
 Using `ez_class.py` primitives, implement Complement NB:
 for each class, build a `Data` from all rows *not* in that
-class, and use its `like` score negated for classification.
-Compare accuracy on `diabetes.csv` against the standard NB.
+class, and use its negated `like` score for classification.
+Compare pd, pf, prec, acc on `diabetes.csv` against
+standard NB. Does CNB help on the imbalanced class?
