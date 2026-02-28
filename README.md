@@ -69,7 +69,7 @@ code suggestion, test generation, and documentation support.
 | Feb 09 | || |
 | Feb 16 |[Python](docs/lect/py.md) |                         | [week4](docs/review/w4.md) |
 | Feb 23 |   [Local search](docs/lect/locals.md)              | [2a](docs/submit/two.md)   | [week5](docs/review/w5.md)  |
-| Mar 02 | |2b | |
+| Mar 02 | [new class](docs/lect/class.md)<br>[bayes](docs/lect/class.md)<br>[cluster](docs/lect/kmeans.md) |2b | |
 | Mar 09 | |3a | |
 | Mar 16 | Spring Break (no class) | | |
 | Mar 23 | |3b | |
