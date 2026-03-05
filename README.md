@@ -67,9 +67,9 @@ code suggestion, test generation, and documentation support.
 | Jan 26 | [sbse](docs/lect/w3sbse.md)<br>[sa](docs/lect/w3sa.md)<br>[📀 Video](https://ncsu.zoom.us/rec/share/wFw9V14wbR518UZe4iGFnFDwRwNPLcVYmayRKdACMM59se3fEGzrfv3RpscxMWMJ.4CyJigvgzYiLcyER)|[1a](docs/submit/one.md) | [week3](docs/review/w3.md) |
 | Feb 02 | |1b | |
 | Feb 09 | || |
-| Feb 16 |[Python](docs/lect/py.md) |                         | [week4](docs/review/w4.md) |
-| Feb 23 |   [Local search](docs/lect/locals.md)              | [2a](docs/submit/two.md)  [rubric](https://discord.com/channels/1458947423765397676/1475694486712488017/1475694595689021674) | [week5](docs/review/w5.md)  |
-| Mar 02 | [new class](docs/lect/oo.md)<br>[bayes](docs/lect/class.md)<br>[cluster](docs/lect/kmeans.md) |2b | |
+| Feb 16 |[Python](docs/lect/py.md) |            | [week4](docs/review/w4.md) |
+| Feb 23 |   [Local search](docs/lect/locals.md) | [2a](docs/submit/two.md)  [rubric](https://discord.com/channels/1458947423765397676/1475694486712488017/1475694595689021674) | [week5](docs/review/w5.md)  |
+| Mar 02 | [new class](docs/lect/oo.md)<br>[bayes](docs/lect/class.md)<br>[cluster](docs/lect/kmeans.md) |2b | [w6](docs/review/w6.md) |
 | Mar 09 | | | |
 | Mar 16 | Spring Break (no class) | | |
 | Mar 23 | |[3a](docs/submit/three/three.md) | |
