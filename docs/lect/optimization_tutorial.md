@@ -1,10 +1,4 @@
-![History of Optimization Banner](optimization_banner.png)
-
-
-# The History of Optimization: A Graduate Tutorial
-### From Memory Constraints to Surrogates — Theory, Pseudocode, SE Applications, and Live Code
-
-**Estimated time: ~2.5 hours**
+# The History of Optimization
 
 ---
 
