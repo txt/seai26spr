@@ -194,20 +194,6 @@ IGD uses a proxy Pareto front (the union of all algorithms' non-dominated soluti
 
 ---
 
-### Key Takeaways from the Comparison
-
-1. **Single-objective algorithms are not wrong — just different.** CMA-ES/DE/GA get very close to one ideal point (D2H ≈ 0.066) but give you no trade-off surface. Use them only when the weight between objectives is already decided.
-
-2. **No single algorithm wins on all three metrics.** NSGA-II wins HV, MOEA/D wins D2H, SPEA2 wins IGD. Always report multiple metrics.
-
-3. **IGD requires a proxy front.** Since the true POM3 Pareto front is unknown, the chart uses the union of all algorithms' non-dominated solutions. This makes IGD relative, not absolute.
-
-4. **MOEA/D's decomposition biases convergence over spread** on this problem. If your application needs diversity (e.g., for a decision-maker to explore options), NSGA-II or SPEA2 is safer.
-
-5. **Random is a meaningful baseline.** In any SBSE experiment, always compare against random search. If your sophisticated algorithm barely beats random, the fitness landscape may be easy or your evaluation budget is too large.
-
----
-
 ## Part 3: Review Questions
 
 ---
