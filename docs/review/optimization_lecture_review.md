@@ -159,7 +159,7 @@
 
 Nine optimization algorithms were run on **POM3d**. All algorithms ran for 100 generations.
 
-![POM3a Multi-Metric Algorithm Comparison](result_opt.png)
+![POM3a Multi-Metric Algorithm Comparison](results_opt.png)
 
 ### Reading the Three Metrics
 
