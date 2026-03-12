@@ -155,9 +155,9 @@
 
 ---
 
-## Part 2: The POM3a Algorithm Comparison — Explained
+## Part 2: The Algorithm Comparison — Explained
 
-Nine optimization algorithms were run on **POM3a**, a software process simulation model with three conflicting objectives: minimize idle rate, minimize cost, and maximize completion rate. All algorithms ran for 100 generations.
+Nine optimization algorithms were run on **POM3d**. All algorithms ran for 100 generations.
 
 ![POM3a Multi-Metric Algorithm Comparison](result_opt.png)
 
