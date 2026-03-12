@@ -16,7 +16,7 @@
 
 
 
-# Week 5: Optimization — Review Notes
+# Optimization — Review Notes
 
 
 ## Part 1: Glossary
