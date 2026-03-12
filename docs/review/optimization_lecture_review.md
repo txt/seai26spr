@@ -280,7 +280,6 @@ IGD uses a proxy Pareto front (the union of all algorithms' non-dominated soluti
 ### Search-Based Software Engineering (SBSE)
 
 - **Harman, M., McMinn, P., de Souza, J.T. & Yoo, S. (2012). Search-Based Software Engineering: Techniques, Taxonomy, Tutorial. In Bernardo, M., Di Penta, M. & Inverardi, P. (Eds.), *Empirical Software Engineering and Verification: International Summer Schools, LASER 2008–2010*, Lecture Notes in Computer Science vol. 7007. Springer, Berlin, Heidelberg, pp. 1–59.** *(discussed in class)*
-- Harman, M. & Jones, B.F. (2001). Search-Based Software Engineering. *Information and Software Technology* 43(14), 833–839. *(Original SBSE paper)*
 - Le Goues, C., Nguyen, T., Forrest, S. & Weimer, W. (2012). GenProg: A Generic Method for Automatic Software Repair. *IEEE Transactions on Software Engineering* 38(1), 54–72.
 - Fraser, G. & Arcuri, A. (2011). EvoSuite: Automatic Test Suite Generation for Object-Oriented Software. *Proceedings of ESEC/FSE 2011*, 416–419.
 - Yoo, S. & Harman, M. (2012). Regression Testing Minimization, Selection and Prioritization: A Survey. *Software Testing, Verification and Reliability* 22(2), 67–120.
