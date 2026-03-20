@@ -16,15 +16,17 @@
 <img src="https://raw.githubusercontent.com/txt/seai26spr/main/docs/lect/banner.png">
 
 # From Black Boxes to Small Trees
-## An 80-minute lecture on explainable optimization
+A lecture on explainable optimization
 
----
 
-## Part 1: Why Locality Matters (15 min)
+## Part 1: Why Locality Matters 
 
 ### The distributed dogma
 
-For decades, the orthodoxy was that neural network
+For decades, the orthodoxy was that neural networks, deep elarenrs, Large language models
+are inexplicable black boxes, beyond the ken or mortal man (sic).
+
+Why? Because inside that kind of 
 knowledge is *distributed* — smeared across millions
 of weights, impossible to localize. Dropout trains
 networks to survive losing random neurons. Adversarial
@@ -62,7 +64,7 @@ Knowledge is sparse. Knowledge is local. Surgery works.
 
 ---
 
-## Part 2: Why Interpretable, Not Explainable (15 min)
+## Part 2: Why Interpretable, Not Explainable 
 
 ### Rudin's argument (2019)
 
@@ -131,7 +133,7 @@ a key failure mode of black boxes.
 
 ---
 
-## Part 3: The Simplest Useful Model (20 min)
+## Part 3: The Simplest Useful Model 
 
 ### How the tree works
 
@@ -268,7 +270,7 @@ The tree *is* the explanation.
 
 ---
 
-## Part 4: The Causal Ladder — on One Slide (15 min)
+## Part 4: The Causal Ladder — on One Slide 
 
 ### Pearl's three rungs
 
@@ -419,7 +421,7 @@ what the finger does:
 
 ---
 
-## Part 5: Should We Accept This? (5 min)
+## Part 5: Should We Accept This? 
 
 ### The question
 
@@ -448,7 +450,7 @@ Some people say yes. They say:
 - The accuracy-interpretability tradeoff is real.
 - Post-hoc explanations are good enough.
 
-We've spent 75 minutes showing that all three claims
+We've spent a hour or so showing that all three claims
 are empirically false for structured data — which is
 most of what SE, healthcare, criminal justice, and
 finance actually use.
