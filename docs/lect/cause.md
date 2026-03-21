@@ -384,6 +384,53 @@ def whatif(t, r, at, val):
 
 Two lines. But most of the time you don't need them.
 
+
+### Why walk up — not jump across?
+
+A naive optimizer would say: "You're in the worst leaf
+(0.83). The best leaf is 0.22. Just go there." But
+going there means changing KLOC, RELY, and possibly
+everything else. That's not advice — that's "be a
+different project."
+
+Counterfactuals are not optimization. Three constraints
+separate them:
+
+**Freeze the individual.** Pearl calls this U — the
+unobserved background. In the tree, U is everything in
+the row you don't change. When you ask "what if
+SITE > 3.63?", the project's size, complexity,
+personnel, and history stay frozen. You're asking about
+*this* project, not some hypothetical ideal one.
+
+**Minimal change.** Walking up one branch tests one
+variable at a time. That's not a limitation — it's the
+point. A manager can action one change. Two changes are
+harder. Three are a reorg. The tree's branching
+structure naturally decomposes the counterfactual into
+single-variable interventions ranked by impact.
+
+**Stay in observed territory.** Every sibling leaf
+contains real rows — projects that actually existed.
+You're not extrapolating to a fantasy configuration.
+You're saying "projects like yours, but with better
+site collocation, looked like *this*." The tree can't
+send you somewhere the data hasn't been.
+
+The `whatif` function encodes all three constraints
+in two lines:
+
+    r2 = r[:]          # freeze U (copy the row)
+    r2[c.at] = mid(c)  # minimal change (one feature)
+    return leaf(t, r2)  # stay in observed territory
+                         # (the tree routes to a real leaf)
+
+This is what distinguishes Rung 3 from Rung 2.
+Intervention asks "what does the model predict for
+new data?" Counterfactual asks "what would *this
+specific individual* experience if *one thing* were
+different — holding everything else fixed?"
+
 ### The 3×3 grid collapses
 
 Buse and Zimmermann's analytics framework looks like

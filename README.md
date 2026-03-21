@@ -72,7 +72,7 @@ code suggestion, test generation, and documentation support.
 | Mar 02 | [new class](docs/lect/oo.md)<br>[bayes](docs/lect/class.md)<br>[cluster](docs/lect/kmeans.md) |2b | [w6](docs/review/w6.md)<br> [w6b](docs/review/w6b.md)  |
 | Mar 09 | [optimization algorithms](docs/lect/optimization_tutorial.md)| | |
 | Mar 16 | Spring Break (no class) | | |
-| Mar 23 | |[3a](docs/submit/three/three.md) | |
+| Mar 23 | [explain](docs/lect/cause.md)  |[3a](docs/submit/three/three.md) | |
 | Mar 30 | |3b <br> [Grad 6.0](docs/submit/project.md) | |
 | Apr 06 | | 4a  | |
 | Apr 13 | |4b  | |
