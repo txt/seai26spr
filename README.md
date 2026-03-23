@@ -70,9 +70,9 @@ code suggestion, test generation, and documentation support.
 | Feb 16 |[Python](docs/lect/py.md) |            | [week4](docs/review/w4.md) |
 | Feb 23 |   [Local search](docs/lect/locals.md) | [2a](docs/submit/two.md)  [rubric](https://discord.com/channels/1458947423765397676/1475694486712488017/1475694595689021674) | [week5](docs/review/w5.md)  |
 | Mar 02 | [new class](docs/lect/oo.md)<br>[bayes](docs/lect/class.md)<br>[cluster](docs/lect/kmeans.md) |2b | [w6](docs/review/w6.md)<br> [w6b](docs/review/w6b.md)  |
-| Mar 09 | [optimization algorithms](docs/lect/optimization_tutorial.md)| | |
+| Mar 09 | [optimization algorithms](docs/lect/optimization_tutorial.md)| |  [w7](docs/review/optimization_lecture_review.md) |
 | Mar 16 | Spring Break (no class) | | |
-| Mar 23 | |[3a](docs/submit/three/three.md) | |
+| Mar 23 | [explain](docs/lect/cause.md)  |[3a](docs/submit/three/three.md) | |
 | Mar 30 | |3b <br> [Grad 6.0](docs/submit/project.md) | |
 | Apr 06 | | 4a  | |
 | Apr 13 | |4b  | |
