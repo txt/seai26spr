@@ -402,14 +402,14 @@ Compare  Model       Benchmark  Simulate
 And the rows are just *what you read* in the same
 output. One report per column, three readings each.
 9 cells, 3 functions:
-```text
+
 | past   | pressent    | figure|
 |--------------|--------------|---------------------|
 | See (train)  | Act (test)   | Imagine (perturb) |
 | showTree     | leaf → gap   | whatif → rank       |
 | eg_see       | eg_act       | eg_imagine          |
 | Rung 1       | Rung 2       | Rung 3              |
-```
+
 
 ---
 
