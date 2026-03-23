@@ -279,15 +279,14 @@ In tree terms: `build` + `showTree`. The output above.
 *this* row?" Apply the model to new data. The model
 itself is an intervention — without it, you'd just
 be eyeballing the data (rung 1).
+
 ```python
-def leaf(t, r):
-  if not t.L: return t
-  v = r[t.at]
-  c = t.d.cols.all[t.at]
-  go = (v != "?" and
-        (v <= t.cut if isinstance(c, Num)
-         else v == t.cut))
-  return leaf(t.L if go else t.R, r)
+def treeLeaf(t: Tree, r: Row) -> Tree:
+  """Traverse the tree to find the leaf node for a given row."""
+  if not t.left: return t
+  v = r[t.col.at]
+  go = (v != "?" and v <= t.cut) if Num == type(t.col) else (v != "?" and v == t.cut)
+  return treeLeaf(t.left if go else t.right, r)
 ```
 
 Route a test row. Compare actual score vs leaf score.
@@ -345,13 +344,37 @@ You're saying "projects like yours, but with better
 site collocation, looked like *this*." The tree can't
 send you somewhere the data hasn't been.
 
-The `whatif` function encodes all three constraints
-in two lines:
+The `whatif` planning function encodes all three constraints
+in six lines:
 
-    r2 = r[:]          # freeze U (copy the row)
-    r2[c.at] = mid(c)  # minimal change (one feature)
-    return leaf(t, r2)  # stay in observed territory
-                         # (the tree routes to a real leaf)
+```python
+def treePlan(t: Tree, here: Tree) -> Iterable[tuple]:
+  """Yield plans (variable changes) to improve outcomes from current leaf."""
+  eps = the.stats.eps * spread(t.ynum)
+  for there, _, _, _, _ in treeNodes(t):
+    if there.col is None and (dy := mid(here.ynum) - mid(there.ynum)) > eps:
+      diff = [f"{c.txt}={o(mid(c))}" for c, h in zip(there.d.cols.xs, here.d.cols.xs)
+              if mid(c) != mid(h)]
+      if diff: yield dy, mid(there.ynum), diff
+```
+
+Output:
+
+```python
+./ezr.py -plan ~/gits/moot/optimize/misc/auto93.csv
+
+now=0.94
+    0.71 (dy=0.23) if Clndrs=7.33, Volume=286.33, Model=72.67
+    0.58 (dy=0.35) if Clndrs=6.00, Volume=213.80, Model=73.80
+    0.56 (dy=0.38) if Clndrs=4.00, Volume=121.80, Model=72.80, origin=3
+    0.52 (dy=0.42) if Clndrs=5.67, Volume=215.33, Model=79.67
+    0.43 (dy=0.51) if Clndrs=4.00, Volume=140.75, Model=78.50
+    0.39 (dy=0.55) if Clndrs=4.00, Volume=104.67, Model=76.67, origin=2
+    0.37 (dy=0.56) if Clndrs=4.00, Volume=129.50, Model=81.50
+    0.31 (dy=0.63) if Clndrs=3.80, Volume=84.40, Model=78.60, origin=3
+    0.29 (dy=0.65) if Clndrs=4.00, Volume=97.75, Model=77.50, origin=3
+    0.21 (dy=0.73) if Clndrs=4.00, Volume=88.75, Model=75.25, origin=2
+```
 
 This is what distinguishes Rung 3 from Rung 2.
 Intervention asks "what does the model predict for
@@ -380,8 +403,9 @@ And the rows are just *what you read* in the same
 output. One report per column, three readings each.
 9 cells, 3 functions:
 ```text
-| See (train)  | Act (test)   | Imagine (perturb) |
+| past   | pressent    | figure|
 |--------------|--------------|---------------------|
+| See (train)  | Act (test)   | Imagine (perturb) |
 | showTree     | leaf → gap   | whatif → rank       |
 | eg_see       | eg_act       | eg_imagine          |
 | Rung 1       | Rung 2       | Rung 3              |
