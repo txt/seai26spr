@@ -73,7 +73,7 @@ code suggestion, test generation, and documentation support.
 | Mar 09 | [optimization algorithms](docs/lect/optimization_tutorial.md)| |  [w7](docs/review/optimization_lecture_review.md) |
 | Mar 16 | Spring Break (no class) | | |
 | Mar 23 | [explain](docs/lect/cause.md)  |[3a](docs/submit/three/three.md) | [w8](docs/review/w8.md) |
-| Mar 30 | | [3b-rubric](/docs/rubric/rubric-3b.md) <br> [Grad 6.0](docs/submit/project.md) | |
+| Mar 30 | [SBSE](docs/lect/mar30.md) | [3b-rubric](/docs/rubric/rubric-3b.md) <br> [Grad 6.0](docs/submit/project.md) | |
 | Apr 06 | | 4a  | |
 | Apr 13 | |4b  | |
 | Apr 20 | | 5a | |
