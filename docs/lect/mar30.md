@@ -50,11 +50,19 @@ a smooth landscape. AUSTIN, EvoSuite, Randoop all do this.
 
 **Mutation testing upgrade:**
 - Coverage is a weak proxy. Mutation score is better.
+  - Mutation testing injects bugs to test your tests.
+  - Mutant: A version of your code with one small change (e.g., > becomes <).
+  - Killed: Your test suite fails (This is good; your tests caught the bug).
+  - Survived: Your test suite passes (This is bad; your tests are blind to this bug).
 - But: *N* mutants × search = expensive.
 - Trick: subsume mutants; search for tests that kill *classes*.
+  - Subsumption: Many mutants are redundant. If killing "Mutant A" always kills "Mutant B," then B is subsumed by A. You only need to track A. This shrinks the pool of bugs you have to test against.
+  - Kill Classes: Instead of looking for a test for every individual mutant, we group mutants into "equivalence classes" (groups that fail for the same reason). You then search for the minimal set of tests that kills every class of bug, rather than every individual bug.
 
 **Fuzzing connection:**
 - AFL = coverage-guided fuzzing = hill-climbing on branch bitmap
+  - Instead of storing a massive list of every instruction hit, it uses a fixed-size byte array (usually 64KB) to map "edge transitions"—the jump from one block of code to another.
+  - How it Works (The Hashing Trick) When the compiler instruments your code, it assigns a random ID to every code block. When you move from Block A to Block B, the fuzzer calculates adds index in the bitmap
 - LibFuzzer, HonggFuzz — evolutionary flavor
 - Grey-box fuzzing: partial program analysis + random mutation
 - SBSE framing: fitness = new coverage found per unit time
@@ -80,6 +88,8 @@ But humans still win on *fault revelation* — fitness ≠ test quality.
 **Modern repair:**
 - Template-based: CapGen, SimFix — constrain search space
 - Learning-based: CodeBERT, LLMs generate candidate patches
+  - Originally, template-based repair required humans to manually write "Fix Patterns" (e.g., if you see a NullPointerException, add an if (x != null)).
+  - Learning-based repair (the modern way) uses Deep Learning to learn those templates automatically from GitHub. Instead of a human defining the template, the model sees 10,000 fixes for a specific bug and "learns" the probabilistic shape of a correct patch.
 - Oracle problem remains: what does "fixed" mean?
 
 **Fault localization first:**
@@ -172,6 +182,8 @@ Tools: SMAC, FLASH, iracee, Ottertune (ML-based DBA).
 Distinct from test *generation* — here we already have
 tests and want to manage them.
 
+- See [paper](https://arxiv.org/pdf/2008.00612)
+
 **Test Case Prioritization (TCP):**
 - Order tests so failures appear earlier
 - Fitness: APFD (Average Percentage Faults Detected)
@@ -195,6 +207,8 @@ tests and want to manage them.
 ---
 
 ### 1.7 Effort Estimation & Project Scheduling
+
+- See [paper](https://arxiv.org/pdf/2006.07240)
 
 **Effort estimation:**
 - Input: project features (size, complexity, domain)
@@ -262,7 +276,7 @@ A GP defines a distribution over functions. Given training
 data `{(x_i, y_i)}`, it predicts:
 
 ```
-y* | x*  ~  Normal(μ(x*), σ²(x*))
+p(y* | x*)  ~  Normal(μ(x*), σ²(x*))
 ```
 
 - `μ(x*)` = predicted mean (best guess)
@@ -520,48 +534,106 @@ Common failure modes in published SBSE work:
 
 ### 3.2 Statistical Tests You Actually Need
 
-**Step 1: Are the distributions different?**
+## 3.2 Statistical Tests You Actually Need
 
-Wilcoxon rank-sum test (Mann-Whitney U):
-- Non-parametric (no normality assumption)
-- Tests: "are samples drawn from the same distribution?"
-- p < 0.05 → reject null (they differ)
+**One question:** are these two lists of numbers the same?  
+**One function:** `same(a, b)` — fail-fast, no scipy, no p-value theatre.
 
 ```python
-from scipy.stats import mannwhitneyu
-stat, p = mannwhitneyu(results_A, results_B,
-                        alternative='two-sided')
+def same(a, b):
+    if not cohen(a, b):  return True  # effect too small to care
+    if not ks(a, b):     return True  # same distribution shape
+    return not cliffs(a, b)           # same rank order
 ```
 
-**Step 2: How much do they differ?**
+### Step 1: Prudence check — Cohen's d
 
-Vargha-Delaney A₁₂ effect size:
+Before any test, ask: *is the difference even worth caring about?*
+
+Cohen's d measures effect size in standard-deviation units:
 
 ```
-A₁₂ = P(A > B) + 0.5 · P(A = B)
+        |mean(a) − mean(b)|
+d =  ─────────────────────────
+      sqrt((sd(a)² + sd(b)²)/2)
 ```
 
-| A₁₂        | Meaning             |
-|------------|---------------------|
-| 0.5        | No difference       |
-| 0.56–0.63  | Small effect        |
-| 0.64–0.70  | Medium effect       |
-| > 0.71     | Large effect        |
+If `d < 0.2` (small effect threshold), **stop** — the distributions
+are too close to matter, regardless of sample size.  
+No test needed. Return `same = True`.
 
-p-value tells you *if* there's a difference.
-A₁₂ tells you *how much*. Report both.
+> **Why first?** Large samples make tiny differences "significant".
+> Cohen stops you caring about noise.
 
-**Step 3: Comparing multiple algorithms**
+---
 
-Scott-Knott test (rank-then-cluster):
-1. Rank algorithms by median performance
-2. Recursively split into groups where intra-group
-   variance is minimized
-3. Report groups — algorithms in same group are
-   statistically indistinguishable
+### Step 2: Distribution shape — KS test
 
-Much better than pairwise t-tests (no multiple
-comparison inflation, meaningful groupings).
+Kolmogorov-Smirnov: are the CDFs the same?
+
+```python
+def ks(a, b, conf=0.05):
+    # walks sorted merge, tracks max CDF gap d
+    c = sqrt(-log(conf/2) / 2)
+    return d > c * sqrt((n1+n2)/(n1*n2))  # True = different
+```
+
+- Non-parametric, no normality assumption  
+- Sensitive to **shape** differences (spread, skew), not just means  
+- Pure Python — no scipy
+
+---
+
+### Step 3: Effect size — Cliff's delta
+
+How often does a value from `a` beat one from `b`?
+
+```
+        #{a>b} − #{a<b}
+δ =  ─────────────────────
+           n(a) × n(b)
+```
+
+| δ       | Meaning         |
+|---------|-----------------|
+| < 0.147 | negligible      |
+| < 0.33  | small           |
+| < 0.474 | medium          |
+| ≥ 0.474 | large           |
+
+If `|δ| ≤ 0.147`, return `same = True`.
+
+> Cliff's delta is Vargha-Delaney A₁₂ recentered at 0.  
+> Same math, cleaner "no difference = 0" semantics.
+
+---
+
+### Comparing multiple treatments — Scott-Knott
+
+`same()` plugs straight into Scott-Knott as its indistinguishability
+predicate:
+
+```python
+def sk(rxs):          # rxs = {name: [values]}
+    # 1. sort treatments by median
+    # 2. find the split that minimises weighted variance
+    # 3. if the two halves are not same(), recurse on each
+    # 4. else merge — they're one group
+```
+
+Output: one rank number per treatment. Same rank = same group.
+
+```
+  1  A   10.02     # A and B statistically indistinguishable
+  1  B   10.15
+  2  C   12.22     # C and D form a separate, better group
+  2  D   11.99
+```
+
+Better than pairwise tests:  
+- no multiple-comparison inflation  
+- meaningful clusters, not just "A ≠ B"  
+- one consistent effect-size criterion throughout
 
 ---
 
@@ -616,6 +688,9 @@ Branch coverage fitness ≠ fault revelation. Say so.
 
 ### 4.1 LLMs as Search Operators
 
+- see [paper1](https://arxiv.org/pdf/2501.00125)
+- see [paper2](https://arxiv.org/pdf/2603.22474)
+
 Recent framing: use LLMs not to *replace* search, but as
 **mutation/crossover operators** in evolutionary loops.
 
@@ -645,6 +720,8 @@ doing search over LLM outputs? (Answer: both.)
 ---
 
 ### 4.2 Search for Fairness & Explainability
+
+- [paper](https://ieeexplore.ieee.org/abstract/document/9679036)
 
 **Fairness as a multi-objective problem:**
 
