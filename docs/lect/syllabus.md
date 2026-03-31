@@ -130,7 +130,7 @@ Quizzes are on-line.
 
 
 - In class quiz: 2 marks each (11 of those)
-- Grad students: 4 homeworks and 1 project (13 marks for hw, 26 marks for hw)
+- Grad students: 4 homeworks and 1 project (13 marks for hw, 26 marks for project)
   - 10 marks for an initial submission
   - 3 marks to review another group's submission
 - Ugrad students: 6 homewworks, 13 marks each
