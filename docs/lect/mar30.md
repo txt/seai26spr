@@ -238,6 +238,28 @@ tests and want to manage them.
 
 - See [paper](https://arxiv.org/pdf/2006.07240)
 
+<img width="1040" height="675" alt="image" src="https://github.com/user-attachments/assets/9bd4cf98-332c-410e-82a5-e0b75b3730d2" />
+
+
+- <img width="472" height="163" alt="image" src="https://github.com/user-attachments/assets/5501bd06-6c25-4485-8155-7b2652713bfa" />
+
+ =<img width="574" height="200" alt="image" src="https://github.com/user-attachments/assets/fbeb2067-97e9-4bbc-947b-03cb52bc3e02" />
+
+ <img width="655" height="546" alt="image" src="https://github.com/user-attachments/assets/4fc536c0-9738-4200-8823-d4130dda3026" />
+
+ <img width="821" height="329" alt="image" src="https://github.com/user-attachments/assets/5bb2b02b-64cc-4b48-968b-04616e825715" />
+
+
+Note: prudence checks on data:
+
+<img width="702" height="477" alt="image" src="https://github.com/user-attachments/assets/97f13e7f-e2f9-459f-9694-00a02e286aca" />
+
+<img width="854" height="802" alt="image" src="https://github.com/user-attachments/assets/7e980252-c154-4b14-91d7-fa7d452070c1" />
+
+<img width="984" height="307" alt="image" src="https://github.com/user-attachments/assets/e7e57b3a-5fb9-4ea6-a635-00d788dae1ad" />
+
+
+
 **Effort estimation:**
 - Input: project features (size, complexity, domain)
 - Output: person-months
@@ -528,7 +550,79 @@ until budget exhausted
 The simplest active learner: maintain class statistics
 incrementally, select next label by entropy or distance.
 
----
+# `acquire` (EZR) vs Thompson Sampling
+
+## Thompson Sampling
+
+Maintains a *probability distribution over reward* for each option.
+At each step, **samples** from those distributions and picks the argmax.
+Exploration happens naturally — high-variance arms (different rows) get sampled sometimes
+just by luck of the draw.
+
+It is a **bandit** algorithm:
+- options are independent
+- rewards are stationary
+- you pick one arm (row) at a time
+
+ 
+
+## Delta Tho,pson to EZR 
+
+### 1. Two-class model, not per-arm distributions
+
+Split labeled rows into `best` (top √n) and `rest`, then ask:
+
+> *"Is this unlabeled row more likely to come from `best` than `rest`?"*
+
+That is a **classifier-as-acquisition-function**, not a per-option posterior.
+
+```python
+best, rest = clone(d, lab.rows[:int(n)]), clone(d, lab.rows[int(n):])
+fn = lambda r: score(lab, best, rest, r)   # Naive Bayes likelihood ratio
+```
+
+### 2. Landscape, not bandits
+
+Thompson assumes arms  (rows) are **independent**.  
+`acquire` (EZR) assumes a *continuous landscape* over x-space — nearby rows
+in x-space have correlated y-values. Proximity matters; Thompson ignores it.
+
+### 3. Deterministic threshold, not stochastic sampling
+
+Thompson explores via **sampling noise**.  
+`acquire` (EZR) scans the unlabeled pool and takes the *first* row where
+`score < 0` (i.e., P(best|x) > P(rest|x)):
+
+```python
+for j in range(len(unlab)):
+    if fn(unlab[idx]) < 0:      # more likely best than rest
+        add(best, add(lab, label(unlab.pop(idx))))
+        break
+```
+
+No random draw — **exploitation-first**, with implicit exploration
+from pool-scanning order (shuffled at the start).
+
+ 
+
+## The Punchline
+
+| | Thompson Sampling | `acquire` |
+|---|---|---|
+| Model | Beta/Gaussian per arm (rows) | Naive Bayes (best vs rest) |
+| Assumption | Independent arms | Continuous x-space landscape |
+| Exploration | Sampling variance | Unlabeled pool + shuffle |
+| Update cost | O(1) per arm | O(1) incremental NB |
+
+> Thompson explores by being *uncertain about rewards*.  
+> `acquire` (EZR) explores by *not having labeled that region yet* —  
+> the unlabeled pool is your uncertainty; the Bayes score is your
+> exploitation signal.
+
+**Closest relative:** Expected Improvement (EI) in Bayesian Optimization,
+but with Naive Bayes as the surrogate instead of a Gaussian Process.
+Same core idea, 1/100th the compute — which is why it matches SMAC
+empirically without rebuilding expensive ensembles on every update.
 
 ### Part 2 Summary
 
