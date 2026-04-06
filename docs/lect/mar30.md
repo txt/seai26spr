@@ -97,6 +97,8 @@ But humans still win on *fault revelation* — fitness ≠ test quality.
 - SBFL is itself a search problem (rank aggregation)
 - Better localization → smaller search space for repair
 
+<img width="897" height="636" alt="image" src="https://github.com/user-attachments/assets/1f643534-c753-4a17-964d-e38fa702f44d" />
+
 ---
 
 ### 1.3 Refactoring & Architecture
@@ -117,6 +119,9 @@ re-analyze). Surrogate models (next section) help a lot here.
 ---
 
 ### 1.4 Planning: Next-Release Problem
+
+
+<img width="1106" height="495" alt="image" src="https://github.com/user-attachments/assets/eb1b6d62-11cf-4075-a085-3662b2f4c122" />
 
 **Setup:**
 - *N* features, each with cost and value
@@ -147,6 +152,12 @@ Modern systems (databases, compilers, ML pipelines) have
 **hundreds of configuration knobs**. Getting them right
 matters enormously.
 
+<img width="723" height="687" alt="image" src="https://github.com/user-attachments/assets/874d544c-e9e2-4510-8385-60b10ba7c323" />
+
+<img width="708" height="546" alt="image" src="https://github.com/user-attachments/assets/351d41e7-537d-4db9-bac1-1f9af145eac5" />
+
+
+
 **MySQL example (real numbers):**
 - 200+ configuration parameters
 - Throughput can vary 10× across configs
@@ -166,7 +177,7 @@ Tools: SMAC, FLASH, iracee, Ottertune (ML-based DBA).
 **Multi-objective config:**
 - Throughput vs. latency vs. memory vs. energy
 - Pareto front → operator picks operating point
-- NSGA-II works but BO-based MOO (ParEGO, MESMO) needs
+- NSGA-II works but BO-based MOO    needs
   far fewer evaluations
 
 **Compiler flags:**
@@ -183,6 +194,23 @@ Distinct from test *generation* — here we already have
 tests and want to manage them.
 
 - See [paper](https://arxiv.org/pdf/2008.00612)
+
+- <img width="529" height="426" alt="image" src="https://github.com/user-attachments/assets/daf8868d-ff54-494e-996d-652dda1e32af" />
+
+
+<img width="987" height="286" alt="image" src="https://github.com/user-attachments/assets/ca9f938b-d9c8-483b-b13e-e3d634fc488e" />
+
+
+<img width="526" height="377" alt="image" src="https://github.com/user-attachments/assets/35439ff8-c80b-453e-9588-053fd433d084" />
+
+<img width="553" height="316" alt="image" src="https://github.com/user-attachments/assets/ef4c32a1-53c0-4a9e-8cb1-6d5a38c35be8" />
+
+<img width="288" height="199" alt="image" src="https://github.com/user-attachments/assets/92f54266-bbe9-48fe-afe5-824dc7f18ca8" />
+
+
+
+<img width="540" height="375" alt="image" src="https://github.com/user-attachments/assets/68a767df-2a84-41ff-aec9-3b55cf23121b" />
+
 
 **Test Case Prioritization (TCP):**
 - Order tests so failures appear earlier
