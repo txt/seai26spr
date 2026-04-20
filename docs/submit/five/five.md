@@ -454,7 +454,6 @@ print("Saved hw5c_plot.png")
 - [ ] `hw5a.py` — seed sensitivity on MOOT, printed table, + 3 discussion questions answered in `writeup.md`
 - [ ] `hw5b.py` — Scott-Knott comparison of GA / Random / Default, printed table, + 4 discussion questions answered in `writeup.md`
 - [ ] `hw5c.py` — `hw5c_plot.png` (two-panel figure), + 3 discussion questions answered in `writeup.md`
-- [ ] `stats.py` — the provided file, **unmodified**
 - [ ] `writeup.md` — all tables, all answers
 
 One submission with all code, outputs, plots, and written answers (keep written answers brief).
