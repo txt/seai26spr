@@ -74,10 +74,10 @@ code suggestion, test generation, and documentation support.
 | Mar 16 | Spring Break (no class) | | |
 | Mar 23 | [explain](docs/lect/cause.md)  |[3a](docs/submit/three/three.md) | [w8](docs/review/w8.md) |
 | Mar 30 | [SBSE](docs/lect/mar30.md) | [3b-rubric](/docs/rubric/rubric-3b.md) <br> [Grad 6.0](docs/submit/project.md) | [w10](docs/review/w10.md)<br>[w11](docs/review/w11.md) |
-| Apr 06 | | 4a  | |
-| Apr 13 | [agents](docs/lect/agents_apr13.pdf) |4b  | [w12](docs/review/w12.md)|
-| Apr 20 | [final](docs/lect/final.pptx)  | 5a | |
-| Apr 27 | | 5b   | |
+| Apr 06 | |   | |
+| Apr 13 | [agents](docs/lect/agents_apr13.pdf) | [4a](docs/submit/four/four.md) | [w12](docs/review/w12.md)|
+| Apr 20 | [final](docs/lect/final.pptx) | | |
+| Apr 27 | | [4b-rubric](/docs/rubric/rubric-4b.md) [5a](docs/submit/five/five.md)   | |
 | May 4 |  exam |    | |
 
 </div>
