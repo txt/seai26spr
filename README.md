@@ -73,10 +73,15 @@ code suggestion, test generation, and documentation support.
 | Mar 09 | [optimization algorithms](docs/lect/optimization_tutorial.md)| |  [w7](docs/review/optimization_lecture_review.md) |
 | Mar 16 | Spring Break (no class) | | |
 | Mar 23 | [explain](docs/lect/cause.md)  |[3a](docs/submit/three/three.md) | [w8](docs/review/w8.md) |
-| Mar 30 | [SBSE](docs/lect/mar30.md) | [3b-rubric](/docs/rubric/rubric-3b.md) <br> [Grad 6.0](docs/submit/project.md) | [w10](docs/review/w10.md)|
+| Mar 30 | [SBSE](docs/lect/mar30.md) | [3b-rubric](/docs/rubric/rubric-3b.md) <br> [Grad 6.0](docs/submit/project.md) | [w10](docs/review/w10.md)<br>[w11](docs/review/w11.md) |
 | Apr 06 | | 4a  | |
+<<<<<<< HEAD
 | Apr 13 | |4b  | |
 | Apr 20 | [final](docs/lect/final.pptx) | 5a | |
+=======
+| Apr 13 | [agents](docs/lect/agents_apr13.pdf) |4b  | [w12](docs/review/w12.md)|
+| Apr 20 | | 5a | |
+>>>>>>> 57d26e7a74f07a1ac4c3902bcfd6d83beb53072a
 | Apr 27 | | 5b   | |
 | May 4 |  exam |    | |
 
