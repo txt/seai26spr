@@ -76,7 +76,7 @@ code suggestion, test generation, and documentation support.
 | Mar 30 | [SBSE](docs/lect/mar30.md) | [3b-rubric](/docs/rubric/rubric-3b.md) <br> [Grad 6.0](docs/submit/project.md) | [w10](docs/review/w10.md)|
 | Apr 06 | | 4a  | |
 | Apr 13 | |4b  | |
-| Apr 20 | | 5a | |
+| Apr 20 | [final](docs/lect/final.pptx) | 5a | |
 | Apr 27 | | 5b   | |
 | May 4 |  exam |    | |
 
