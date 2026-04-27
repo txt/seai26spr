@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper Comparison</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; background: #f8f9fa; }
+  h1 { text-align: center; font-size: 1.3em; margin-bottom: 20px; }
+  table { border-collapse: collapse; width: 100%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+  th, td { border: 1px solid #ddd; padding: 8px 10px; font-size: 0.82em; vertical-align: top; line-height: 1.45; }
+  th { background: #2c3e50; color: #fff; text-align: center; font-weight: 600; position: sticky; top: 0; }
+  th:first-child { width: 10%; }
+  td:first-child { background: #ecf0f1; font-weight: 600; text-align: right; white-space: nowrap; }
+  tr:nth-child(even) td:not(:first-child) { background: #fafbfc; }
+  tr:hover td { background: #eef3f8; }
+  tr:hover td:first-child { background: #d5dbdf; }
+  .authors { font-style: italic; color: #555; }
+</style>
+</head>
+<body>
+<h1>CSC 591 &mdash; Final Paper Comparison (Spring 2026)</h1>
+<table>
+<thead>
+<tr>
+  <th>Aspect</th>
+  <th>P1: Zhang &amp; Jain<br><span class="authors">Zhi Zhang, Mragisha Jain</span></th>
+  <th>P2: Rezek &amp; Brooks<br><span class="authors">Elliot Rezek, Zack Brooks</span></th>
+  <th>P3: Estes, Esfandyari, Khanmohammadi<br><span class="authors">Hannah Estes, Mohsen EsfandyariDoulabi, Saba Khanmohammadi</span></th>
+  <th>P4: Bharathi &amp; Shambu<br><span class="authors">Haricharan Bharathi, Sidharth Shambu</span></th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+  <td>Title</td>
+  <td>Rescuing LLM-Guided Optimization on High-Dimensional Software Configuration Tasks</td>
+  <td>Surrogate Model Selection Under Budget Constraints: Accuracy, Data, and Computational Cost Trade-offs</td>
+  <td>Bridging the Interpretation Gap: LLM-Generated Explanations for Multi-Objective Optimisation Trade-offs in SE</td>
+  <td>Improving Robustness of Neural Code Search via Prompt-Evolved Query Reformulation</td>
+</tr>
+
+<tr>
+  <td>Motivation</td>
+  <td>LLM warm-starts top-rank at low/med dim, fail at |x|&gt;11 (53% vs UCB_GPM 100%). Two parallel rescues exist (SynthCore, BtP), neither feeds outcomes back. 19 high-dim tasks = 39% of benchmark; failure not niche.</td>
+  <td>Expensive evals (hrs&ndash;weeks/pt). Trade-offs handled by 10n rules-of-thumb, not quantitative. kNN absent from surrogate guides despite cheap+frugal.</td>
+  <td>MOOT optimisers output Pareto fronts/trees as numbers, no requirements meaning. Stakeholders reason differently. No prior work combines LLM-explain + MO-opt + multi-stakeholder + SE.</td>
+  <td>Code search collapses under identifier-renaming perturbations. Lexical retrievers depend on identifier overlap. Can query rewriting fix this without retraining the retriever?</td>
+</tr>
+
+<tr>
+  <td>Background</td>
+  <td>Storm 480&times; perf loss; x264 1536 hrs full label; 90% TD false-positives mislabeled. SynthCore M=20 ensemble; BtP stat/RAG; OPRO/LLAMBO iterative on single-obj only.</td>
+  <td>NFL: no single best surrogate. GP accurate-slow, RBF fast-init-sensitive, NN data-hungry. 10n rule (McKay/Loeppky). Existing studies: compute = secondary metric.</td>
+  <td>Amershi HAI guidelines; Bucinca: cognitive-forcing helps only if comprehensible; Shin: explainability &ne; causability. GenderMag: 5 cog facets, 200+ studies. Schuller: LLM personas &asymp; human-written.</td>
+  <td>Early code search = lexical/structural (Sourcerer, Portfolio, CodeHow, DeepAPI). Neural shift = joint embedding (DeepCS) &rarr; CodeBERT/GraphCodeBERT/CodeT5/UniXcoder. Robustness lags: semantics-preserving xforms break models.</td>
+</tr>
+
+<tr>
+  <td>Related Work</td>
+  <td>6-D positioning table. WS=fail; SynthCore=parallel ensemble; BtP=domain knowledge; LLAMBO/GPTuner/OPRO/MOEA-D-LLM iterative but single-obj/non-SE. Centre of Venn empty; H1 fills it.</td>
+  <td>5 lit groups: data/sampling, search/cost, methodology/benchmarking, NFL theory, domain adaptation. Gap: kNN not viable surrogate; cost-acc trade-off not made exact.</td>
+  <td>4 threads: persona sim (Schuller, Camburu); XAI-DT (Serafim, Ziems, Sivaprasad); multi-stakeholder XAI (Kim, Dhar, Mavrepis, Mill); MO+stakeholder (Shao 2014, pre-LLM).</td>
+  <td>6 buckets: classical retrieval, neural code search, pretrained code models, query reformulation (CoaCor, SSQR), robustness/adversarial (Yefet, MHM), prompt opt (EvoPrompt, PromptBreeder). 28-paper Venn shows prompt-opt &times; adv-code-search intersection = empty.</td>
+</tr>
+
+<tr>
+  <td>Methods<br>(data + eval + rig)</td>
+  <td>19 high-dim MOOT tasks. T0 UCB_GPM, T1 single-step WS+TPE, T1b SynthCore M=20 repro, T2=H1 iterative LLM (20 rds &times; 4), T3=H2 constraint-aware, T4=H3 LLM dim-red. Matched 20 calls/84 labels. Scott-Knott + paired bootstrap, 20 seeds, Chebyshev.</td>
+  <td>4 funcs (Rosenbrock/Rastrigin/Ackley/Styblinski&ndash;Tang) &times; d&isin;{2,5,10} &times; n&isin;{20,50,100,200,500}. GP/RBF/NN/kNN (k via 5-fold CV). Exp1: 720 RMSE pts on 300-pt LHS test. Exp2: BO 10+40, 5 seeds, EI for GP/kNN, exploit for RBF/NN.</td>
+  <td>MOOT project-health (A2C, 223 cfg, 10 feats, 3 obj). EZR opt &rarr; N=400 calibrated &rarr; 5 Pareto trees. 9 personas = 3 roles &times; 3 GenderMag (Abi/Pat/Tim) via Gemini 2.5 Flash. 2-rd counterbalanced (raw vs explained), 90 evals. Judges: Claude Sonnet 4.5 + Llama 3.1 70B.</td>
+  <td>CodeXGLUE NL-code-search-Adv (clean+adv, 9.6k val / 19.2k test). Retrievers: BM25 (k&#8321;=1.5, b=0.75) and GraphCodeBERT (microsoft/graphcodebert-base, no fine-tune). 3 conditions: raw, fixed-prompt rewrite (CamelCase split, underscore&rarr;space, punct/whitespace), prompt-evolved (PromptBreeder hill-climb, 25 iter, &epsilon;=0.003, patience 5, 300-query dev set). MRR + robustness drop.</td>
+</tr>
+
+<tr>
+  <td>Results</td>
+  <td>Pilot B1=20: T2 high-dim rank-0 = 68% vs T1 48% (+20pp, sig); T0=66%; pub SC ref 71%. Low 100&rarr;93 (within margin); med 64&rarr;79. T1b/T3/T4 pending.</td>
+  <td>GP best 2D/5D smooth; kNN flat except Ackley 10D (excels). All converge at n&le;50 high-d. At 10D kNN no longer Pareto-dominated. BO: kNN-EI on Ackley-10D 7.50&plusmn;0.29 vs GP 6.73&plusmn;0.39; NN-exploit weakest.</td>
+  <td>RQ1: accept 16&rarr;51% (+35pp); clarity 1.96&rarr;4.16; suff 1.56&rarr;3.67. RQ2: H1/H3/H4/H5 supported, H2/H6 partial. 67% chose T4 (not knee T5). RQ3: full-persona judge acc 45.6/32.2 vs 11.1% chance; PjM-Tim 0%; learning-style &alpha;=0.22.</td>
+  <td>BM25 val: clean MRR 0.1654 &rarr; adv 0.0518 (&minus;68.7%). Fixed-prompt rewrite: clean &uarr; to 0.1878, adv &darr; to 0.0474 (worse). Prompt evolution: every mutation underperforms seed &rarr; no improvement. GraphCodeBERT raw: 0.5262/0.5285 (zero degradation). Same rewrite on GraphCodeBERT cuts perf 23&ndash;28%.</td>
+</tr>
+
+<tr>
+  <td>Discussion</td>
+  <td>Iterative loop closes most of high-dim gap. T2 within 3pp of pub SC at fewer LLM calls. H1+ensemble combo justified only if disjoint task subsets.</td>
+  <td>RQ1: GP advantage not free; RBF good middle at n&lt;200. RQ2: degradation non-uniform &mdash; GP worst on structured, kNN consistent on multimodal high-d. RQ3: kNN conditionally yes for high-d multimodal w/ large BO budgets.</td>
+  <td>5 framing Qs: knee&ne;compromise (T4 won); explanation gain &prop; 1/tech-level; role &gt; cog-style for what, GenderMag drives how; Abi/Pat confusion (40&ndash;48%) validates GenderMag; practice: never raw to non-tech, include stab metadata, show full frontier.</td>
+  <td>Bottleneck = retriever, not prompt. BM25 needs lexical overlap; rewriting optimises tokens for clean queries (helps), can&rsquo;t recover overlap removed by adversary (hurts). Prompt evolution proves prompt-quality is not the constraint. GraphCodeBERT side-steps lexical mismatch entirely. Rewriting hurts GraphCodeBERT because it strips identifiers dense retrieval already exploits.</td>
+</tr>
+
+<tr>
+  <td>Threats to Validity</td>
+  <td>Baseline instability [17]&rarr;[18]: UCB_GPM 100&rarr;68, R+TPE 47&rarr;16. Pilot B1=20 not yet matched-budget. SC&rsquo;s L+M(N+1) formula deviation documented.</td>
+  <td>Internal: 1 LHS draw/cell, no replication (BO 5 seeds = small). External: smooth math funcs, no noise/disc; d&isin;[2,10] excludes d&gt;20. Construct: RMSE on LHS test &ne; local acc near optima.</td>
+  <td>Internal: counterbalanced groups unbalanced by role (G1=PjM, G2=SWE); single generator LLM. External: other MOOT tasks; only 3 roles. Construct: LLM personas &ne; humans. Conclusion: learning_style unobservable in static format; LLM stochasticity.</td>
+  <td>No labelled section. Implicit: single benchmark (CodeXGLUE-Adv only), single language (Python), no fine-tuned GraphCodeBERT (off-the-shelf checkpoint), heuristic rewriter deterministic so doesn&rsquo;t exhaust rewrite-space, prompt-evolution dev set fixed at 300 queries.</td>
+</tr>
+
+<tr>
+  <td>Conclusion</td>
+  <td>Iterative LLM (H1) most promising at pilot; full matched-call protocol pending. Replication package preserves Chebyshev.</td>
+  <td>Section empty (placeholder only).</td>
+  <td>Framework + tailored explanations. Accept 16&rarr;51%, clarity doubled, compromise &ne; knee. 3 failure modes + judge validation. First to combine LLM-explain + MO-opt + GenderMag + acceptance eval in SE.</td>
+  <td>Prompt-side fixes don&rsquo;t rescue adversarial code search. BM25 collapses; rewrites help clean, hurt adv; evolution never beats seed. GraphCodeBERT loses nothing to perturbation, beats BM25 &gt;10&times; on adv. Retriever &gt; prompt.</td>
+</tr>
+
+</tbody>
+</table>
+</body>
+</html>

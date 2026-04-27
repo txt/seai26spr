@@ -77,7 +77,7 @@ code suggestion, test generation, and documentation support.
 | Apr 06 | |   | |
 | Apr 13 | [agents](docs/lect/agents_apr13.pdf) | [4a](docs/submit/four/four.md) | [w12](docs/review/w12.md)|
 | Apr 20 | [final](docs/lect/final.pptx) | | |
-| Apr 27 | | [4b-rubric](/docs/rubric/rubric-4b.md) [5a](docs/submit/five/five.md)   | |
+| Apr 27 |[essays, sample](docs/lect/final/compare.md)  | [4b-rubric](/docs/rubric/rubric-4b.md) [5a](docs/submit/five/five.md)   | |
 | May 4 |  exam |    | |
 
 </div>

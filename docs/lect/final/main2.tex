@@ -1,0 +1,987 @@
+\documentclass[sigconf,review]{acmart}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{mdframed}
+\usepackage{xcolor}
+
+\definecolor{boxgray}{RGB}{245,245,245}
+\definecolor{boxborder}{RGB}{180,180,180}
+\lstset{basicstyle=\ttfamily\scriptsize, breaklines=true,
+        frame=none, backgroundcolor=\color{boxgray}}
+
+\newcommand{\note}[1]{\textcolor{magenta}{{{[#1]}}}}
+\newcommand{\he}[1]{\textcolor{purple}{{{\bfseries [[hannah: #1]]}}}}
+
+\title{SE4AI - Requirements Level Explanations for Different Stakeholders}
+\author{Hannah Estes}
+\author{Mohsen EsfandyariDoulabi}
+\author{Saba Khanmohammadi}
+\date{March 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+Software engineers routinely face decisions that require balancing competing objectives, such as faster delivery versus lower cost, security versus usability, and accuracy versus interpretability. Multi-objective optimization offers principled methods for navigating these trade offs, and repositories such as MOOT~\cite{menzies2025moot} now provide over 120 real world SE optimization tasks spanning software configuration, cloud tuning, project health, and process modeling. The algorithmic machinery exists; the interpretation problem does not. 
+When an optimizer produces a Pareto front or a decision tree over configuration parameters, a developer or project manager sees numeric trade offs between objective values, throughput versus latency, effort versus defect risk. What they do not see is what those trade-offs mean at the level of requirements: which stakeholder concerns are being satisfied, which are being compromised, and why a particular configuration represents a defensible decision. This interpretation gap between optimization outputs and requirement-level reasoning is a persistent barrier to adoption. As Menzies et al. observe, industrial practitioners continue to deliver sub-optimal products in part because they lack the tools to explore and understand trade offs.
+
+Recent work in explainable AI (XAI) has made progress on translating model outputs into natural language, and large language models (LLMs) have shown promise as verbalization engines for decision-tree explanations ~\cite{serafim2024exploring}. Separately, the requirements engineering literature has long recognized that stakeholders reason about trade-offs differently depending on their role, priorities, and technical background ~\cite{hujainah2018software}. However, no prior work combines these threads: generating stakeholder-tailored, requirement-level explanations of multi-objective optimization outputs, and evaluating whether such explanations actually improve trade off reasoning.     
+This paper addresses that gap. We present a framework that maps multi-objective optimization outputs from MOOT tasks to requirement-level explanations via a structured schema and LLM-based verbalization. We evaluate explanation quality along three dimensions: faithfulness, clarity, and consistency, and assess whether tailoring explanations to distinct stakeholder profiles changes how trade offs are understood and acted upon. Specifically, we ask:
+
+\begin{itemize}
+    \item \textbf{RQ1:} How can multi-objective optimization outputs be systematically translated into requirement-level explanations?
+    \item \textbf{RQ2:} Do requirement-level explanations improve alignment between stakeholder priorities and optimization decisions?
+    \item \textbf{RQ3:} What failure modes emerge when LLMs mediate optimization explanations?
+\end{itemize}
+
+To the best of our knowledge, this is the first work to combine LLM-based explanation generation, multi-objective optimization output, multi-stakeholder tailoring, and evaluation within a software engineering context. 
+
+\section{A Gap in the Literature}
+\label{sec:gap}
+Once establishing the motivation of our study, we investigated the current literature at the intersection of LLM-based explanation generation, multi-objective optimization, requirements engineering, and human-centered decision making. To do so, we followed a similar method outlined in a similar study~\cite{senthilkumar2024can}. This literature selection procedure follows four steps: 1) identify search queries for Google Scholar in the past decade, 2) rank output by citation counts, 3) calculated the \textit{knee} of the citation curve (e.g., Figure~\ref{fig:citation_curve}), which is a frequently used literature review heuristic~\cite{chen2006citespace, van2010software}, where papers above this point represent more groundbreaking and seminal work~\cite{pritchard1969statistical}. As noted by Senthilkumar and Menzies, this process allows the research team to prioritize the most influential papers reaching a state of \textit{conceptual saturation}~\cite{glaser2017discovery}. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{citation_curve.png}
+    \caption{Citation curve for the top 100 papers returned by the query \textit{human-AI decision making from 2015} on scholar.google.com (retrieved in 2026). The vertical line indicates the \textit{knee} of the curve (i.e., 253 citations) defined as the furthest point to a line connecting the first and last points.}
+    \label{fig:citation_curve}
+\end{figure}
+
+For this process, an initial eight queries were selected resulting in 734 papers, where a subset of 87 papers met the knee threshold. The \textit{acceptable} papers' abstracts and titles were then read to confirm their relevance to our research questions and goals. Additional papers were found using snowballing~\cite{jalali2012systematic} to fill additional gaps in the current review. This refinement of papers resulted in a final set of 35 papers. For the majority of these papers, the research team identified some common criteria that directly informed our research questions:
+
+\begin{enumerate}
+    \item \textbf{LLM corpus generation?} There a small set of papers that use LLMs to simulate personas which provides direct validation for our precursor step. Similarly, prior work has used LLMs to simulate stakeholder voices in requirements engineering specific tasks. No prior work generated structured persona-annotated output sets as a precursor to multi-objective explanation generation.
+    \item \textbf{LLM explanation optimization?} This cluster of papers identifies prior work that is most similar to ours. By using explainable-AI to generate natural language explanations of decision-tree outputs or generating audience-tailored summaries, there is no emphasis on optimizing these prompts based on stakeholders from a requirements or software engineering specific context.
+    \item \textbf{Optimization or decision-tree output explained?} This cluster of papers targets decision-tree outputs, but none are related to software or requirements engineering, differentiate by a stakeholder's background, and only one conducts a formal human acceptance study. The only prior work which combines multi-objective optimization with stakeholder decision support was conducted prior to the large popularity of LLMs.
+    \item \textbf{Multi-stakeholder tailoring?} The need for stakeholder-specific explanations is becoming more popular in the explainable-AI (XAI) research field, but is largely underexplored. 
+    \item \textbf{Human acceptance study?}  Studies related to a human's trust and acceptance of LLMs and AI are well studied, however there is no prior work on how different stakeholders accept or trust LLM generated information about optimization tradeoffs.
+    \item \textbf{Requirements Engineering \& Software Engineering context?} The requirements engineering-specific literature primarily handles stakeholder trade-offs conceptually, however the papers noted here identify the rapidly growing research area of large language models for requirements engineering (LLM4RE). There has been no prior work on LLM generated explanations for different stakeholders within a requirements and software engineering context.
+\end{enumerate}
+
+\input{SLR_table}
+
+Table~\ref{tab:slr} clusters papers (i.e., citation reference, year, and citation count) by their respective query and their relevance to the research question; for brevity, papers are not included if the do not directly relate to a research question. This table and the assoiated venn diagram identify the clear gap that this paper aims to fill. The prior work does not combine the six criteria we have identified simultaneously. 
+
+
+% ── NEW: Section 3 — Background ──────────────────────────────────────────────
+\section{Background}
+\label{sec:background}
+
+\subsection{Motivation: Validity of the Problem}
+\label{subsec:motivation}
+
+The interpretation gap this paper addresses is grounded in a well-documented
+pattern in human-AI interaction: providing a decision does not equate to
+supporting the reasoning behind it. Amershi et al.~\cite{HAI_interaction}
+identify \textit{making clear what the system can and cannot do} and
+\textit{explaining why a recommendation was made} as two of eighteen
+foundational guidelines for human-AI interaction, noting that violations of
+these guidelines consistently degrade trust and adoption. Yet optimization
+outputs in software engineering---Pareto frontiers, decision trees, win-score
+tables---routinely present results without either.
+
+The consequences of this gap are concrete. Research on human-AI
+decision-making shows that when outputs lack interpretable justification,
+users either over-rely on the AI regardless of its accuracy, or reject it
+entirely due to lack of trust~\cite{trust_or_think, de2016almost}.
+Bu\c{c}inca et al.~\cite{trust_or_think} demonstrate that cognitive forcing
+functions---interventions that require users to reason before accepting a
+recommendation---improve decision quality by reducing automation bias, but
+only when the underlying explanation is comprehensible. Without comprehension,
+forced reflection adds friction without benefit. More recently, Lee et
+al.~\cite{lee2025impact} report that generative AI tools are already reducing
+the critical thinking effort practitioners invest in AI-assisted decisions,
+with self-reported confidence declining when outputs are opaque. These findings
+converge on a single implication: the quality and tailoring of explanations
+matters as much as the quality of the underlying recommendations.
+
+Trust calibration provides a second motivation. A large meta-analysis by
+Kaplan et al.~\cite{kaplan2023trust} ($k=74$ studies) finds that
+\textit{transparency}---the degree to which an AI's reasoning is visible and
+interpretable---is among the strongest predictors of appropriate trust in AI
+systems, outperforming performance accuracy alone in several domains. Rheu et
+al.~\cite{rheu2021systematic} extend this to conversational and explanatory
+agents, finding that stakeholders develop trust through accumulated interactions
+with clear, role-relevant explanations rather than through a single high-accuracy
+output. In a multi-objective optimization context, where no single ``correct''
+answer exists and every choice involves trade-offs, trust calibration is
+especially critical: a Project Manager who blindly accepts the highest-accuracy
+tree and a Software Engineer who rejects the simplest tree because they cannot
+interpret its stability score both represent calibration failures.
+
+The XAI literature further validates the specific form of our intervention.
+Shin~\cite{Shin2021_ExplainabilityCausability} distinguishes \textit{explainability}
+(the degree to which a model's outputs can be described) from
+\textit{causability} (the degree to which those descriptions enable human
+causal reasoning), finding that causability independently predicts
+acceptance beyond explainability alone. Dwivedi et al.~\cite{Dwivedi2023_ExplainableAI}
+and Wang et al.~\cite{wang2019designing} both argue that XAI systems must be
+designed around specific user mental models rather than generic natural-language
+translations. Kim et al.~\cite{kim2024stakeholder} provide direct empirical
+support for stakeholder-tailored XAI interfaces, showing that role-specific
+explanations improve perceived usefulness and decision confidence compared to
+one-size-fits-all presentations. Dhar et al.~\cite{dhar2025beyond} make the
+normative case even more sharply, arguing that most XAI research remains
+``technocratic''---optimizing for technical fidelity without accounting for who
+the explanation is for, what they need to do with it, and how it fits into their
+existing reasoning processes.
+
+Taken together, this body of work establishes that the problem is real
+(opaque optimization outputs damage trust and decision quality), that the
+solution space is tractable (role-tailored natural-language explanations
+improve calibration), and that no prior work has applied these principles to
+the specific challenge of multi-objective optimization outputs in software
+engineering contexts.
+
+\subsection{Origin of Data and Participants}
+\label{subsec:data-origin}
+
+\textbf{Optimization task and data.} Our study uses the MOOT repository
+(Multi-Objective Optimization Tasks)~\cite{menzies2025moot}, a publicly
+available benchmark of over 120 real-world software engineering optimization
+tasks spanning software configuration, cloud resource tuning, project health
+prediction, and process modeling. We select the \textit{project health} task,
+which uses the A2C reinforcement learning algorithm applied to software project
+health data (223 configurations, 10 features, 3 objectives: maximizing
+evaluation mean return, minimizing evaluation variance, and minimizing
+convergence time). This task was selected because its three-objective
+Pareto frontier produces interpretable trade-offs that are relevant to
+non-technical stakeholders (project health is a concern shared across
+all three roles in our study) while its configuration parameters
+(learning rate, number of steps, discount factor) reflect genuine
+engineering decisions with stakeholder consequences.
+
+Optimization is performed using EZR (Evolutionary Zig-Zag Randomization),
+a multi-objective optimizer that produces decision-tree representations
+of the Pareto frontier, making its outputs both actionable and
+potentially explainable~\cite{menzies2025moot}. The calibration procedure
+described in Section~\ref{subsec:run-calibration} selects $N=400$ EZR
+runs as the optimal configuration, producing a 5-tree Pareto frontier
+(Table~\ref{tab:pareto}) that spans the full accuracy-stability trade-off
+space without collapsing to degenerate solutions.
+
+\textbf{Simulated stakeholder participants.} Rather than recruiting
+human participants, we use LLM-simulated stakeholders following the
+approach of Schuller et al.~\cite{schuller2024generating}, who demonstrate
+that LLM-generated personas are empirically indistinguishable from
+human-written ones in perceived quality and acceptance in a CHI study.
+This choice is motivated by three practical considerations: (1) the
+evaluation requires 90 structured per-tree assessments (9 personas
+$\times$ 5 trees $\times$ 2 rounds), a volume that would impose
+substantial burden on human participants; (2) the GenderMag framework
+provides precisely specified cognitive facet definitions that can be
+reliably instantiated in LLM system prompts, enabling controlled
+manipulation of cognitive style independent of role; and (3) LLM
+simulation allows exact replication and counterbalancing across conditions,
+eliminating the confounds of order effects and individual variation that
+complicate within-subject human studies.
+
+The validity of this approach is further supported by prior work using
+LLMs to simulate stakeholder voices in requirements engineering tasks
+(see Table~\ref{tab:slr}, column 1), and is directly validated in our
+study through the LLM-as-Judge evaluation described in
+Section~\ref{subsec:eval-protocol}.
+
+\textbf{Persona design.} The nine personas are constructed by crossing
+three software team roles (Project Manager, Product Manager, Software
+Engineer) with three GenderMag cognitive profiles (Abi, Pat,
+Tim)~\cite{burnett2016gendermag}. GenderMag is a validated framework
+derived from gender-difference research in HCI, operationalizing five
+cognitive facets: motivations for technology use, information processing
+style, computer self-efficacy, risk attitude, and learning style. The
+framework has been applied in over 200 software usability studies and
+provides fixed, empirically grounded facet definitions that make
+persona behavior predictable and testable~\cite{burnett2016gendermag,
+mendez2019inclusivemag}. Full persona specifications are described in
+Section~\ref{sec:personas}.
+
+\subsection{Related Work}
+\label{subsec:related-work}
+
+Our work intersects four research threads. We discuss each and clarify
+how our contribution differs from the closest prior work in each.
+
+\textbf{LLM-based persona simulation.}
+Schuller et al.~\cite{schuller2024generating} provide the most direct
+precedent, demonstrating that LLM-generated personas are empirically
+indistinguishable from human-written ones in perceived quality and
+acceptance. Prior work has also used LLMs to simulate stakeholder voices
+in RE-specific tasks~\cite{arora2024advancing, zadenoori2025large}, and
+Camburu et al.~\cite{camburu2018snli} showed that natural language
+explanations can be generated reliably from structured model outputs.
+Our work extends this thread by crossing LLM persona simulation with a
+controlled two-round evaluation design, producing structured, per-tree
+behavioral data rather than qualitative vignettes.
+
+\textbf{XAI for decision-tree outputs.}
+Serafim et al.~\cite{serafim2024exploring} is the most closely related
+prior work: it explores LLM capabilities to explain decision trees in
+natural language. However, it targets general decision trees without
+differentiation by stakeholder background, does not evaluate whether
+explanations change acceptance or reasoning, and operates outside a
+software engineering context. Ziems et al.~\cite{ziems2023explaining}
+and Sivaprasad et al.~\cite{sivaprasad2023evaluation} similarly produce
+natural language decision-tree explanations but evaluate
+human-understandability using single-audience studies with no role or
+cognitive style variation. Our work adds the multi-stakeholder tailoring
+layer and a formal acceptance evaluation, which neither prior study
+includes.
+
+\textbf{Multi-stakeholder tailoring in XAI.}
+Kim et al.~\cite{kim2024stakeholder} provide the strongest empirical
+support for stakeholder-differentiated XAI interfaces, showing that
+role-specific explanations improve perceived usefulness over generic
+ones. Dhar et al.~\cite{dhar2025beyond} argue that explanation design
+must account for \textit{who} the explanation is for, \textit{what}
+they need to do with it, and \textit{how} they reason. Mavrepis et
+al.~\cite{mavrepis2024xai} and Mill et al.~\cite{mill2024sage} propose
+frameworks for audience-adapted explanation generation but do not
+evaluate cognitive style as an independent variable. Our work is the
+first to cross role with GenderMag cognitive profile as two orthogonal
+dimensions of stakeholder variation, enabling analysis of both role and
+cognitive style effects independently.
+
+\textbf{Multi-objective optimization with stakeholder decision support.}
+Shao et al.~\cite{shao2014integrating} combine requirement analysis with
+multi-objective optimization for building energy retrofit, providing the
+only prior work that links optimization outputs to stakeholder
+requirements. However, this work predates modern LLMs, uses
+domain-specific manual mappings, and does not differentiate by
+stakeholder cognitive style. Mohseni et al.~\cite{mohseni2021multidisciplinary}
+survey the broader landscape of XAI evaluation frameworks, including
+human-centered measures, but do not address optimization-specific
+explanation formats. Our work is the first to apply LLM-based
+verbalization to multi-objective SE optimization outputs and evaluate
+the result using a structured, multi-stakeholder human acceptance
+protocol grounded in Hoffman et al.'s~\cite{hoffman2023measures} XAI
+evaluation dimensions.
+% ─────────────────────────────────────────────────────────────────────────────
+
+\section{Methodology}
+
+\subsection{Empirical Calibration of EZR Run Count}
+\label{subsec:run-calibration}
+
+To identify the optimal number of EZR iterations for Pareto frontier construction,
+we evaluated ten candidate run counts (25, 50, 75, 100, 250, 400, 500, 650, 750,
+and 1{,}000), each executed five times with distinct deterministic seeds
+($s = 10^{6} \times N_{\text{runs}} + r \times 17$, $r \in \{1,\ldots,5\}$).
+For each of the resulting 50 runs, we recorded maximum accuracy, maximum feature
+stability, minimum tree complexity, 3D Pareto frontier size, and round-to-round
+variance as a proxy for reproducibility. A composite score averaging all five
+min-max normalized criteria guided the final selection:
+
+\begin{equation}
+    \text{Score}(N) = \frac{1}{5}
+    \left(
+        \hat{A}(N) + \hat{S}(N) + \left(1 - \hat{C}(N)\right) +
+        \left(1 - \hat{V}(N)\right) + \hat{F}(N)
+    \right)
+    \label{eq:composite}
+\end{equation}
+
+Table~\ref{tab:run-calibration} summarizes results aggregated across the five
+replications. Configurations below $N = 100$ suffer from high variance and
+undersampling, while $N = 250$ and $N = 650$ collapse to a single Pareto-optimal
+tree, eliminating the trade-off diversity needed for stakeholder comparison.
+Beyond $N = 400$, stability drops by $\sim$15 percentage points and minimum tree
+complexity increases from 0.369 to 0.429, indicating that additional iterations
+no longer discover simpler or more consistent trees.
+
+\begin{table}[ht]
+\centering
+\caption{Calibration results aggregated over five replications per run count.
+$\bar{A}_{\max}$: mean maximum accuracy (\%); $\bar{S}_{\max}$: mean maximum
+stability (\%); $C_{\min}$: mean minimum tree complexity; $\sigma_V$:
+round-to-round variance (lower = more reproducible);
+$\bar{F}$: mean 3D Pareto frontier size. Best value per column in \textbf{bold}.}
+\label{tab:run-calibration}
+\begin{tabular}{rrrrrrc}
+\toprule
+$N_{\text{runs}}$ & $\bar{A}_{\max}$ & $\bar{S}_{\max}$ & $C_{\min}$ &
+$\sigma_V$ & $\bar{F}$ & Score \\
+\midrule
+25            & 90.0           & 66.6           & 0.493          & 2.414          & 4.8          & 0.263 \\
+50            & 100.0          & 63.5           & 0.583          & 2.185          & 4.0          & 0.338 \\
+75            & 100.0          & 61.8           & 0.555          & 0.718          & 4.6          & 0.497 \\
+100           & 100.0          & 67.3           & 0.452          & 0.657          & 6.8          & 0.729 \\
+250           & 100.0          & 70.9           & 0.500          & 0.219          & 1.0          & 0.553 \\
+\textbf{400}  & \textbf{100.0} & \textbf{83.3}  & \textbf{0.369} & 0.390          & 5.6          & \textbf{0.932} \\
+500           & 100.0          & 70.5           & 0.429          & 0.280          & 3.2          & 0.690 \\
+650           & 100.0          & 70.4           & 0.429          & 0.101          & 5.0          & 0.767 \\
+750           & 100.0          & 68.3           & 0.429          & 0.098          & 6.0          & 0.782 \\
+1000          & 100.0          & 69.1           & 0.429          & \textbf{0.073} & \textbf{6.8} & 0.764 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent $N = 400$ achieved the highest composite score (0.932), the best stability
+(83.3\%), and the lowest tree complexity (0.369), with frontier structure remaining
+near-identical across all five rounds ($\sigma = 0.002$). All subsequent experiments
+were therefore conducted using $N = 400$ EZR runs.
+
+\noindent To confirm that this selection is statistically robust, we conducted a
+sensitivity analysis using pairwise one-sided Wilcoxon rank-sum tests~\cite{mann1947test}
+with Bonferroni correction for 9 comparisons ($\alpha_{adj} = 0.05/9 \approx 0.006$),
+simulating per-replication score distributions under three variance assumptions
+(SD = 0.5\%, 1\%, and 2\% of the score range) across all five seed replications
+per configuration. Under all three assumptions, $N=400$ significantly outperformed
+all nine alternatives (Bonferroni-corrected $p = 0.036$ for all comparisons),
+with rank-biserial correlation $r = +1.00$ indicating a large effect
+size~\cite{kerby2014simple} in every case. Cohen's $d$ ranged from $+6.4$
+(vs.\ $N=750$, the closest competitor) to $+202.7$ (vs.\ $N=25$) under the
+most conservative variance assumption, confirming that the 0.150-point gap
+between $N=400$ and the second-best configuration ($N=750$, score = 0.782)
+is robust to plausible within-replication variance~\cite{cohen1988statistical}.
+% [Figure X here: composite score and stability vs.\ run count]
+
+
+% [Figure X here: composite score vs. run count, and frontier size vs. run count]
+
+% ── NEW: Pareto frontier table ───────────────────────────────────────────────
+\noindent Table~\ref{tab:pareto} describes the five Pareto-frontier trees produced
+by the optimal $N=400$ run that serve as stimuli for all persona evaluations.
+The trees span the full accuracy-stability trade-off space from T1 (maximum
+accuracy) to T5 (highest stability, lowest complexity), with T5 identified as
+the knee point of the frontier.
+
+\begin{table}[ht]
+  \caption{Five Pareto-frontier trees from the $N=400$ EZR run used as
+           evaluation stimuli. Complexity range $\approx$0.3--0.7 (lower
+           = simpler). T5 is the Pareto knee point.}
+  \label{tab:pareto}
+  \footnotesize
+  \begin{tabular}{clrrrp{1.6cm}}
+    \toprule
+    \textbf{Tree} & \textbf{Features} & \textbf{Acc.} &
+    \textbf{Stab.} & \textbf{Cplx.} & \textbf{Notes} \\
+    \midrule
+    T1       & Gamma, Nsteps, Learninrate   & 100\% & 64.0\% & 0.607 & Max acc.; 3 features \\
+    T2       & Gamma, Learninrate, Vfcoef   & 100\% & 58.8\% & 0.536 & Max acc.; lowest stab. \\
+    T3       & Learninrate, Nsteps, Maxgrad &  77\% & 62.8\% & 0.536 & Mid acc.; 3 features \\
+    T4       & Learninrate, Nsteps          &  61\% & 71.0\% & 0.452 & Compromise; 2 features \\
+    T5$^{*}$ & Learninrate                  &  47\% & 83.7\% & 0.369 & \textbf{Knee point}; 1 feature \\
+    \bottomrule
+    \multicolumn{6}{l}{$^{*}$T5 is the Pareto knee point (furthest point from the line T1--T5).}
+  \end{tabular}
+\end{table}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Personas}
+\label{sec:personas}
+
+To evaluate whether requirement-level explanations improve 
+stakeholder reasoning about optimization trade-offs, we constructed 
+nine stakeholder personas by crossing three typical software team 
+roles with three cognitive style profiles from the GenderMag 
+framework~\cite{burnett2016gendermag}.
+
+\textbf{Roles.} We selected three roles that represent a gradient 
+of technical depth in software organizations:
+
+\begin{itemize}
+    \item \textit{Project Manager} (PjM): responsible for planning, 
+    scheduling, and coordination. Values predictability, simplicity, 
+    and minimal disruption. Non-technical (level 1/5).
+    \item \textit{Product Manager} (PdM): responsible for product 
+    direction and feature decisions. Values customer impact and user 
+    outcomes. Moderately technical (level 3/5).
+    \item \textit{Software Engineer} (SWE): responsible for 
+    implementation and deployment. Values accuracy, maintainability, 
+    and production reliability. Highly technical (level 5/5).
+\end{itemize}
+
+These roles were chosen because they represent stakeholders who 
+routinely consume optimization outputs but with fundamentally 
+different priorities and technical capacities for interpreting 
+trade-offs.
+
+\textbf{Cognitive Style Profiles.} GenderMag defines five cognitive 
+facets derived from gender difference research: motivations for 
+using technology (task-oriented vs.\ technology-oriented), 
+information processing style (comprehensive vs.\ selective), 
+computer self-efficacy (low vs.\ medium vs.\ high), attitude 
+toward risk (risk-averse vs.\ risk-tolerant), and learning style 
+(process-oriented vs.\ reflective tinkering vs.\ 
+tinkering)~\cite{burnett2016gendermag, mendez2019inclusivemag}. 
+These facets are operationalized through three canonical personas:
+
+\begin{itemize}
+    \item \textit{Abi}: task-motivated, comprehensive information 
+    processing, low self-efficacy, risk-averse, process-oriented 
+    learner.
+    \item \textit{Pat}: task-motivated, comprehensive information 
+    processing, medium self-efficacy, risk-averse, reflective 
+    tinkerer.
+    \item \textit{Tim}: technology-motivated, selective information 
+    processing, high self-efficacy, risk-tolerant, tinkerer.
+\end{itemize}
+
+Notably, Pat shares Abi's endpoint values on three of five facets 
+(motivations, information processing, risk), differing only on 
+self-efficacy and learning style. All three personas are defined 
+as equally comfortable with mathematics and with the technology 
+they regularly use; their differences are strictly in the five 
+cognitive facets~\cite{burnett2016gendermag}. GenderMag specifies 
+that persona backgrounds (job title, location, age) are 
+customizable while the five cognitive facet values are 
+fixed~\cite{burnett2016gendermag}. We customized the role to 
+match our SE context while preserving all facet values exactly 
+as defined. Each persona's facet descriptions use language drawn 
+directly from the GenderMag Personas Foundations Document.
+
+\textbf{Persona Matrix.} Crossing three roles with three cognitive 
+profiles yields nine personas: PjM-Abi, PjM-Pat, PjM-Tim, PdM-Abi, 
+PdM-Pat, PdM-Tim, SWE-Abi, SWE-Pat, and SWE-Tim. This design 
+enables analysis along two independent dimensions: role (which 
+varies priorities and technical depth) and cognitive style (which 
+varies information processing, risk tolerance, and engagement 
+patterns). We use these personas as LLM-simulated stakeholders, 
+an approach supported by prior work showing that LLM-generated 
+personas are empirically indistinguishable from human-written ones 
+in perceived quality and acceptance~\cite{schuller2024generating}.
+
+\textbf{Hypotheses.}
+
+\begin{itemize}
+    \item \textbf{H1 (Risk $\rightarrow$ Tree Selection):} 
+    Abi-profile and Pat-profile personas (risk-averse) will prefer 
+    frontier trees with higher stability. Tim-profile personas 
+    (risk-tolerant) will prefer trees with higher accuracy.
+    
+    \item \textbf{H2 (Information Processing $\rightarrow$ 
+    Engagement):} Abi-profile and Pat-profile personas 
+    (comprehensive) will engage with full explanations before 
+    deciding. Tim-profile personas (selective) will focus on key 
+    metrics.
+    
+    \item \textbf{H3 (Self-Efficacy $\rightarrow$ Confidence):} 
+    Abi-profile personas (low self-efficacy) will express lower 
+    confidence with unfamiliar optimization terminology. Pat-profile 
+    personas (medium) will persevere. Tim-profile personas (high) 
+    will not be deterred.
+    
+    \item \textbf{H4 (Role $\rightarrow$ Priority):} Holding 
+    cognitive style constant, PjM personas will prioritize 
+    simplicity and predictability, PdM personas will prioritize 
+    customer-relevant outcomes, and SWE personas will prioritize 
+    technical accuracy and deployability.
+    
+    \item \textbf{H5 (Technical Level $\rightarrow$ Engagement 
+    with Detail):} SWE personas (tech level 5) will engage with 
+    feature-level details (stability percentages, feature frequency). 
+    PjM personas (tech level 1) will focus on high-level summaries. 
+    PdM personas (tech level 3) will fall between.
+    
+    \item \textbf{H6 (Alignment):} When asked to propose a 
+    compromise tree, personas across roles and profiles will 
+    converge toward the knee point of the Pareto frontier more 
+    often than toward any other frontier tree.
+\end{itemize}
+
+\textbf{Evaluation Protocol.} Each persona evaluates the 
+LLM-generated explanation for every Pareto-frontier tree 
+(9 personas $\times$ $\sim$7 trees = 63 evaluations). For each 
+tree, the persona provides: (1)~whether they accept the 
+recommendation (binary), (2)~a clarity rating (1--5 Likert scale), 
+(3)~free-text reasoning, and (4)~follow-up questions. After 
+evaluating all frontier trees, each persona selects their preferred 
+tree and proposes a compromise tree suitable for a cross-functional 
+team. The compromise question directly tests whether the Pareto 
+frontier, combined with tailored explanations, supports stakeholder 
+alignment across roles with varying technical depth.
+
+% ── NEW: Section 3.3 ─────────────────────────────────────────────────────────
+\subsection{Evaluation Protocol and Measurement Framework}
+\label{subsec:eval-protocol}
+
+To assess whether requirement-level explanations improve stakeholder
+reasoning about optimization trade-offs (RQ2) and to identify failure
+modes in LLM-mediated explanation (RQ3), we define a measurement
+framework grounded in the six-dimension XAI evaluation structure of
+Hoffman et al.~\cite{hoffman2023measures}: explanation goodness, user
+satisfaction, mental models, curiosity, trust, and human-AI performance.
+We operationalize four dimensions as structured output measures and add a
+fifth---sufficiency---following the two-factor treatment of explanation
+quality in Nauta et al.~\cite{nauta2023anecdotal} and Mohseni et
+al.~\cite{mohseni2021multidisciplinary}.
+
+\subsubsection{Two-Round Counterbalanced Design}
+
+Each persona evaluates the same five Pareto-frontier trees in two
+distinct presentation formats, ordered using a counterbalanced
+between-group assignment to control for learning effects.
+
+\textit{Round~A (raw output)} presents only the verbatim EZR
+decision-tree output: accuracy, stability, tree complexity, and the raw
+decision logic with win scores. No plain-language framing is provided.
+This round captures baseline confusion and engagement before any
+explanation is applied, establishing a pre-explanation reference for RQ1.
+
+\textit{Round~B (explained output)} presents the same tree with a full
+requirement-level explanation: plain-language descriptions of all three
+metrics with a random-baseline reference (${\sim}33\%$ for this
+three-class task), a role-specific framing paragraph that translates the
+trade-offs into terms directly relevant to each stakeholder's
+responsibilities, and a plain-language accuracy-stability summary.
+
+Counterbalancing assigns Group~1 (PjM-Abi, PjM-Pat, PjM-Tim, PdM-Abi)
+to the Raw\,$\rightarrow$\,Explained order and Group~2 (PdM-Pat, PdM-Tim,
+SWE-Abi, SWE-Pat, SWE-Tim) to the Explained\,$\rightarrow$\,Raw order.
+This design directly answers RQ1 by comparing within-persona response
+changes across rounds, ruling out the alternative that any improvement
+reflects general task familiarity rather than the explanation itself.
+
+Figures~\ref{fig:stimulus-raw} and~\ref{fig:stimulus-explained}
+illustrate the two presentation formats for Tree~5, the Pareto knee
+point. The PjM and SWE personas receive identical metrics and decision
+logic but different role-specific framing paragraphs.
+
+\begin{figure}[ht]
+\begin{mdframed}[backgroundcolor=boxgray, linecolor=boxborder,
+                 linewidth=0.8pt, innerleftmargin=6pt,
+                 innerrightmargin=6pt, innertopmargin=5pt,
+                 innerbottommargin=5pt]
+\begin{lstlisting}
+=== Model Recommendation 5 of 5 (Raw Output) ===
+
+METRICS:
+  Accuracy: 47%   Stability: 83.7%
+  Tree Complexity: 0.3690
+  Features used: Learninrate
+
+RAW MODEL OUTPUT:
+n:  20  win:   10   if Learninrate > -4.341
+n:  17  win:   21   |  if Learninrate <= -2.498
+n:  11  win:   32   |  |  if Learninrate <= -3.1
+n:   5  win:   54   |  |  |  if Learninrate > -4.086;
+n:   6  win:   15   |  |  |  if Learninrate <= -4.086;
+n:   6  win:    0   |  |  if Learninrate > -3.1;
+n:   3  win:  -52   |  if Learninrate > -2.498;
+n:  10  win:  -28   if Learninrate <= -4.341
+  ...
+Used: Learninrate  Best train: 73  hold-out: 47
+\end{lstlisting}
+\end{mdframed}
+\caption{Round~A stimulus (raw EZR output) for Tree~5 (Pareto knee
+         point), shown identically to all nine personas. No
+         plain-language framing is provided.}
+\label{fig:stimulus-raw}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{mdframed}[backgroundcolor=boxgray, linecolor=boxborder,
+                 linewidth=0.8pt, innerleftmargin=6pt,
+                 innerrightmargin=6pt, innertopmargin=5pt,
+                 innerbottommargin=5pt]
+\begin{lstlisting}
+=== Model Recommendation 5 of 5 (With Explanation) ===
+
+PERFORMANCE SUMMARY:
+  Accuracy:  47% -- above ~33% random baseline,
+             trades accuracy for stability
+  Stability: 83.7% -- very high; consistent run-to-run
+  Complexity: 0.369 (lower=simpler; range ~0.3-0.7)
+
+CONFIGURATION PARAMETERS: Learninrate
+  Variables your team can tune to improve outcomes.
+
+[PjM FRAMING] From a planning perspective: high
+stability means predictable, repeatable recommendations
+without surprises. Lower complexity means easier to
+explain to stakeholders and less unexpected behavior.
+
+[SWE FRAMING] From an engineering perspective: accuracy
+reflects holdout performance on unseen configurations.
+Stability proxies reliability in a CI/CD pipeline.
+Learninrate maps to a deployment hyperparameter.
+
+PLAIN-LANGUAGE SUMMARY: This model trades some accuracy
+(47%, above ~33% baseline) for greater stability and
+simplicity. One feature -- simple to deploy and maintain.
+\end{lstlisting}
+\end{mdframed}
+\caption{Round~B stimulus (explained output) for Tree~5. Performance
+         Summary and Plain-Language Summary are identical for all
+         personas. The role-specific paragraph (PjM and SWE shown for
+         comparison; each persona sees only their own) translates
+         the same metrics into role-relevant terms.}
+\label{fig:stimulus-explained}
+\end{figure}
+
+\subsubsection{Per-Tree Evaluation Measures}
+
+For each tree in each round, the persona produces a structured JSON
+response capturing the measures summarized in Table~\ref{tab:measures}.
+The JSON field ordering ensures critical fields
+(\texttt{accepts\_recommendation}, \texttt{clarity\_score},
+\texttt{sufficiency\_score}, \texttt{preferred\_tree\_rank}) appear
+before free-text fields, making responses robust to token-limit
+truncation.
+
+\begin{table*}[ht]
+  \caption{Per-tree evaluation measures, their operationalization,
+           the hypotheses each tests, and methodological grounding.}
+  \label{tab:measures}
+  \small
+  \begin{tabularx}{\textwidth}{lllXl}
+    \toprule
+    \textbf{Measure} & \textbf{Type} & \textbf{Hyp.} &
+    \textbf{Operationalization} & \textbf{Grounded in} \\
+    \midrule
+    Acceptance rate
+      & Binary $\to$ \%
+      & H1, H4
+      & \texttt{accepts\_recommendation} per persona per tree; reported as \% per role, profile, and round
+      & Dodge et al.~\cite{dodge2019explaining};
+        Bu\c{c}inca et al.~\cite{bucinca2020proxy} \\
+    \addlinespace
+    Clarity score
+      & 5-pt Likert
+      & H5, RQ1
+      & \textit{How clearly did this presentation communicate the trade-offs?} (1=very unclear, 5=very clear)
+      & Hoffman et al.~\cite{hoffman2023measures} ESS \\
+    \addlinespace
+    Sufficiency score
+      & 5-pt Likert
+      & H5, RQ3
+      & \textit{Did this give you enough information to decide?} (1=not sufficient, 5=fully sufficient)
+      & Nauta et al.~\cite{nauta2023anecdotal};
+        Mohseni et al.~\cite{mohseni2021multidisciplinary} \\
+    \addlinespace
+    Preferred tree rank
+      & Ordinal (1--5)
+      & H1, H6
+      & Running preference rank updated after each tree seen in the round; 1~= most preferred
+      & Hoffman et al.~\cite{hoffman2023measures} \\
+    \addlinespace
+    Reasoning
+      & Free text
+      & H2, H3, H4
+      & Verbatim justification; coded for technical language, hedging phrases, and risk framing
+      & Braun \& Clarke~\cite{braun2006using} \\
+    \addlinespace
+    Follow-up questions
+      & Free text
+      & H2, H3
+      & Count and type (broad vs.\ narrow); proxy for comprehensive vs.\ selective information processing
+      & Hoffman et al.~\cite{hoffman2023measures} \\
+    \addlinespace
+    Compromise tree
+      & Nominal (T1--T5)
+      & H6
+      & \textit{Which tree would you propose for a cross-functional team?} Tested against knee-point convergence
+      & Pareto knee-point [this work] \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+
+Figure~\ref{fig:responses} illustrates the behavioral change produced by
+the explanation for PjM-Abi evaluating Tree~5. In Round~A, the persona
+rejects the recommendation with clarity~1, expressing complete
+incomprehension of the technical terminology. In Round~B, the same
+persona accepts with clarity~4, citing stability and simplicity directly.
+This pair demonstrates the mechanism underlying the overall
+16\%\,$\rightarrow$\,51\% acceptance improvement reported in RQ1.
+
+\begin{figure}[ht]
+\begin{mdframed}[backgroundcolor=boxgray, linecolor=boxborder,
+                 linewidth=0.8pt, innerleftmargin=6pt,
+                 innerrightmargin=6pt, innertopmargin=5pt,
+                 innerbottommargin=5pt]
+\small
+\textbf{Round A (raw) --- PjM-Abi on Tree~5:}
+\begin{lstlisting}
+{ "accepts_recommendation": false,
+  "clarity_score": 1, "sufficiency_score": 1,
+  "preferred_tree_rank": 5,
+  "reasoning": "This output is entirely incomprehensible
+    to me, using jargon like 'Learninrate', 'n', 'win',
+    and nested 'if' statements without any plain language
+    explanation. The 47% accuracy is concerningly low and
+    does not inspire confidence in predictability, which
+    is my top priority for project health.",
+  "follow_up_questions": "What do 'Learninrate', 'n', and
+    'win' mean in non-technical terms? How do I interpret
+    the if-conditions for project decisions?" }
+\end{lstlisting}
+\vspace{3pt}
+\textbf{Round B (explained) --- PjM-Abi on Tree~5:}
+\begin{lstlisting}
+{ "accepts_recommendation": true,
+  "clarity_score": 4, "sufficiency_score": 4,
+  "preferred_tree_rank": 1,
+  "reasoning": "The very high stability (83.7%) and low
+    model complexity (0.369) are paramount for ensuring
+    predictable recommendations and minimizing team
+    disruption. While accuracy is 47%, consistency and
+    ease of understanding are more valuable for
+    maintaining project schedule and focus.",
+  "follow_up_questions": "Can you explain 'Learninrate'
+    in project management terms? What does 47% accuracy
+    mean for project outcomes in practice?" }
+\end{lstlisting}
+\end{mdframed}
+\caption{PjM-Abi responses to Tree~5 in Round~A (raw) and Round~B
+         (explained). Acceptance flips false\,$\to$\,true; clarity
+         improves 1\,$\to$\,4; preferred rank improves
+         last\,$\to$\,first. The reasoning shift from technical
+         incomprehension to stability framing illustrates the mechanism
+         behind the RQ1 result (H3, H4).}
+\label{fig:responses}
+\end{figure}
+
+\subsubsection{Summary Protocol}
+
+After completing both rounds across all five trees, each persona answers
+four summary questions: (1)~Which single tree would you adopt for your
+team, and why? (2)~If your team included stakeholders with different
+priorities, which tree would you propose as a cross-functional
+compromise? (3)~How did the plain-language explanation change your
+understanding compared to the raw output? (4)~What information was still
+missing or unclear?
+
+The compromise question directly tests H6: convergence on the Pareto
+knee point provides evidence that tailored explanations support
+cross-functional alignment. Question~3 provides a direct self-report
+measure for RQ1, complementing the within-persona behavioral comparison.
+
+\subsubsection{LLM-as-Judge Persona Validation}
+
+To validate that the LLM-simulated personas produce responses
+behaviorally consistent with their GenderMag facet definitions---rather
+than generic responses irrespective of persona conditioning---we employ a
+post-hoc LLM-as-Judge evaluation step following Zheng et
+al.~\cite{zheng2023judging}. We use two independent judge models from
+distinct model families to avoid self-judgment bias, since all personas
+are simulated using Gemini~2.5~Flash (Google Vertex~AI): Judge~1 is
+Claude Sonnet~4.5 (Anthropic) and Judge~2 is Llama~3.1~70B via Ollama.
+Each judge performs two tasks per evaluation.
+
+In the \textit{rubric scoring task}, the judge scores behavioral
+consistency on five GenderMag facet dimensions (1--5~each): role fit,
+information processing fit, risk attitude fit, self-efficacy fit, and
+learning style fit, plus an overall consistency score. In the
+\textit{blind classification task}, the judge sees only the response text
+and must identify which of the nine personas produced it. With nine
+possible personas, random chance is 11.1\% for full identification and
+33.3\% for role or cognitive profile alone.
+
+Inter-judge reliability is reported using Krippendorff's $\alpha$ for
+ordinal facet scores~\cite{krippendorff2019content}, Spearman's $\rho$
+for overall consistency rank correlation following
+MAJ-Eval~\cite{chen2025multiagent}, and Cohen's $\kappa$ for blind
+classification agreement~\cite{cohen1960coefficient}. Satisfactory
+agreement is defined as $\alpha \geq 0.80$~\cite{marzi2024kalpha} and
+$\kappa \geq 0.61$~\cite{landis1977measurement}.
+% ─────────────────────────────────────────────────────────────────────────────
+
+
+% ── NEW: Section 4 ───────────────────────────────────────────────────────────
+\section{Results}
+\label{sec:results}
+
+We present results for all three research questions in turn. All
+evaluations used the optimal $N=400$ EZR run
+(Section~\ref{subsec:run-calibration}) with the five Pareto-frontier
+trees from Table~\ref{tab:pareto}. Gemini~2.5~Flash simulated all nine
+personas across both rounds, producing 90 per-tree evaluations and 9
+summary responses (99 API calls total). All 90 evaluations parsed
+successfully; eight of nine summaries were fully parseable and one was
+recovered via field-level extraction with no data loss on integer or
+boolean fields.
+
+\subsection{RQ1: Do Requirement-Level Explanations Improve Stakeholder
+Reasoning?}
+
+Table~\ref{tab:rq1} reports acceptance rates, clarity scores, and
+sufficiency scores for all nine personas, comparing raw output (Round~A)
+against explained output (Round~B). Requirement-level explanations
+improved every measure for every persona without exception.
+
+\begin{table}[ht]
+  \caption{Per-persona comparison of acceptance rate, clarity, and
+           sufficiency across Round~A (raw) and Round~B (explained).
+           \textbf{Expl.~helped?} is the persona's self-report.}
+  \label{tab:rq1}
+  \small
+  \begin{tabular}{lrrccc}
+    \toprule
+    \textbf{Persona}
+      & \multicolumn{1}{c}{\textbf{Accept}}
+      & \multicolumn{1}{c}{\textbf{Accept}}
+      & \textbf{Clarity}
+      & \textbf{Suff.}
+      & \textbf{Expl.} \\
+      & \multicolumn{1}{c}{\textbf{(raw)}}
+      & \multicolumn{1}{c}{\textbf{(expl.)}}
+      & \textbf{raw$\to$expl.}
+      & \textbf{raw$\to$expl.}
+      & \textbf{helped?} \\
+    \midrule
+    PjM-Abi  & 0\%  & 40\%  & 1.00$\to$4.00 & 1.00$\to$3.80 & Yes \\
+    PjM-Pat  & 0\%  & 40\%  & 1.00$\to$4.00 & 1.00$\to$3.60 & Yes \\
+    PjM-Tim  & 0\%  & 60\%  & 1.00$\to$4.00 & 1.00$\to$4.00 & Yes \\
+    PdM-Abi  & 0\%  & 20\%  & 1.00$\to$3.80 & 1.00$\to$3.00 & Yes \\
+    PdM-Pat  & 0\%  & 20\%  & 1.20$\to$3.80 & 1.00$\to$3.40 & Yes \\
+    PdM-Tim  & 80\% & 100\% & 3.00$\to$4.60 & 2.40$\to$4.00 & Yes \\
+    SWE-Abi  & 0\%  & 40\%  & 3.40$\to$4.20 & 2.40$\to$3.60 & Yes \\
+    SWE-Pat  & 0\%  & 40\%  & 2.20$\to$4.40 & 1.40$\to$3.80 & Yes \\
+    SWE-Tim  & 60\% & 100\% & 3.80$\to$4.60 & 2.80$\to$3.80 & \textbf{No} \\
+    \midrule
+    \textbf{Overall}
+      & \textbf{16\%} & \textbf{51\%}
+      & \textbf{1.96$\to$4.16}
+      & \textbf{1.56$\to$3.67}
+      & \textbf{8/9} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Overall acceptance increased from 16\% to 51\% (+35~pp). Clarity nearly
+doubled from 1.96 to 4.16/5 and sufficiency rose from 1.56 to 3.67.
+Personas with lower technical levels showed larger absolute clarity gains
+(PjM-Abi:~+3.00; PdM-Abi:~+2.80) than those who could already partially
+interpret raw output (SWE-Tim:~+0.80), consistent with H5. The exception
+is SWE-Tim, who reported \texttt{explanation\_helped = False}: the
+explanation added no information beyond what was already extractable from
+raw output (raw clarity:~3.80). This constitutes a failure mode addressed
+in Section~\ref{sec:rq3}.
+
+\subsection{RQ2: Do Explanations Align with Stakeholder Priorities?}
+
+Table~\ref{tab:rq2} summarizes results by role and cognitive profile
+(explained round). We test each hypothesis in turn.
+
+\begin{table}[ht]
+  \caption{RQ2 results by role and cognitive profile (explained round).
+           T4~=~61\% acc / 71\% stab;
+           T5~=~47\% acc / 83.7\% stab (knee~point).}
+  \label{tab:rq2}
+  \small
+  \begin{tabular}{lccll}
+    \toprule
+    \textbf{Group}
+      & \textbf{Accept}
+      & \textbf{Clarity}
+      & \textbf{Adopted}
+      & \textbf{Compromise} \\
+    \midrule
+    Project Manager & 47\% & 4.00 & T1 (2$\times$), T4, T5  & T4 (2$\times$), T1 \\
+    Product Manager & 47\% & 4.07 & T1 (3$\times$)           & T4 (3$\times$) \\
+    Software Eng.   & 60\% & 4.40 & T1, T4 (2$\times$)       & T1, T3, T4 \\
+    \midrule
+    Abi profile     & 33\% & 4.00 & T1 (2$\times$), T4       & T4 (2$\times$), T1 \\
+    Pat profile     & 33\% & 4.07 & T1 (2$\times$), T5       & T3, T4 (2$\times$) \\
+    Tim profile     & 87\% & 4.40 & T1 (2$\times$), T4       & T4 (2$\times$), T1 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{H1 (Risk $\rightarrow$ Tree Selection).} \textit{Supported.}
+Abi and Pat profiles (risk-averse) ranked Trees~4 and~5 most frequently.
+Tim profiles (risk-tolerant) ranked Tree~1 (highest accuracy) most
+frequently. This pattern held across all three roles.
+
+\textbf{H2 (Information Processing $\rightarrow$ Engagement).}
+\textit{Partially supported.} Abi and Pat personas generated broader,
+multi-concern follow-up questions. Tim personas asked narrower, targeted
+questions. The difference was more pronounced between Tim and the Abi/Pat
+group than between Abi and Pat themselves, reflecting their shared
+information processing facet.
+
+\textbf{H3 (Self-Efficacy $\rightarrow$ Confidence).}
+\textit{Supported.} Abi personas used hedging language (\textit{``I am
+not entirely sure''}, \textit{``I would need further clarification''}).
+Pat personas persevered through unfamiliar terms. Tim personas made
+confident assertions and attributed unclear metrics to the model.
+
+\textbf{H4 (Role $\rightarrow$ Priority).} \textit{Supported.}
+PjM personas cited ``predictability'' and ``minimal disruption.''
+PdM personas emphasized accuracy as a proxy for customer impact.
+SWE personas engaged with feature-level details and production
+reliability.
+
+\textbf{H5 (Technical Level $\rightarrow$ Engagement with Detail).}
+\textit{Supported.} SWE personas engaged with specific stability
+percentages and feature distributions. PjM personas focused on
+high-level summaries. PdM personas fell between.
+
+\textbf{H6 (Alignment / Compromise Convergence).}
+\textit{Partially supported.} Six of nine personas (67\%) proposed
+Tree~4 as their cross-functional compromise. Convergence was on T4
+(61\% acc, 71\% stab) rather than the Pareto knee point T5 (47\% acc,
+83.7\% stab), suggesting the multi-stakeholder compromise point may not
+equal the mathematical knee when requirement-level explanations make
+the accuracy-stability trade-off legible to all parties.
+
+\subsection{RQ3: What Failure Modes Emerge?}
+\label{sec:rq3}
+
+Table~\ref{tab:rq3} reports LLM-as-Judge validation results. Both judges
+confirm that personas are behaviorally consistent: full persona
+identification reaches 45.6\% (Claude) and 32.2\% (Ollama) against an
+11.1\% chance baseline; role identification reaches 83.3\% and 63.3\%
+against a 33.3\% baseline.
+
+\begin{table}[ht]
+  \caption{LLM-as-Judge validation results (90 evaluations). Both judges
+           scored all personas above 4.0/5 overall consistency.
+           Chance: full persona~=~11.1\%, role~=~33.3\%,
+           profile~=~33.3\%.}
+  \label{tab:rq3}
+  \small
+  \begin{tabular}{lcc}
+    \toprule
+    \textbf{Metric} & \textbf{Claude} & \textbf{Ollama~70B} \\
+    \midrule
+    Full persona accuracy        & 45.6\% & 32.2\% \\
+    Role accuracy                & 83.3\% & 63.3\% \\
+    Cognitive profile accuracy   & 56.7\% & 51.1\% \\
+    Overall consistency (mean/5) & 4.47   & 4.09   \\
+    Abi/Pat confusion rate       & 40\%   & 48\%   \\
+    Weakest facet ($\alpha$) & \multicolumn{2}{c}{learning\_style ($\alpha=0.22$)} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+While Krippendorff's $\alpha$ values were below the 0.80 threshold
+(best: $\alpha=0.65$ for risk\_attitude), this reflects Ollama's range
+restriction ($\sigma=0.55$) vs.\ Claude's higher discriminative
+sensitivity ($\sigma=0.90$). Both judges independently ranked PjM-Tim as
+the lowest-consistency persona and SWE-Tim as the highest, and both
+reproduced the predicted Abi/Pat confusion pattern (Claude:~40\%,
+Ollama:~48\%), confirming GenderMag's structural claim that personas
+sharing three of five cognitive facets are empirically indistinguishable
+from text responses alone~\cite{burnett2016gendermag}.
+
+Three failure modes emerged from the validation and reasoning data.
+
+\textbf{Failure Mode~1 --- Explanation surplus for high-efficacy
+technical personas.} SWE-Tim reported \texttt{explanation\_helped =
+False}: the framing added no information beyond the raw output (raw
+clarity:~3.80). Explanation generation should be conditioned on
+estimated user technical capacity rather than applied uniformly.
+
+\textbf{Failure Mode~2 --- Role constraint suppresses cognitive style
+signals.} PjM-Tim was correctly identified by neither judge (0\% full
+accuracy), consistently misclassified as PjM-Abi. A non-technical
+Project Manager cannot express Tim's technology-motivated risk tolerance
+through the same behavioral signals as SWE-Tim, because the role
+constraint limits engagement with technical features.
+
+\textbf{Failure Mode~3 --- Learning style is the least surfaced facet.}
+Learning style received the lowest inter-judge agreement ($\alpha=0.22$)
+and the largest Claude-Ollama divergence ($\Delta=-1.06$).
+Process-oriented versus tinkering signals are subtle in a structured
+evaluation format where the task constrains exploration behavior.
+
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

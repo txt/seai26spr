@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Plan: Stakeholder-Aware SEESAW</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0 auto; max-width: 960px; padding: 30px 20px; background: #fafafa; color: #222; line-height: 1.55; }
+  h1 { font-size: 1.35em; border-bottom: 2px solid #2c3e50; padding-bottom: 8px; }
+  h2 { font-size: 1.1em; color: #2c3e50; margin-top: 28px; border-left: 4px solid #2c3e50; padding-left: 10px; }
+  h3 { font-size: 0.95em; color: #555; margin-top: 18px; }
+  p, li { font-size: 0.88em; }
+  ul, ol { padding-left: 22px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 0.82em; }
+  th, td { border: 1px solid #ccc; padding: 6px 9px; vertical-align: top; }
+  th { background: #2c3e50; color: #fff; font-weight: 600; text-align: left; }
+  tr:nth-child(even) td { background: #f4f6f8; }
+  .ref { color: #666; font-size: 0.8em; }
+  .rq { background: #eef3f8; border-left: 4px solid #3498db; padding: 8px 12px; margin: 10px 0; }
+  .key { background: #fdf2e9; border-left: 4px solid #e67e22; padding: 8px 12px; margin: 10px 0; }
+  .gap { background: #f9ebea; border-left: 4px solid #c0392b; padding: 8px 12px; margin: 10px 0; }
+  code { background: #eee; padding: 1px 4px; border-radius: 3px; font-size: 0.92em; }
+  .timeline td:first-child { white-space: nowrap; font-weight: 600; width: 70px; }
+  .fig { text-align: center; margin: 18px 0; }
+  .fig svg { max-width: 100%; }
+  .caption { font-size: 0.78em; color: #666; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<h1>Who Decides What's Drastic? Stakeholder Personas for Value-Based Software Process Optimization</h1>
+<p class="ref">Target: ICSE 2027 &middot; Timeline: 8 weeks &middot; Draft: April 2026</p>
+
+<!-- ===== MOTIVATION ===== -->
+
+<h2>1. Motivation</h2>
+
+<h3>1.1 The problem: optimization outputs are not self-interpreting</h3>
+<p>Software process models like COCOMO and COQUALMO can predict effort, schedule, and defect counts for hundreds of project configurations. Tools like SEESAW search these models stochastically and return recommendations&mdash;sets of driver settings (e.g., <code>acap=5, tool=5, sced=3</code>) that minimize a composite objective. In four NASA case studies, SEESAW reduced predicted defects by 73%, time by 30%, and effort by 57% compared to the status quo, often matching or beating Boehm's nine "drastic changes" without requiring disruptive organizational moves.</p>
+
+<p>But a recommendation is not a decision. Three gaps remain between what SEESAW produces and what organizations can act on:</p>
+
+<ol>
+  <li><strong>The value gap.</strong> SEESAW's recommendations change dramatically depending on the value function. Green et al. showed that BFC ("better, faster, cheaper"&mdash;minimize defects+effort+time) and XPOS ("risk exposure"&mdash;balance quality risk against market erosion) select near-opposite driver settings for the same project. For OSP2, BFC always selects <code>sced=2</code> (compressed schedule); XPOS always selects <code>sced=4</code> (relaxed). <em>Which value function is "right" depends on who you ask.</em></li>
+
+  <li><strong>The interpretation gap.</strong> SEESAW outputs raw COCOMO driver names and numeric ranges. A Project Manager sees <code>pcap=5, plex=4, ltex=5</code> and cannot connect these to staffing decisions, budget implications, or stakeholder concerns. Estes et al. demonstrated this gap concretely: when MOOT optimization outputs were presented as raw decision-tree logic, stakeholder acceptance was 16%; with requirement-level explanations tailored by role, acceptance rose to 51%.</li>
+
+  <li><strong>The negotiation gap.</strong> Even after optimization and explanation, stakeholders modify recommendations through debate. Carvalho et al. documented this in an industrial microservice migration: automated architecture candidates were substantially restructured during focus-group sessions, with fine-grained and coarse-grained groups reaching different conclusions using different criteria weighted by role and experience. The post-optimization debate is not noise&mdash;it is where organizational values get expressed.</li>
+</ol>
+
+<h3>1.2 What exists and what's missing</h3>
+
+<div class="gap">
+<strong>The intersection is empty.</strong> SEESAW papers (Menzies et al. 2009, Green et al. 2009) established stochastic stability and value-dependent recommendations but never modeled <em>who</em> chooses the value function. Estes et al. (2026) established LLM-simulated multi-stakeholder evaluation with cognitive-style variation but applied it to MOOT tree outputs, not process models. The stakeholder playbook (Menzies 2026) formalized a 4D space (Now/Build/Change/Control) for modeling stakeholder positions but never validated it empirically. No prior work combines all three.
+</div>
+
+<h3>1.3 The thesis</h3>
+<div class="key">
+Different stakeholders occupy different positions in a preference space. These positions predict which value function they endorse, which SEESAW recommendations they accept, and how much explanation they need. <strong>An action is not "best" in isolation&mdash;it is best for a particular stakeholder mix, and the best explanation of that action depends on who is listening.</strong>
+</div>
+
+<!-- ===== RESEARCH QUESTIONS ===== -->
+
+<h2>2. Research Questions</h2>
+
+<div class="rq">
+<strong>RQ1: Value function alignment.</strong> Does a stakeholder's position in the 4D space (Now/Build/Change/Control) predict whether they prefer BFC or XPOS recommendations?
+</div>
+
+<div class="rq">
+<strong>RQ2: Explanation effect.</strong> Do requirement-level explanations of SEESAW's internal changes improve stakeholder acceptance, clarity, and sufficiency compared to raw COCOMO driver output? (Replication of Estes et al. RQ1, applied to process models.)
+</div>
+
+<div class="rq">
+<strong>RQ3: Persona differentiation.</strong> Do stakeholder personas (role &times; cognitive style) systematically prefer different SEESAW recommendations, and does role or cognitive style dominate the effect?
+</div>
+
+<div class="rq">
+<strong>RQ4: Post-optimization consensus.</strong> When personas with different value-function preferences are asked to propose a compromise action set, do they converge? If so, on what&mdash;the mathematically optimal point, or a socially negotiated alternative? (Extends Estes et al. H6 and Carvalho et al.'s negotiation finding.)
+</div>
+
+<!-- ===== CONCEPTUAL FRAMEWORK ===== -->
+
+<h2>3. Conceptual Framework</h2>
+
+<div class="fig">
+<svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+  <!-- Boxes -->
+  <rect x="10" y="30" width="150" height="260" rx="6" fill="#eef3f8" stroke="#2c3e50" stroke-width="1.5"/>
+  <text x="85" y="22" text-anchor="middle" font-weight="bold" font-size="12">Executive Actions</text>
+  <text x="20" y="52" font-size="10">1 Improve personnel</text>
+  <text x="20" y="67" font-size="10">2 Improve tools/platform</text>
+  <text x="20" y="82" font-size="10">3 Improve flexibility</text>
+  <text x="20" y="97" font-size="10">4 Increase risk analysis</text>
+  <text x="20" y="112" font-size="10">5 Relax schedule</text>
+  <text x="20" y="127" font-size="10">6 Improve process maturity</text>
+  <text x="20" y="142" font-size="10">7 Reduce functionality</text>
+  <text x="20" y="157" font-size="10">8 Improve the team</text>
+  <text x="20" y="172" font-size="10">9 Reduce quality</text>
+  <text x="85" y="200" text-anchor="middle" font-size="10" font-style="italic" fill="#666">+ SEESAW internal</text>
+  <text x="85" y="215" text-anchor="middle" font-size="10" font-style="italic" fill="#666">change combinations</text>
+
+  <rect x="220" y="30" width="150" height="110" rx="6" fill="#fdf2e9" stroke="#e67e22" stroke-width="1.5"/>
+  <text x="295" y="22" text-anchor="middle" font-weight="bold" font-size="12">COCOMO Drivers</text>
+  <text x="230" y="52" font-size="10">acap, pcap, pcon, aexp</text>
+  <text x="230" y="67" font-size="10">plex, ltex, prec, flex</text>
+  <text x="230" y="82" font-size="10">resl, pmat, sced, tool</text>
+  <text x="230" y="97" font-size="10">data, cplx, rely, pvol</text>
+  <text x="230" y="112" font-size="10">site, docu, ruse, stor, time</text>
+
+  <rect x="220" y="170" width="150" height="80" rx="6" fill="#fdf2e9" stroke="#e67e22" stroke-width="1.5"/>
+  <text x="295" y="162" text-anchor="middle" font-weight="bold" font-size="12">Value Functions</text>
+  <text x="230" y="192" font-size="10">BFC: min(defects+effort+time)</text>
+  <text x="230" y="212" font-size="10">XPOS: min(risk exposure)</text>
+  <text x="230" y="232" font-size="10">Choose one &rarr; different winners</text>
+
+  <rect x="440" y="30" width="160" height="120" rx="6" fill="#e8f8f5" stroke="#27ae60" stroke-width="1.5"/>
+  <text x="520" y="22" text-anchor="middle" font-weight="bold" font-size="12">Objectives</text>
+  <text x="450" y="52" font-size="10">min effort (staff-months)</text>
+  <text x="450" y="67" font-size="10">min time (calendar months)</text>
+  <text x="450" y="82" font-size="10">min defects/KLOC</text>
+  <text x="450" y="97" font-size="10">min risk exposure</text>
+  <text x="450" y="117" font-size="10" font-style="italic" fill="#666">Monte Carlo over tuning T</text>
+
+  <rect x="440" y="175" width="160" height="75" rx="6" fill="#e8f8f5" stroke="#27ae60" stroke-width="1.5"/>
+  <text x="520" y="167" text-anchor="middle" font-weight="bold" font-size="12">Explanation Layer</text>
+  <text x="450" y="192" font-size="10">Raw: driver names + ranges</text>
+  <text x="450" y="207" font-size="10">Explained: role-tailored</text>
+  <text x="450" y="222" font-size="10">requirement-level framing</text>
+  <text x="450" y="237" font-size="10" font-style="italic" fill="#666">(Estes et al. protocol)</text>
+
+  <rect x="650" y="30" width="140" height="260" rx="6" fill="#f9ebea" stroke="#c0392b" stroke-width="1.5"/>
+  <text x="720" y="22" text-anchor="middle" font-weight="bold" font-size="12">Stakeholder Space</text>
+  <text x="660" y="52" font-size="10">4D: Now/Build/Change/Ctrl</text>
+  <text x="660" y="72" font-size="10">Users (0,0,1,0)</text>
+  <text x="660" y="87" font-size="10">Developers (1,4,3,0)</text>
+  <text x="660" y="102" font-size="10">QA (2,2,1,3)</text>
+  <text x="660" y="117" font-size="10">Managers (3,2,2,4)</text>
+  <text x="660" y="132" font-size="10">Executives (4,3,4,4)</text>
+  <text x="660" y="152" font-size="10">&times; 3 GenderMag:</text>
+  <text x="660" y="167" font-size="10">Abi / Pat / Tim</text>
+  <text x="660" y="192" font-size="10" font-weight="bold">Measures:</text>
+  <text x="660" y="207" font-size="10">acceptance (binary)</text>
+  <text x="660" y="222" font-size="10">clarity (1&ndash;5)</text>
+  <text x="660" y="237" font-size="10">sufficiency (1&ndash;5)</text>
+  <text x="660" y="252" font-size="10">value fn preference</text>
+  <text x="660" y="267" font-size="10">compromise choice</text>
+
+  <!-- Arrows -->
+  <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#555"/></marker></defs>
+  <line x1="160" y1="90" x2="218" y2="90" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+  <line x1="160" y1="200" x2="218" y2="200" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+  <line x1="370" y1="90" x2="438" y2="90" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+  <line x1="370" y1="210" x2="438" y2="210" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+  <line x1="600" y1="90" x2="648" y2="90" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+  <line x1="600" y1="210" x2="648" y2="210" stroke="#555" stroke-width="1.5" marker-end="url(#ah)"/>
+
+  <!-- Bottom annotation -->
+  <text x="400" y="310" text-anchor="middle" font-size="10" fill="#888">Actions &rarr; Driver changes &rarr; Objective scores + Explanations &rarr; Stakeholder evaluation</text>
+</svg>
+<div class="caption">Figure 1. From executive actions through COCOMO drivers and value functions to stakeholder-evaluated, role-explained recommendations.</div>
+</div>
+
+<!-- ===== GAP TABLE ===== -->
+
+<h2>4. Literature Gap</h2>
+
+<table>
+<thead>
+<tr>
+  <th>Paper</th>
+  <th>1. Stochastic stability</th>
+  <th>2. Value-dependent recs</th>
+  <th>3. Multi-stakeholder eval</th>
+  <th>4. Cognitive style</th>
+  <th>5. Req-level explanation</th>
+  <th>6. Process models</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Menzies et al. 2009 (How to Avoid)</td><td>&check;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&check;</td></tr>
+<tr><td>Green et al. 2009 (Understanding Value)</td><td>&check;</td><td>&check;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&check;</td></tr>
+<tr><td>Estes et al. 2026 (Bridging the Gap)</td><td>&mdash;</td><td>&mdash;</td><td>&check;</td><td>&check;</td><td>&check;</td><td>&mdash;</td></tr>
+<tr><td>Carvalho et al. 2024 (Microservices)</td><td>&mdash;</td><td>&mdash;</td><td>&check;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+<tr><td>Stakeholder Playbook 2026</td><td>&mdash;</td><td>&check;</td><td>&check;</td><td>&mdash;</td><td>&mdash;</td><td>&check;</td></tr>
+<tr style="background:#e8f8f5; font-weight:bold;"><td>This paper</td><td>&check;</td><td>&check;</td><td>&check;</td><td>&check;</td><td>&check;</td><td>&check;</td></tr>
+</tbody>
+</table>
+<p class="caption">Table 1. Six-dimensional positioning. No prior work fills all six columns.</p>
+
+<!-- ===== METHOD ===== -->
+
+<h2>5. Method</h2>
+
+<h3>5.1 Optimization data (reuse, no new runs needed)</h3>
+<p>4 NASA case studies (OSP, OSP2, flight software, ground software) from the original SEESAW papers. Each has known project option ranges (Figure 4 in "How to Avoid"), fixed settings, and SEESAW recommendation sets under both BFC and XPOS value functions. 9 drastic changes + SEESAW internal combinations = ~10 candidate action sets per case study per value function.</p>
+
+<h3>5.2 Personas: 12 = 4 roles &times; 3 GenderMag</h3>
+
+<table>
+<thead>
+<tr><th>Role</th><th>Tech level</th><th>4D position (N,B,C,Ctrl)</th><th>Likely value fn</th></tr>
+</thead>
+<tbody>
+<tr><td>Project Manager</td><td>1/5</td><td>(3, 2, 2, 4)</td><td>BFC (min effort+time)</td></tr>
+<tr><td>Developer</td><td>5/5</td><td>(1, 4, 3, 0)</td><td>BFC (min defects)</td></tr>
+<tr><td>QA Lead</td><td>3/5</td><td>(2, 2, 1, 3)</td><td>BFC (min defects)</td></tr>
+<tr><td>VP/Executive</td><td>2/5</td><td>(4, 3, 4, 4)</td><td>XPOS (min risk exposure)</td></tr>
+</tbody>
+</table>
+<p>Each role &times; Abi (risk-averse, process-oriented) / Pat (medium, reflective) / Tim (risk-tolerant, tinkerer) = 12 personas. Generated via Gemini 2.5 Flash following Estes et al.'s validated prompt structure.</p>
+
+<h3>5.3 Protocol (replication of Estes et al.)</h3>
+
+<table>
+<thead>
+<tr><th>Phase</th><th>What the persona sees</th><th>What we measure</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Round A: raw</strong></td>
+  <td>SEESAW recommendation as COCOMO driver settings: <code>acap=5, pcap=5, pcon=5, tool=5, sced=3</code>. Median scores for effort, time, defects. No framing.</td>
+  <td>Acceptance (binary), clarity (1&ndash;5), sufficiency (1&ndash;5), reasoning (free text), follow-up questions</td>
+</tr>
+<tr>
+  <td><strong>Round B: explained</strong></td>
+  <td>Same recommendation with requirement-level explanation: "This means hiring senior analysts (acap=5) and investing in better tooling (tool=5). For a Project Manager, this translates to: higher upfront staffing cost but 73% fewer defects downstream, reducing rework cycles that disrupt your schedule."</td>
+  <td>Same measures. Within-persona comparison = explanation effect.</td>
+</tr>
+<tr>
+  <td><strong>Value function choice</strong></td>
+  <td>Both BFC and XPOS recommendation sets for the same project, side by side. "Which set would you adopt?"</td>
+  <td>BFC vs XPOS preference (forced choice), reasoning. Tests RQ1.</td>
+</tr>
+<tr>
+  <td><strong>Compromise</strong></td>
+  <td>"If your team included a PM, developer, QA lead, and VP, which single recommendation set would you propose?"</td>
+  <td>Convergence analysis. Tests RQ4.</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Counterbalancing:</strong> Group 1 (PM-Abi, PM-Pat, PM-Tim, Dev-Abi, Dev-Pat, Dev-Tim) sees Raw&rarr;Explained. Group 2 (QA-Abi, QA-Pat, QA-Tim, VP-Abi, VP-Pat, VP-Tim) sees Explained&rarr;Raw.</p>
+
+<p><strong>Scale:</strong> 4 case studies &times; 2 value functions &times; ~10 recommendations &times; 12 personas &times; 2 rounds = ~1,920 per-recommendation evaluations + 96 summaries + 48 value-function choices + 48 compromise proposals.</p>
+
+<h3>5.4 Validation: LLM-as-Judge</h3>
+<p>Two independent judges (Claude Sonnet 4.5 + Llama 3.1 70B) perform blind classification. Chance baselines: full persona = 8.3% (1/12), role = 25% (1/4), GenderMag profile = 33% (1/3). Inter-judge reliability: Krippendorff &alpha; for ordinal scores, Cohen &kappa; for classification agreement. Thresholds: &alpha; &ge; 0.80, &kappa; &ge; 0.61.</p>
+
+<h3>5.5 Analysis</h3>
+
+<table>
+<thead>
+<tr><th>RQ</th><th>Test</th><th>Expected signal</th></tr>
+</thead>
+<tbody>
+<tr><td>RQ1</td><td>Logistic regression: 4D position &rarr; BFC/XPOS preference. Euclidean distance to Executives centroid as predictor.</td><td>Executives + Abi (risk-averse) prefer XPOS. Developers + Tim (risk-tolerant) prefer BFC.</td></tr>
+<tr><td>RQ2</td><td>Paired within-persona comparison: acceptance, clarity, sufficiency in Round A vs Round B. Effect size via Cliff's &delta;.</td><td>Explanation helps most for PM (tech=1/5), least for Developer-Tim (tech=5/5). Replicates Estes finding.</td></tr>
+<tr><td>RQ3</td><td>Chi-square: persona &times; preferred recommendation set. Decompose into role effect vs cognitive-style effect.</td><td>Role dominates <em>what</em> is chosen. GenderMag dominates <em>how</em> the choice is justified (hedging, engagement depth).</td></tr>
+<tr><td>RQ4</td><td>Convergence analysis: do compromise choices cluster? Compare to mathematical Pareto knee of the BFC&ndash;XPOS trade-off.</td><td>Compromise &ne; mathematical optimum (replicates Estes H6). Compromise shifts toward the highest-Control group's preference.</td></tr>
+</tbody>
+</table>
+
+<!-- ===== HYPOTHESES ===== -->
+
+<h2>6. Hypotheses</h2>
+
+<table>
+<thead><tr><th>#</th><th>Hypothesis</th><th>Grounded in</th></tr></thead>
+<tbody>
+<tr><td>H1</td><td>Stakeholders with Control &ge; 3 (Executives, Managers, QA) prefer XPOS over BFC.</td><td>Playbook: high-Control groups prioritize risk management over speed.</td></tr>
+<tr><td>H2</td><td>Stakeholders with Build &ge; 3 (Developers, Ops) prefer BFC over XPOS.</td><td>Playbook: high-Build groups optimize for technical quality.</td></tr>
+<tr><td>H3</td><td>Explanation gain (Round B &minus; Round A) is inversely proportional to tech level.</td><td>Estes: PM-Abi gained +3.00 clarity; SWE-Tim gained +0.80.</td></tr>
+<tr><td>H4</td><td>Abi-profile personas (risk-averse) prefer SEESAW's internal changes over drastic changes.</td><td>Internal changes = lower organizational disruption = lower risk.</td></tr>
+<tr><td>H5</td><td>Tim-profile personas (risk-tolerant) are more willing to accept drastic changes when they score better.</td><td>GenderMag: Tim = technology-motivated, high self-efficacy.</td></tr>
+<tr><td>H6</td><td>Compromise converges on internal changes (SEESAW) rather than drastic ones, even when drastic changes score better on objectives.</td><td>Carvalho: post-optimization debate favors less disruptive options. SEESAW: internal changes have smaller IQR = more stable.</td></tr>
+</tbody>
+</table>
+
+<!-- ===== TIMELINE ===== -->
+
+<h2>7. Eight-Week Timeline</h2>
+
+<table class="timeline">
+<thead><tr><th>Week</th><th>Deliverable</th><th>Risk</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Reimplement SEESAW core (28-line pseudocode, Fig 6 of "How to Avoid"). Verify on 4 NASA case studies. Collect recommendation sets under BFC and XPOS. Write raw + explained stimulus templates.</td><td>Original code from 2009 may not run. Pseudocode is complete; COCOMO/COQUALMO equations in appendix. Reimplement in Python, ~200 LOC.</td></tr>
+<tr><td>2</td><td>Build 12 persona system prompts. Pilot: 1 case study &times; 1 value function &times; 4 personas (one per role, Tim only). Debug JSON parsing, prompt stability, response completeness.</td><td>Persona prompts may produce flat responses. Fix: increase GenderMag facet specificity following Estes's validated template.</td></tr>
+<tr><td>3</td><td>Full data collection: all 4 case studies &times; 2 value functions &times; 12 personas &times; 2 rounds. ~1,920 API calls via Gemini 2.5 Flash. Parallelize across case studies.</td><td>API cost ~$50&ndash;100 (Flash is cheap). Fallback: reduce to 2 case studies (OSP + ground) if budget constrained.</td></tr>
+<tr><td>4</td><td>LLM-as-Judge validation. Blind classification + rubric scoring. Compute inter-judge reliability. If &alpha; &lt; threshold on any facet, revise persona prompts and rerun worst performers.</td><td>Estes found &alpha;=0.22 on learning_style. Expected here too. Document as known limitation, not blocker.</td></tr>
+<tr><td>5</td><td>Analysis: RQ1 (logistic regression), RQ2 (paired comparison + Cliff's &delta;), RQ3 (chi-square decomposition), RQ4 (convergence). Generate all tables and figures.</td><td>If role and cognitive style are confounded in counterbalancing, report as threat. Estes had same issue (G1=all PjM).</td></tr>
+<tr><td>6</td><td>Write Results + Discussion. Key figures: (a) acceptance heatmap (12 personas &times; ~10 recs), (b) BFC-vs-XPOS preference by 4D position, (c) explanation gain by role, (d) compromise convergence vs Pareto knee.</td><td>None.</td></tr>
+<tr><td>7</td><td>Write Introduction, Background, Related Work (with gap table), Method. Position against SEESAW papers + Estes + Carvalho + Playbook.</td><td>None.</td></tr>
+<tr><td>8</td><td>Internal review, revise, format for ICSE, submit.</td><td>None.</td></tr>
+</tbody>
+</table>
+
+<!-- ===== CONTRIBUTIONS ===== -->
+
+<h2>8. Contributions</h2>
+
+<ol>
+  <li><strong>First empirical test of stakeholder position predicting value-function preference</strong> in software process optimization. The 4D space (Now/Build/Change/Control) is validated as a predictor, not just a conceptual model.</li>
+  <li><strong>First application of LLM-simulated multi-stakeholder evaluation to COCOMO/COQUALMO process models.</strong> Extends Estes et al.'s methodology from MOOT optimization trees to parametric cost/defect models.</li>
+  <li><strong>Requirement-level explanations for process model recommendations.</strong> Translates COCOMO driver settings into role-specific staffing, tooling, and organizational decisions.</li>
+  <li><strong>Empirical evidence that internal changes are preferred over drastic changes in multi-stakeholder negotiation</strong>, even when drastic changes score better on single-value-function objectives. Extends "How to Avoid" from a purely technical result to a sociotechnical one.</li>
+  <li><strong>Replication and extension of the Estes et al. evaluation protocol</strong> in a new domain, testing generalizability of the 16%&rarr;51% explanation effect.</li>
+</ol>
+
+<!-- ===== KEY REFERENCES ===== -->
+
+<h2>9. Key References</h2>
+
+<table>
+<thead><tr><th>Ref</th><th>What it provides</th></tr></thead>
+<tbody>
+<tr><td>Menzies, Williams, Boehm, El-Rawas, Hihn. "How to Avoid Drastic Software Process Change." ICSE 2009.</td><td>SEESAW algorithm, 4 NASA case studies, stochastic stability, 9 drastic changes.</td></tr>
+<tr><td>Green, Menzies, Williams, El-Rawas. "Understanding the Value of SE Technologies." ASE 2009.</td><td>BFC vs XPOS value functions, value changes everything, SEESAW vs SA/MaxWalkSat/BEAM/A-STAR.</td></tr>
+<tr><td>Estes, EsfandyariDoulabi, Khanmohammadi. "Bridging the Interpretation Gap." 2026.</td><td>LLM-simulated personas, GenderMag &times; role, 2-round counterbalanced protocol, LLM-as-Judge, 16%&rarr;51% acceptance.</td></tr>
+<tr><td>Carvalho et al. "On the Usefulness of Automatically Generated Microservice Architectures." 2024.</td><td>Post-optimization human debate, focus groups modifying automated recommendations, role-dependent criteria weighting.</td></tr>
+<tr><td>Menzies. "A Stakeholder-Aware CEO Playbook." 2026.</td><td>4D stakeholder space (Now/Build/Change/Control), 8 canonical groups, action&rarr;tension mapping.</td></tr>
+<tr><td>Burnett et al. "GenderMag." CHI 2016.</td><td>5 cognitive facets, Abi/Pat/Tim personas, 200+ usability studies.</td></tr>
+<tr><td>Schuller et al. "LLM-generated personas." CHI 2024.</td><td>LLM personas indistinguishable from human-written in quality/acceptance.</td></tr>
+<tr><td>Boehm. "Software Cost Estimation with COCOMO II." 2000.</td><td>COCOMO/COQUALMO model definitions, driver ranges, scale factors.</td></tr>
+</tbody>
+</table>
+
+</body>
+</html>

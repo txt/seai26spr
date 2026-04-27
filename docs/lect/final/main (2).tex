@@ -1,0 +1,429 @@
+\documentclass[sigconf,nonacm]{acmart}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+
+\title{Surrogate Model Selection Under Budget Constraints:
+Accuracy, Data, and Computational Cost Trade-offs}
+\author{Group 14}
+\author{Elliot Rezek}
+\email{ejrezek@ncsu.edu}
+\author{Zack Brooks}
+\email{zobrook2@ncsu.edu}
+\affiliation{%
+  \institution{North Carolina State University}
+  \city{Raleigh}
+  \state{North Carolina}
+  \country{USA}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+Many optimization problems run into the same hangup: the things worth optimizing are expensive to evaluate. Aerodynamic simulations take hours, drug candidate synthesis takes weeks, and structural element analyses consume entire servers [2][14]. When each function evaluation costs that much, you need to start approximating. Surrogate models emerged as a way to minimize this problem. The idea is simple, train a cheap model on a small number of real evaluations, then use it to guide the search instead of evaluating the true landscape [14][20]. In practice this works well, and since its inception, the field has grown considerably. There are now surveys [16][19], benchmark suites [14], and guidelines for practitioners [2].
+
+Like many other fields, the "No Free Lunch" problem [50] tells us that no single algorithm dominates across all problem types. What works well on one landscape can underperform on another. In surrogate modeling, this means there is no single best surrogate. Gaussian processes (GP) are accurate but slow to train and scale poorly beyond moderate dimensionality [49]. Radial basis functions are fast and data-efficient but sensitive to initialization [35]. Neural networks scale well but need more data to generalize [24]. There are always trade-offs between accuracy, computational cost, and data requirements. The trade-offs change with problem dimensionality and complexity. [6] demonstrate this directly in the context of simulation calibration, showing that algorithm choice affects solution quality and that no single method dominates across all problem instances.
+
+When you are running an optimization where each evaluation takes six hours of compute time, the difference between needing fifty training points and five hundred is between two weeks and a few months. Surrogate selection requires balancing three drivers simultaneously: problem size, accuracy, and computational time. While [2] proposes a qualitative framework organized around these three drivers, it relies on categorical guidance rather than an exact selection procedure for standard optimization benchmarks. For example, surrogates like GP can substantially reduce the number of expensive function evaluations compared to direct optimization techniques [20]. Even then, this advantage is dependent on having sufficient training data. The question of "How much data is sufficient?" tends to be answered with a rule of thumb and not an exact rule. Sample size guidelines for surrogate models vary in the literature, but common rules of thumb suggest using ten to twenty times the number of decision variables as the initial sample size [26][43], while polynomial models derive a hard minimum based on the number of model terms [4]. Systematic studies have compared accuracy across sample sizes and surrogate types [7][48], but in these studies, computational cost is a secondary metric used to provide context rather than a point of comparison. This paper applies a framing that treats accuracy, data size, and computational cost as equal criteria for surrogate selection, and evaluates this trade-off on standard benchmarks for expensive optimization.
+
+K-nearest neighbor (kNN) regression is one of the oldest nonparametric estimators in machine learning. It is fast, requires no training, has one hyperparameter (k), and is interpretable. Neighborhood-based methods have appeared in classification contexts — notably CHIRP [47], which builds $\infty$ L-norm hypercube regions around training points and has been benchmarked against 50 classifiers across 20 datasets — but these are classification methods, not regression surrogates, and are not evaluated on continuous optimization landscapes. In the surrogate modeling literature specifically, a review of metamodel-based simulations identified spline, kriging, radial basis function, and neural network surrogates, but no systematic treatment of kNN regression [4][16][46]. For a method that is inherently cheap and data-frugal, this is a notable gap in a field whose central concern is making accurate predictions from limited data.
+
+
+This paper attempts to address both gaps. We implement Gaussian process, RBF, and neural network surrogates alongside kNN and evaluate all four on standard mathematical benchmark functions across a range of training set sizes and problem dimensionalities. The goal is not to declare a winner — No Free Lunch says there will not be one — but to map the trade-off surface precisely enough that practitioners can make informed choices. Specifically, we ask:
+
+\begin{itemize}
+\item \textbf{RQ1:} How do surrogate models trade off accuracy, training data requirements, and computational cost across different benchmark functions?
+\item \textbf{RQ2:} How does problem dimensionality shift those trade-offs, and which surrogate types are most robust to increasing dimension under limited data?
+\item \textbf{RQ3:} Can kNN regression serve as a competitive low-overhead surrogate where established methods are either too slow or too data-hungry?
+\end{itemize}
+
+The answers paint a clearer picture of the trade-off landscape than existing rules of thumb provide. This paper has:
+
+\begin{itemize}
+    \item A systematic empirical characterization of the accuracy-data-cost trade-off surface across four surrogate types, multiple benchmark function classes, and a range of problem dimensionalities.
+    \item A direct evaluation of kNN regression as a primary surrogate in expensive black-box optimization, benchmarked against GP, RBF, and neural network baselines, complementing prior neighborhood-based work in classification but addressing a gap in the regression and optimization literature.
+    \item Empirically grounded guidelines for surrogate selection as a function of available training data and problem dimensionality, resolving conflicts between existing rules of thumb.
+    \item A reproducible experimental framework for future surrogate benchmarking research. 
+\end{itemize}
+
+The rest of this paper is organized as follows. Section 2 reviews the relevant literature and identifies the gap this work fills. Section 3 describes the experimental setup. Section 4 presents results. Section 5 discusses practical implications and future directions.
+
+\section{Background}
+
+Table 1 categorizes research papers relevant to surrogate optimization based on their optimization strategies, methodologies, and applications and links them to the research questions.
+
+\begin{table*}[t]
+\caption{Literature grouped by optimization strategy, methodology, and application, with links to each research question.}
+\label{tab:lit_review}
+\centering
+\begin{tabular}{p{2.8cm} p{4.2cm} p{4.5cm} p{4.5cm}}
+\toprule
+\textbf{Group} & \textbf{Papers Included} & \textbf{Focus} & \textbf{Key Gap for RQs} \\
+\midrule
+
+Data \& Sampling Requirements &
+McKay (2000); Loeppky (2009); Figueroa-Cosme (2012) &
+LHS and $10n$ rules; focuses on how much data is needed to begin modeling. &
+RQ2: These works provide rules of thumb; this work seeks precise scaling relationships with dimensionality. \\
+
+Search \& Cost Efficiency &
+Jones (1998); Regis (2007); Blank (2020); Pan (2018); Sun (2017) &
+EGO and Pymoo; focuses on reducing function evaluations to improve efficiency. &
+RQ1: Computational overhead of the surrogate itself is often treated as secondary. \\
+
+Methodology \& Benchmarking &
+Rasmussen (2006); Forrester (2008); Koziel (2011) &
+Gaussian process and RBF guides; defines standard surrogate modeling approaches. &
+RQ3: $k$NN is not considered a viable surrogate in these practical guides. \\
+
+Theoretical Foundations &
+Wolpert (1997); Jin (2011); Zhan (2022) &
+No Free Lunch theorem and complexity theory; establishes limits of optimization. &
+RQ2: Theoretical limits are not mapped to practical trade-off surfaces. \\
+
+Domain-Driven Adaptation &
+Lookman (2019); Jin (2018); Zhou (2007) &
+Active learning; adapts surrogate models to specific data domains. &
+General: Focuses on adaptation strategies rather than cost--accuracy trade-offs. \\
+
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\columnwidth]{images/1.png}
+    \caption{Literature review of all relevant papers, showing a high concentration of citations in the top 6 papers.}
+    \label{1}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\columnwidth]{images/2.png}
+    \caption{ Literature review excluding seminal papers. Knee identified around citation count > 440.}
+    \label{2}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\columnwidth]{images/13.png}
+    \caption{ Venn diagram representing the gap in current literature for surrogate model analysis.}
+    \label{3}
+\end{figure}
+
+\subsection{Reproduction Package}
+
+We decided on [12] as our paper to try to replicate because the instructions were very easy to find and most of the packages were still maintained (except for Spearmint).
+
+The paper aims to optimize NN configurations using SMAC, Spearmint, TPE, and random search as the optimizers and Gradient Boost regressor, Random Forest regressor, Gaussian Process regressor, and Support Vector regression. We had to use Hyperopt instead of Spearmint as it is no longer maintained. The paper searched through 8,000 configurations and, even with a cluster and heavy parallelization, still took the researchers 3 weeks to run. We instead opted to test 1,000 configurations on Google Colab, using their paid tier for more compute units. The results are not 1-to-1 accurate, but they are trending in the correct direction and serve as a proof of concept.
+
+Given we had 8x less data and much less time to train, we think this is a good preliminary result.
+
+\begin{table*}[t]
+\caption{Our replication results alongside the original paper's results.}
+\label{tab:model_results}
+\centering
+
+\begin{tabular}{p{4.0cm} p{3.0cm} p{3.0cm} p{3.0cm} p{3.0cm}}
+\toprule
+\textbf{Model} & \textbf{Our RMSE} & \textbf{Our CC} & \textbf{Paper RMSE} & \textbf{Paper CC} \\
+\midrule
+
+Gradient Boost Regressor &
+0.05 & 0.77 & 0.05 & 0.92 \\
+
+Random Forest Regressor &
+0.05 & 0.74 & 0.05 & 0.92 \\
+
+Gaussian Process Regressor &
+0.08 & 0.43 & 0.08 & 0.80 \\
+
+Support Vector Regressor &
+0.26 & 0.32 & 0.09 & 0.72 \\
+
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Methods}
+
+Our study comprises two sequential experiments. The first characterizes each surrogate's approximation quality as a function of the training set size and problem dimensionality. The second embeds the best-performing variants into a Bayesian optimization (BO) loop to assess whether static accuracy advantages translate to better search behavior. All code was executed on Google Colab (paid tier) using Python 3 and is publicly available for replication.
+
+\subsection{Variables and Metrics}
+
+\textbf{Primary accuracy metric}.  We report root-mean-squared error (RMSE) on a held-out test set of 300 LHS-sampled points. RMSE is computed in the original (unscaled) units of each benchmark function, making values comparable across training-set sizes within a function but not across functions.
+
+\textbf{Computational cost}.  Training wall-clock time (seconds) is recorded bracketing each model's fit call. For the BO experiment, cumulative wall-clock time from the start of each run is recorded at every evaluation.
+
+\textbf{Optimization quality}.  In the BO experiment, we track the best value found — the running minimum $f\text{*} = min(y_i) \text{ for } i \le t$ — and report the mean +/- standard deviation across five independent seeds at the final evaluation budget.
+
+\subsection{Benchmark Functions}
+
+We evaluate all surrogates on four standard mathematical test functions chosen to span a representative range of landscape difficulties:
+
+\begin{table*}[t]
+\centering
+\caption{Benchmark functions with visual references.}
+\label{tab:benchmarks_images}
+
+\small
+\setlength{\tabcolsep}{6pt}
+
+\begin{tabular}{p{3cm} p{7cm} p{3cm}}
+\toprule
+\textbf{Function} & \textbf{Definition} & \textbf{Image} \\
+\midrule
+
+Rosenbrock &
+$f(x,y) = (a - x)^2 + b(y - x^2)^2$ &
+\includegraphics[width=2.2cm]{images/4.png} \\
+
+Rastrigin &
+$f(x) = An + \sum_{i=1}^{n} \left[x_i^2 - A \cos(2\pi x_i)\right]$ &
+\includegraphics[width=2.2cm]{images/5.png} \\
+
+Ackley &
+$f(x) = -a \exp\left(-b \sqrt{\frac{1}{d}\sum_{i=1}^{d} x_i^2}\right)
+- \exp\left(\frac{1}{d}\sum_{i=1}^{d} \cos(cx_i)\right)
++ a + e$ &
+\includegraphics[width=2.2cm]{images/6.png} \\
+
+Styblinski--Tang &
+$f(x) = \frac{1}{2} \sum_{i=1}^{d} \left(x_i^4 - 16x_i^2 + 5x_i\right)$ &
+\includegraphics[width=2.2cm]{images/7.png} \\
+
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Each function is evaluated at dimensions $d \in \{2, 5, 10\}$. These functions and dimensions are standard in the surrogate modeling literature [13][22][47], enabling direct comparison with prior work. The four functions are defined as follows:
+
+\subsection{Selection Strategy}
+
+\textbf{Surrogate families.}  We used Kriging (GP), RBF, neural network (NN), and kNN. The first three are the canonical surrogates in every major benchmarking study and practitioner guide [13][22][49]. kNN is included precisely because it is absent from those guides, and evaluating it directly answers RQ3.
+
+\textbf{Training set sizes.}  Sizes $n \in \{20, 50, 100, 200, 500\}$ span from below the common $10n$ rule of thumb [26] to well above it. This range lets us observe where each surrogate's sample-efficiency advantage or disadvantage first appears rather than assuming a fixed budget.
+
+\textbf{LHS sampling.}  Latin Hypercube Sampling is used for both training and test sets. LHS is the standard initialization strategy in surrogate modeling [28] because it ensures even coverage of the input space with fewer points than random sampling requires.
+
+\textbf{kNN hyperparameter k.}  Rather than fixing k, we select it per condition via 5-fold cross-validation over $k \in \{1, 2, 3, 5, 7, 10, 15\}$. This removes k as a confound and ensures we are comparing the best achievable kNN performance against the other surrogates.
+
+\textbf{BO variant selection.}  For the BO experiment, we forward the single best-performing RBF and NN variant from the benchmarking study into the loop, alongside Kriging and kNN-Manhattan. Kriging and kNN support Expected Improvement (EI) acquisition because they provide uncertainty estimates. RBF and NN use pure exploitation (the lowest predicted value) because they do not.
+
+\subsection{Methodology}
+
+\textbf{Experiment 1 — surrogate benchmarking.}  For each combination of (function, dimensionality d, training size n), we: (1) draw an LHS training set of size n and a fixed LHS test set of 300 points; (2) normalize all inputs to $[0, 1]^d$ using the function's domain bounds; (3) fit each surrogate on the training set; (4) compute RMSE on the test set; (5) record wall-clock training time. NN outputs are additionally z-scored per batch before fitting and unscaled before evaluation, which was necessary for numerical stability on Rosenbrock and Rastrigin. The full grid yields 12 model configurations × 4 functions × 3 dimensions × 5 training sizes, for a total of 720 data points.
+
+\textbf{Experiment 2 — Bayesian optimization loop.}  Each run begins with $n_{init} = 10$ LHS-drawn evaluations, followed by 40 surrogate-guided iterations (budget = 50 total). At each iteration, the surrogate is refitted from scratch on all observations to date, and the acquisition function is evaluated over 500 uniformly random candidates in $[0, 1]^d$. Five independent seeds control the initial LHS sample and candidate stream. EI is computed as: $EI(x) = (f\text{*} - \mu)*\Phi(Z) + \sigma*\phi(Z)$, where $Z = \frac{(f\text{*} - \mu)}{\sigma}$, $\mu$ and $\sigma$ are the surrogate mean and standard deviation, and $\Phi$, $\phi$ are the standard normal CDF and PDF.
+
+\subsection{Data Analysis}
+
+\textbf{Accuracy-data trade-off (RQ1).}  We plot log(RMSE) against log(n) for all model variants per (function, dimensionality) cell (Figure 4). A monotonically decreasing curve indicates well-behaved sample efficiency; flat or non-monotone curves flag instability.
+
+\textbf{Dimensionality scaling (RQ2).}  We hold n fixed and plot log(RMSE) against d (Figure 5). Slope magnitude quantifies sensitivity to the curse of dimensionality.
+
+\textbf{Cost-accuracy frontier (RQ1, RQ3).}  We scatter-plot log(RMSE) against log(training time) across all conditions (Figure 6). Points in the lower-left are Pareto-dominant. A bar chart view (Figure 7) summarizes model comparison under the most data-scarce conditions ($n \in \{20, 50\})$.
+
+\textbf{BO convergence (RQ3).}  We plot best-value-found curves, mean +/- 1 s.d. over five seeds per model per (function, dimensionality) cell. Results are interpreted descriptively; no formal hypothesis test is applied given the small seed count.
+
+\section{Results}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\columnwidth]{plot1_learning_curves.pdf}
+    \caption{RMSE of models with varying data scarcity and dimensionality.}
+    \label{4}
+\end{figure}
+
+Figure 4 shows RMSE and training-set size on a log-log scale for all four surrogate families across the three dimensionalities. Kriging is the clear accuracy leader at 2D and 5D for smooth functions (Rosenbrock, Styblinski-Tang), achieving RMSE reductions of two to three orders of magnitude as n grows from 20 to 500. RBF improves consistently with data but plateaus earlier. NN requires roughly 100 points before it begins to separate from the pack, consistent with its known data hunger [12]. kNN shows the flattest improvement curve overall, particularly on Rosenbrock, where its inability to extrapolate beyond convex hulls limits accuracy regardless of n.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\columnwidth]{plot2_dim_scaling.pdf}
+    \caption{RMSE vs Problem Dimensionality. Most models degrade as dimensionality increases, but larger training sets partially mitigate the curse of dimensionality.}
+    \label{5}
+\end{figure}
+
+Figure 5 addresses RQ2 directly. All models worsen as d increases from 2 to 10, but the rate differs. Kriging degrades sharply on Rosenbrock and Styblinski-Tang beyond 5D, whereas kNN's relative rank improves on Ackley at 10D — a function whose flat outer region favors neighborhood-based averaging. At n = 500, Kriging and RBF recover substantially in higher dimensions, suggesting their degradation is primarily a data-density problem rather than a structural one. kNN is the only model that does not worsen on Ackley at 10D, foreshadowing its potential in the BO experiment.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\columnwidth]{plot3_accuracy_cost.pdf}
+    \caption{Accuracy vs Computational Cost (in seconds). kNN clusters in the lower-left at higher dimensions, suggesting it as a cheaper alternative to expensive models.}
+    \label{6}
+\end{figure}
+
+Figure 6 plots the cost-accuracy frontier for RQ1 and RQ3. At 2D, Kriging occupies the desirable lower-left region alone — lowest RMSE at low-to-moderate cost. kNN sits near the lower-left on cost but significantly higher on RMSE, making it Pareto-dominated. At 10D the picture shifts: Kriging's training time grows substantially while its RMSE advantage narrows, and kNN's cost stays flat. By 10D, kNN is no longer clearly Pareto-dominated — it offers competitive RMSE on Ackley and Rastrigin at a fraction of Kriging's training cost.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\columnwidth]{plot4_low_data.pdf}
+    \caption{Model Comparison Under Data Scarcity across the full benchmark grid.}
+    \label{7}
+\end{figure}
+
+Figure 7 consolidates the data-scarce regime ($n \in \{20, 50\}$) where surrogate selection is most consequential. At 2D with $n = 20$, the gap between Kriging and all other models on Rosenbrock spans two orders of magnitude. At 5D and 10D with $n = 20$, however, all four models converge — no surrogate has enough data to fit the landscape reliably, and differences in RMSE become negligible. This convergence under severe data scarcity is an important practical finding: when budgets are very tight and dimensionality is moderate-to-high, the choice of surrogate matters less than simply getting more data.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\columnwidth]{bo_convergence_raster.pdf}
+    \caption{Bayesian optimization convergence curves (mean +/- 1 s.d., 5 seeds) for all four models across functions and dimensionalities.}
+    \label{8}
+\end{figure}
+
+Figure 8 shows the best-value-found curves from the BO experiment. At 2D, Kriging-EI and RBF-exploitation converge fastest on Rosenbrock and Styblinski-Tang, reaching near-optimal values within 20-30 evaluations. kNN-EI lags at 2D but closes the gap at 10D on Ackley, where its neighborhood-based uncertainty estimate proves sufficient to drive useful exploration. NN-exploitation is the weakest overall, exhibiting high variance across seeds and stalling on multimodal functions — a consequence of pure exploitation with no mechanism for escaping local minima.
+
+\section{Discussion}
+
+\subsection{RQ1 — The Accuracy-Data-Cost Trade-off}
+
+Kriging dominates accuracy for smooth, low-dimensional problems when data is plentiful, which aligns with the established literature [13][49]. However, its training cost scales poorly: at d = 10 and n = 500, Kriging's training time is one to two orders of magnitude above kNN and RBF. The cost-accuracy scatter (Figure 6) makes clear that Kriging's advantage is not free. It must be weighed against the fitting overhead each time the surrogate is refitted in a sequential loop. RBF presents a middle ground: modestly behind Kriging on accuracy but substantially faster, and its BO convergence on Rosenbrock at 2D rivals Kriging's. This supports [2]'s recommendation of RBF as the default for moderate-budget problems, though our results add a sharper quantitative boundary: RBF's advantage is most pronounced at n < 200 before Kriging's accuracy gap widens.
+
+\subsection{RQ2 — Dimensionality and the Curse}
+
+All four surrogates degrade as dimensionality increases from 2 to 10, but not uniformly. Kriging suffers the sharpest relative decline on structured functions (Rosenbrock, Styblinski-Tang) because its kernel must cover an exponentially larger volume with the same number of training points. The common 10n rule of thumb [26] implies 100 points at d = 10; our results suggest that is insufficient for Kriging to achieve low RMSE on Rosenbrock, where even n = 500 leaves substantial error at 10D. NN degrades more smoothly because its architecture compensates for sparse coverage. kNN is the most consistent performer on high-dimensional multimodal functions, not because it is intrinsically better, but because those landscapes have enough local regularity that nearest-neighbor averaging remains informative even when coverage is sparse.
+
+\subsection{RQ3 — kNN as a Competitive Low-Overhead Surrogate}
+
+The short answer is: conditionally yes. kNN is not competitive with Kriging on smooth low-dimensional problems. Figure 4 shows Kriging outperforming kNN by orders of magnitude on Rosenbrock at 2D. But on Ackley at 10D, kNN's RMSE is within a factor of two of Kriging at n = 200, while training in under a millisecond compared to Kriging's tens of seconds. In the BO loop, kNN-EI achieves final best values of 7.50 +/- 0.29 (Ackley, 10D) versus Kriging's 6.73 +/- 0.39 — a meaningful but modest gap for a model with no training cost. For practitioners with very large BO budgets where surrogate refitting costs dominate wall time, kNN is a viable drop-in replacement for high-dimensional, multimodal problems. It is not, however, a general replacement: on Rosenbrock at 10D, kNN's final BO value of 796.56 +/- 252.33 versus Kriging's 423.08 +/- 50.14 shows the gap is practically significant on structured unimodal landscapes.
+
+\subsection{Threats to Validity}
+
+\textbf{Internal validity.}  Each benchmarking condition uses a single LHS draw with no repeated trials. RMSE values, therefore, reflect one particular realization of the training set and may not generalize. The BO experiment uses five seeds, which partially addresses this but remains a small sample for variance estimation.
+
+\textbf{External validity.}  All four benchmark functions are smooth or semi-smooth mathematical functions. Real engineering surrogates often exhibit discontinuities, noise, and constraint boundaries that are not represented here. The dimensionality range (2-10) also excludes very high-dimensional problems (d > 20) where the curse of dimensionality would likely amplify the differences observed at 10D.
+
+\textbf{Construct validity.}  RMSE on a held-out LHS test set measures global approximation quality but not local accuracy near optima, which is what matters most in the BO context. A surrogate can have low global RMSE while being misleading near the minimum. Future work should supplement RMSE with metrics such as rank correlation or regret in the optimum region.
+
+\subsection{Future Work}
+
+
+
+\section{Conclusion}
+
+%Add reproduction repo here?
+
+
+%\nocite{*}
+%\bibliographystyle{ACM-Reference-Format}
+%\bibliography{references}
+
+\section*{References}
+
+\begin{enumerate}[label={[\arabic*]}]
+
+\item Acar, E., \& Rais-Rohani, M. (2009). Ensemble of metamodels with optimized weight factors. \textit{Structural and Multidisciplinary Optimization}, 37(3), 279--294.
+
+\item Alizadeh, R., Allen, J. K., \& Mistree, F. (2020). Managing computational complexity using surrogate models: a critical review. \textit{Research in Engineering Design}, 31(3), 275--298.
+
+\item Bajer, L., Pitra, Z., \& Holeňa, M. (2015, July). Benchmarking Gaussian processes and random forests surrogate models on the BBOB noiseless testbed. In \textit{Proceedings of the Companion Publication of the 2015 Annual Conference on Genetic and Evolutionary Computation} (pp. 1143--1150).
+
+\item Barton, R. R., \& Meckesheimer, M. (2006). Chapter 18: Metamodel-Based Simulation Optimization. In S. G. Henderson \& B. L. Nelson (Eds.), \textit{Handbooks in Operations Research and Management Science} (Vol. 13, pp. 535--574). Elsevier.
+
+\item Beleites, C., Neugebauer, U., Bocklitz, T., Krafft, C., \& Popp, J. (2013). Sample size planning for classification models. \textit{Analytica Chimica Acta}, 760, 25--33.
+
+\item Ciuffo, B., \& Punzo, V. (2013). ``No free lunch'' theorems applied to the calibration of traffic simulation models. \textit{IEEE Transactions on Intelligent Transportation Systems}, 15(2), 553--562.
+
+\item Davis, S. E., Cremaschi, S., \& Eden, M. R. (2018). Efficient surrogate model development: impact of sample size and underlying model dimensions. In \textit{Computer Aided Chemical Engineering} (Vol. 44, pp. 979--984). Elsevier.
+
+\item De Rainville, F. M., Fortin, F. A., Gardner, M. A., Parizeau, M., \& Gagné, C. (2012, July). DEAP: A Python framework for evolutionary algorithms. In \textit{Proceedings of the 14th Annual Conference Companion on Genetic and Evolutionary Computation} (pp. 85--92).
+
+\item Díaz-Manríquez, A., Toscano, G., Barron-Zambrano, J. H., \& Tello-Leal, E. (2016). A review of surrogate assisted multiobjective evolutionary algorithms. \textit{Computational Intelligence and Neuroscience}, 2016(1), 9420460.
+
+\item do Amaral, J. V. S., Montevechi, J. A. B., de Carvalho Miranda, R., \& de Sousa Junior, W. T. (2022). Metamodel-based simulation optimization: A systematic literature review. \textit{Simulation Modelling Practice and Theory}, 114, 102403.
+
+\item Eason, J., \& Cremaschi, S. (2014). Adaptive sequential sampling for surrogate model generation with artificial neural networks. \textit{Computers \& Chemical Engineering}, 68, 220--232.
+
+\item Eggensperger, K., Hutter, F., Hoos, H., \& Leyton-Brown, K. (2015, February). Efficient benchmarking of hyperparameter optimizers via surrogates. In \textit{Proceedings of the AAAI Conference on Artificial Intelligence} (Vol. 29, No. 1).
+
+\item Forrester, A., Sobester, A., \& Keane, A. (2008). \textit{Engineering Design via Surrogate Modelling: A Practical Guide}. John Wiley \& Sons.
+
+\item Gorissen, D., Couckuyt, I., Demeester, P., Dhaene, T., \& Crombecq, K. (2010). A surrogate modeling and adaptive sampling toolbox for computer based design. \textit{Journal of Machine Learning Research}, 11, 2051--2055.
+
+\item Haftka, R. T., Villanueva, D., \& Chaudhuri, A. (2016). Parallel surrogate-assisted global optimization with expensive functions--a survey. \textit{Structural and Multidisciplinary Optimization}, 54(1), 3--13.
+
+\item He, C., Zhang, Y., Gong, D., \& Ji, X. (2023). A review of surrogate-assisted evolutionary algorithms for expensive optimization problems. \textit{Expert Systems with Applications}, 217, 119495.
+
+\item Hua, Y., Liu, Q., Hao, K., \& Jin, Y. (2021). A survey of evolutionary algorithms for multi-objective optimization problems with irregular Pareto fronts. \textit{IEEE/CAA Journal of Automatica Sinica}, 8(2), 303--318.
+
+\item Jin, Y. (2011). Surrogate-assisted evolutionary computation: Recent advances and future challenges. \textit{Swarm and Evolutionary Computation}, 1(2), 61--70.
+
+\item Jin, Y., Wang, H., Chugh, T., Guo, D., \& Miettinen, K. (2018). Data-driven evolutionary optimization: An overview and case studies. \textit{IEEE Transactions on Evolutionary Computation}, 23(3), 442--458.
+
+\item Jones, D. R., Schonlau, M., \& Welch, W. J. (1998). Efficient global optimization of expensive black-box functions. \textit{Journal of Global Optimization}, 13(4), 455--492.
+
+\item Kim, S. H., \& Boukouvala, F. (2020). Machine learning-based surrogate modeling for data-driven optimization: a comparison of subset selection for regression techniques. \textit{Optimization Letters}, 14(4), 989--1010.
+
+\item Koziel, S., Ciaurri, D. E., \& Leifsson, L. (2011). Surrogate-based methods. In \textit{Computational Optimization, Methods and Algorithms} (pp. 33--59). Springer.
+
+\item Kudela, J., \& Matousek, R. (2022). Recent advances and applications of surrogate models for finite element method computations: a review. \textit{Soft Computing}, 26(24), 13709--13733.
+
+\item Li, Y. F., Ng, S. H., Xie, M., \& Goh, T. N. (2010). A systematic comparison of metamodeling techniques for simulation optimization in decision support systems. \textit{Applied Soft Computing}, 10(4), 1257--1273.
+
+\item Liang, Y., Pan, Y., Yuan, X., Jia, W., \& Huang, Z. (2023). Surrogate modeling for long-term and high-resolution prediction of building thermal load with a metric-optimized KNN algorithm. \textit{Energy and Built Environment}, 4(6), 709--724.
+
+\item Loeppky, J. L., Sacks, J., \& Welch, W. J. (2009). Choosing the sample size of a computer experiment: A practical guide. \textit{Technometrics}, 51(4), 366--376.
+
+\item Lookman, T., Balachandran, P. V., Xue, D., \& Yuan, R. (2019). Active learning in materials science with emphasis on adaptive sampling using uncertainties for targeted design. \textit{npj Computational Materials}, 5(1), 21.
+
+\item McKay, M. D., Beckman, R. J., \& Conover, W. J. (2000). A comparison of three methods for selecting values of input variables in the analysis of output from a computer code. \textit{Technometrics}, 42(1), 55--61.
+
+\item Most, T., \& Will, J. (2008). Metamodel of optimal prognosis—an automatic approach for variable reduction and optimal metamodel selection. \textit{Proc. Weimarer Optimierungs- und Stochastiktage}, 5, 20--21.
+
+\item Müller, J., \& Shoemaker, C. A. (2014). Influence of ensemble surrogate models and sampling strategy on the solution quality of algorithms for computationally expensive black-box global optimization problems. \textit{Journal of Global Optimization}, 60(2), 123--144.
+
+\item Müller, J., Shoemaker, C. A., \& Piché, R. (2013). SO-MI: A surrogate model algorithm for computationally expensive nonlinear mixed-integer black-box global optimization problems. \textit{Computers \& Operations Research}, 40(5), 1383--1400.
+
+\item Østergård, T., Jensen, R. L., \& Maagaard, S. E. (2018). A comparison of six metamodeling techniques applied to building performance simulations. \textit{Applied Energy}, 211, 89--103.
+
+\item Pan, L., He, C., Tian, Y., Wang, H., Zhang, X., \& Jin, Y. (2018). A classification-based surrogate-assisted evolutionary algorithm for expensive many-objective optimization. \textit{IEEE Transactions on Evolutionary Computation}, 23(1), 74--88.
+
+\item Regis, R. G., \& Shoemaker, C. A. (2004). Local function approximation in evolutionary algorithms for the optimization of costly functions. \textit{IEEE Transactions on Evolutionary Computation}, 8(5), 490--505.
+
+\item Regis, R. G., \& Shoemaker, C. A. (2007). A stochastic radial basis function method for the global optimization of expensive functions. \textit{INFORMS Journal on Computing}, 19(4), 497--509.
+
+\item Regis, R. G., \& Shoemaker, C. A. (2007). Improved strategies for radial basis function methods for global optimization. \textit{Journal of Global Optimization}, 37(1), 113--135.
+
+\item Shalev-Shwartz, S., \& Srebro, N. (2008, July). SVM optimization: inverse dependence on training set size. In \textit{Proceedings of the 25th International Conference on Machine Learning} (pp. 928--935).
+
+\item Song, Z., Wang, H., He, C., \& Jin, Y. (2021). A kriging-assisted two-archive evolutionary algorithm for expensive many-objective optimization. \textit{IEEE Transactions on Evolutionary Computation}, 25(6), 1013--1027.
+
+\item Sun, C., Jin, Y., Cheng, R., Ding, J., \& Zeng, J. (2017). Surrogate-assisted cooperative swarm optimization of high-dimensional expensive problems. \textit{IEEE Transactions on Evolutionary Computation}, 21(4), 644--660.
+
+\item Trabucco, B., Geng, X., Kumar, A., \& Levine, S. (2022, June). Design-bench: Benchmarks for data-driven offline model-based optimization. In \textit{International Conference on Machine Learning} (pp. 21658--21676). PMLR.
+
+\item Vu, K. K., d'Ambrosio, C., Hamadi, Y., \& Liberti, L. (2017). Surrogate-based methods for black-box optimization. \textit{International Transactions in Operational Research}, 24(3), 393--424.
+
+\item Wang, B., Xie, B., Xuan, J., \& Jiao, K. (2020). AI-based optimization of PEM fuel cell catalyst layers for maximum power density via data-driven surrogate modeling. \textit{Energy Conversion and Management}, 205, 112460.
+
+\item Wang, C., Duan, Q., Gong, W., Ye, A., Di, Z., \& Miao, C. (2014). An evaluation of adaptive surrogate modeling based optimization with two benchmark problems. \textit{Environmental Modelling \& Software}, 60, 167--179.
+
+\item Wang, H., Jin, Y., \& Doherty, J. (2017). Committee-based active learning for surrogate-assisted particle swarm optimization of expensive problems. \textit{IEEE Transactions on Cybernetics}, 47(9), 2664--2677.
+
+\item Wang, Y., Yin, D. Q., Yang, S., \& Sun, G. (2018). Global and local surrogate-assisted differential evolution for expensive constrained optimization problems with inequality constraints. \textit{IEEE Transactions on Cybernetics}, 49(5), 1642--1656.
+
+\item Westermann, P., \& Evins, R. (2019). Surrogate modelling for sustainable building design—A review. \textit{Energy and Buildings}, 198, 170--186.
+
+\item Wilkinson, L., Anand, A., \& Tuan, D. N. (2011, August). CHIRP: a new classifier based on composite hypercubes on iterated random projections. In Proceedings of the 17th ACM SIGKDD international conference on Knowledge discovery and data mining (pp. 6-14).
+
+\item Williams, B., \& Cremaschi, S. (2021). Selection of surrogate modeling techniques for surface approximation and surrogate-based optimization. \textit{Chemical Engineering Research and Design}, 170, 76--89.
+
+\item Williams, C. K. I., \& Rasmussen, C. E. (2006). \textit{Gaussian Processes for Machine Learning}. MIT Press.
+
+\item Wolpert, D. H., \& Macready, W. G. (2002). No free lunch theorems for optimization. \textit{IEEE Transactions on Evolutionary Computation}, 1(1), 67--82.
+
+\item Zhan, Z. H., Shi, L., Tan, K. C., \& Zhang, J. (2022). A survey on evolutionary computation for complex continuous optimization. \textit{Artificial Intelligence Review}, 55(1), 59--110.
+
+\item Zhang, J., Chowdhury, S., \& Messac, A. (2012). An adaptive hybrid surrogate model. \textit{Structural and Multidisciplinary Optimization}, 46(2), 223--238.
+
+\item Zhou, Z., Ong, Y. S., Nair, P. B., Keane, A. J., \& Lum, K. Y. (2006). Combining global and local surrogate models to accelerate evolutionary optimization. \textit{IEEE Transactions on Systems, Man, and Cybernetics, Part C}, 37(1), 66--76.
+
+\item Zhou, Z., Ong, Y. S., Nguyen, M. H., \& Lim, D. (2005, September). A study on polynomial regression and Gaussian process global surrogate model in hierarchical surrogate-assisted evolutionary algorithm. In \textit{IEEE Congress on Evolutionary Computation} (Vol. 3, pp. 2832--2839).
+
+\end{enumerate}
+
+\end{document}
